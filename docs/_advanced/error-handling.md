@@ -60,6 +60,9 @@ RubyLLM::ToolCallRunningError # A persisted tool call was denied after it starte
 RubyLLM::ModelRegistryError   # Model registry could not be fetched, parsed, or persisted
 RubyLLM::CancelledError       # An in-flight chat operation was cancelled
 RubyLLM::DeprecationError     # Deprecated API used while deprecation_behavior is :raise
+
+# Interruption (inherits from Interrupt, so a bare rescue does not catch it)
+RubyLLM::ResearchJob::InterruptedError # Blocking research call interrupted; keeps the job for recovery
 ```
 
 ## Basic Error Handling
