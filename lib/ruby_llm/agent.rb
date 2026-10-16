@@ -374,25 +374,27 @@ module RubyLLM
       end
 
       # Sets options in the provider's request vocabulary for chats this
-      # agent builds, applied via Chat#with_provider_options. A block
-      # defers evaluation until the chat is built. Called with no
-      # arguments, returns the configured value.
+      # agent builds, applied via Chat#with_provider_options. Accepts
+      # keywords or a Hash, as Judge.provider_options and
+      # Tool.provider_options do. A block defers evaluation until the chat
+      # is built. Called with no arguments, returns the configured value.
       #
       #   provider_options service_tier: "flex"
       #
-      def provider_options(**provider_options, &block)
-        return @provider_options || {} if provider_options.empty? && !block_given?
+      def provider_options(options = nil, **provider_options, &block)
+        return @provider_options || {} if options.nil? && provider_options.empty? && !block_given?
 
-        @provider_options = block_given? ? block : provider_options
+        @provider_options = block_given? ? block : options.to_h.merge(provider_options)
       end
 
       # Sets custom HTTP headers for chats this agent builds, applied via
-      # Chat#with_headers. A block defers evaluation until the chat is
-      # built. Called with no arguments, returns the configured value.
-      def headers(**headers, &block)
-        return @headers || {} if headers.empty? && !block_given?
+      # Chat#with_headers. Accepts keywords or a Hash. A block defers
+      # evaluation until the chat is built. Called with no arguments,
+      # returns the configured value.
+      def headers(options = nil, **headers, &block)
+        return @headers || {} if options.nil? && headers.empty? && !block_given?
 
-        @headers = block_given? ? block : headers
+        @headers = block_given? ? block : options.to_h.merge(headers)
       end
 
       # Sets the structured output schema for chats this agent builds,

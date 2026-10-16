@@ -42,6 +42,17 @@ RSpec.describe RubyLLM::Agent do
       expect(bare.chat_model).to be_nil
     end
 
+    it 'takes provider options and headers as a Hash, like the other DSL classes' do
+      options = { top_p: 0.9 }
+      agent_class = Class.new(described_class) do
+        provider_options options
+        headers({ 'X-Test' => '1' })
+      end
+
+      expect(agent_class.provider_options).to eq(top_p: 0.9)
+      expect(agent_class.headers).to eq('X-Test' => '1')
+    end
+
     it 'accepts model options without a model id' do
       agent = Class.new(described_class) do
         model provider: :openai, assume_model_exists: true
