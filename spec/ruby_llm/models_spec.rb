@@ -502,6 +502,22 @@ RSpec.describe RubyLLM::Models do
     end
   end
 
+  describe '#by_type' do
+    it 'filters to the models of one type' do
+      %i[chat embedding image audio video rerank judgment].each do |type|
+        models = RubyLLM.models.by_type(type)
+
+        expect(models).to be_a(described_class)
+        expect(models.all).not_to be_empty
+        expect(models.map(&:type).uniq).to eq([type])
+      end
+    end
+
+    it 'accepts a String' do
+      expect(RubyLLM.models.by_type('video').map(&:id)).to eq(RubyLLM.models.by_type(:video).map(&:id))
+    end
+  end
+
   describe '#audio_models' do
     it 'filters to models that are audio-capable' do
       audio_models = RubyLLM.models.audio_models

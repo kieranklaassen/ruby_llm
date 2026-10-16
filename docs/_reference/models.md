@@ -210,6 +210,8 @@ all_models = RubyLLM.models.all
 chat_models = RubyLLM.models.chat_models
 embedding_models = RubyLLM.models.embedding_models
 
+video_models = RubyLLM.models.by_type(:video) # any Model#type
+
 openai_models = RubyLLM.models.by_provider(:openai) # or 'openai'
 
 # Filter by model family (e.g., all Claude Sonnet variants)

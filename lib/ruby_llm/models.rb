@@ -638,6 +638,15 @@ module RubyLLM
       select_models { |m| m.type == :image || m.modalities.output.include?('image') }
     end
 
+    # Returns a new Models registry containing only models whose
+    # Model#type is +type+. Accepts a symbol or a string.
+    #
+    #   RubyLLM.models.by_type(:video)
+    #
+    def by_type(type)
+      select_models { |m| m.type == type.to_sym }
+    end
+
     # Returns a new Models registry containing only models in +family+.
     #
     #   RubyLLM.models.by_family('claude3_sonnet')
