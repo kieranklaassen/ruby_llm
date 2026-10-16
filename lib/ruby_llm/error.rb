@@ -88,6 +88,16 @@ module RubyLLM
   # missing or malformed front matter, or a name or description it rejects.
   class InvalidSkillError < StandardError; end
 
+  # Raised when Skill::Marketplace.find names a marketplace that was never
+  # added, and when Skill::Marketplace.add names a GitHub repository that
+  # does not exist.
+  class MarketplaceNotFoundError < StandardError; end
+
+  # Raised when a plugin marketplace cannot be added: its marketplace file
+  # is missing or malformed, its archive cannot be read, or it holds no
+  # skills.
+  class InvalidMarketplaceError < StandardError; end
+
   # Raised when a message role outside +:system+, +:user+, +:assistant+, or
   # +:tool+ is used.
   class InvalidRoleError < StandardError; end
