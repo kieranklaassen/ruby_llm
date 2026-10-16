@@ -149,7 +149,7 @@ module RubyLLM
     # Returns whether the provider confirmed cancellation.
     def cancelled? = status == :cancelled
 
-    # Fetches the latest state and returns self. Does nothing after the
+    # Fetches the latest state and returns +self+. Does nothing after the
     # task finishes. +timeout:+ limits this request in seconds.
     def refresh(timeout: nil)
       self.class.validate_polling_options(timeout, 1) unless timeout.nil?
@@ -160,7 +160,7 @@ module RubyLLM
       self
     end
 
-    # Polls until a terminal state and returns self. A timeout leaves the
+    # Polls until a terminal state and returns +self+. A timeout leaves the
     # independent task running and raises TimeoutError with this job.
     # Incomplete reports remain available through #message.
     def wait(timeout: 600, interval: 5)
@@ -178,7 +178,7 @@ module RubyLLM
       self
     end
 
-    # Requests cancellation and returns self. Only the provider's response
+    # Requests cancellation and returns +self+. Only the provider's response
     # can confirm cancellation; this does not delete stored task data.
     def cancel(timeout: 5)
       self.class.validate_polling_options(timeout, 1)
