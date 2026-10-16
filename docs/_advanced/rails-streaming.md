@@ -110,11 +110,13 @@ chunk.message   # => message
 chunk.broadcast # appends "Hello" to the message on the chat's page
 ```
 
-Stub the completion to stream it to your job:
+Stub the chat the job loads, and its completion, to stream the chunk to your job:
 
 ```ruby
-agent.stub(:complete, ->(&block) { block.call(message.chunk("Hel", index: 0)) }) do
-  ChatResponseJob.perform_now(chat.id)
+chat.stub(:complete, ->(&block) { block.call(message.chunk("Hel", index: 0)) }) do
+  Chat.stub(:find, chat) do
+    ChatStreamJob.perform_now(chat.id)
+  end
 end
 ```
 
@@ -232,15 +234,17 @@ Update your views to use the controller:
   <%= render @chat.messages %>
 </div>
 
-<%# app/views/messages/_message.html.erb %>
-<%= turbo_frame_tag message,
+<%# app/views/messages/_assistant.html.erb %>
+<%= turbo_frame_tag assistant,
     data: {
       message_ordering_target: "message",
-      created_at: message.created_at.iso8601
+      created_at: assistant.created_at.iso8601
     } do %>
   <!-- message content -->
 <% end %>
 ```
+
+Wrap the other role partials the same way.
 
 #### Solution 3: Server-Side Ordering
 
