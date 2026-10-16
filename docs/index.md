@@ -344,7 +344,7 @@ response.citations
 
 ```ruby
 class Urgency < RubyLLM::Judge
-  model "jev-latest"
+  model "{{ site.models.judgment }}"
   probability :urgent, "Needs action today?"
 end
 
