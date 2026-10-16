@@ -206,7 +206,7 @@ RubyLLM emits these events:
 * `compaction.ruby_llm` - one provider-side compaction of a chat's history
 * `models.refresh.ruby_llm` - model registry refresh metadata
 
-Operations that expose normalized usage (`chat`, `embedding`, `image`, `moderation`, `rerank`, `speech`, and `transcription`) include `payload[:tokens]` and `payload[:cost]`. Both value objects are always present; their individual fields may be `nil` when the provider did not report usage or RubyLLM could not price it. Batch, OCR, and video events expose their operation-specific result and lifecycle fields instead.
+Operations that expose normalized usage (`chat`, `embedding`, `image`, `judgment`, `moderation`, `rerank`, `speech`, and `transcription`) include `payload[:tokens]` and `payload[:cost]`. Both value objects are always present; their individual fields may be `nil` when the provider did not report usage or RubyLLM could not price it. Batch, OCR, and video events expose their operation-specific result and lifecycle fields instead.
 
 See [Evaluation Progress and Monitoring]({% link _advanced/evaluation-progress.md %}) for evaluation progress, run IDs, and report payloads.
 
