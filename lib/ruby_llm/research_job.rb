@@ -46,7 +46,7 @@ module RubyLLM
     # The provider-assigned job ID.
     attr_reader :id
 
-    # The provider slug.
+    # The slug of the provider that runs the task, as a String.
     attr_reader :provider
 
     # The hosted agent's identity, separate from a model ID.
@@ -124,7 +124,7 @@ module RubyLLM
 
     def initialize(id:, provider:, agent:, protocol:, **state) # :nodoc:
       @id = id
-      @provider = provider.to_sym
+      @provider = provider
       @agent = agent
       @protocol = protocol
       @usage_owner = Accounting::Usage.owner

@@ -7,7 +7,7 @@ RSpec.describe RubyLLM::ResearchJob do
   let(:config) { RubyLLM.context { |config| config.instrumenter = instrumenter }.config }
   let(:protocol) { instance_double(RubyLLM::Protocols::VertexAI::Research, config:) }
 
-  let(:job) { described_class.new(id: 'job-1', provider: :vertexai, agent: 'agent-id', protocol:, status: :pending) }
+  let(:job) { described_class.new(id: 'job-1', provider: 'vertexai', agent: 'agent-id', protocol:, status: :pending) }
 
   before { allow(RubyLLM::Accounting::Usage).to receive(:ledger).and_return(nil) }
 
@@ -70,7 +70,7 @@ RSpec.describe RubyLLM::ResearchJob do
   it 'keeps absent billing information unknown without inventing model identity' do
     expect(job.tokens.to_h).to eq({})
     expect(job.cost.total).to be_nil
-    expect(job).to have_attributes(agent: 'agent-id', provider: :vertexai, id: 'job-1')
+    expect(job).to have_attributes(agent: 'agent-id', provider: 'vertexai', id: 'job-1')
     expect(job.inspect).to include('job-1', 'pending')
   end
 
@@ -81,7 +81,7 @@ RSpec.describe RubyLLM::ResearchJob do
 
     it 'records the reported usage when it observes the job finish, attributed to the owner' do
       job = RubyLLM.with_usage_owner('account-1') do
-        described_class.new(id: 'job-1', provider: :vertexai, agent: 'agent-id', protocol:, status: :pending)
+        described_class.new(id: 'job-1', provider: 'vertexai', agent: 'agent-id', protocol:, status: :pending)
       end
       tokens = RubyLLM::Tokens.new(input: 1200, output: 300, reported_cost: 0.42)
       allow(protocol).to receive(:refresh_research_job).and_return(status: :completed, tokens:)
@@ -105,7 +105,7 @@ RSpec.describe RubyLLM::ResearchJob do
     end
 
     it 'leaves a job found already finished to the process that observed it finish' do
-      described_class.new(id: 'job-1', provider: :vertexai, agent: 'agent-id', protocol:, status: :completed)
+      described_class.new(id: 'job-1', provider: 'vertexai', agent: 'agent-id', protocol:, status: :completed)
 
       expect(usage_events).to be_empty
     end

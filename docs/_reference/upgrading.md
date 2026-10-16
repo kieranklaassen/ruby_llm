@@ -46,7 +46,7 @@ Then update it in your development branch:
 bundle update ruby_llm
 ```
 
-Plain Ruby applications need no changes. Rails applications upgrade their schema and read the changes to persisted chats below.
+Rails applications upgrade their schema and read the changes to persisted chats below. The renamed readers and values further down apply to plain Ruby applications too.
 
 ## Upgrade the Rails Schema
 
@@ -195,6 +195,20 @@ end
 Calls to the shared modules change the same way, so `Protocols::ChatCompletions::Media.format_content` becomes `Protocols::ChatCompletions::Media.render_content`.
 
 A few methods keep their names: `format_cache_option_keys`, `extract_citations` in Chat Completions, and `extract_tool_calls` in the Anthropic, Cohere, and Converse streams.
+
+## Research Jobs Report Their Provider as a String
+
+`ResearchJob#provider` returns the provider slug as a String, like `UploadedFile#provider` and every other provider reader. Compare it to a String, or convert it where you need a Symbol:
+
+```ruby
+# 2.1
+job.provider # => :vertexai
+
+# 2.2
+job.provider # => "vertexai"
+```
+
+`RubyLLM::ResearchJob.find` still accepts a Symbol or a String for `provider:`, so a stored slug keeps working.
 
 ## Deploy Without Mixing Versions
 
