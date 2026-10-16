@@ -48,7 +48,7 @@ More than a client for model APIs. RubyLLM gives your application the convention
 * **Vision:** Analyze images and videos
 * **Audio:** Transcribe speech with `RubyLLM.transcribe` and generate it with `RubyLLM.speak`
 * **Documents:** Ask questions about PDFs, text files, and other supported formats
-* **OCR:** Turn documents into markdown with `RubyLLM.ocr`
+* **OCR:** Turn documents into Markdown with `RubyLLM.ocr`
 * **Image generation:** Create images with `RubyLLM.paint`
 * **Video generation:** Create videos with `RubyLLM.animate`
 * **Embeddings:** Generate embeddings with `RubyLLM.embed`
@@ -75,7 +75,7 @@ More than a client for model APIs. RubyLLM gives your application the convention
 * **Compaction:** Let providers condense long conversations with `with_compaction`
 * **Token counting:** Count a request before you send it with `count_tokens`, or tokenize plain text with `RubyLLM.tokenize`
 * **Hosted research:** Run a provider's research agent and read its report with `RubyLLM.research`
-* **Providers:** OpenAI, Azure, xAI, Anthropic, Gemini, VertexAI, Bedrock, Cohere, DeepSeek, Hetzner, Mistral, Ollama, Ollama Cloud, OpenRouter, Perplexity, GPUStack, ElevenLabs, Deepgram, TypeSafe, and any OpenAI-compatible API
+* **Providers:** OpenAI, Azure, xAI, Anthropic, Gemini, Vertex AI, Bedrock, Cohere, DeepSeek, Hetzner, Mistral, Ollama, Ollama Cloud, OpenRouter, Perplexity, GPUStack, ElevenLabs, Deepgram, TypeSafe, and any OpenAI-compatible API
 
 ## Evaluate your agents
 
@@ -217,7 +217,7 @@ speech.save "welcome.mp3"
 ```
 
 ```ruby
-# Extract document text as markdown
+# Extract document text as Markdown
 document = RubyLLM.ocr "contract.pdf"
 puts document.markdown
 ```

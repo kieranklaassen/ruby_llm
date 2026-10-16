@@ -147,8 +147,8 @@ A run that takes longer than its `max_run_time` counts as crashed, and another p
 
 Tools should handle errors based on whether they're recoverable:
 
-- **Recoverable errors** (invalid parameters, external API failures): Return `{ error: "description" }`
-- **Unrecoverable errors** (missing configuration, database down): Raise an exception
+* **Recoverable errors** (invalid parameters, external API failures): Return `{ error: "description" }`
+* **Unrecoverable errors** (missing configuration, database down): Raise an exception
 
 ```ruby
 def execute(location:)

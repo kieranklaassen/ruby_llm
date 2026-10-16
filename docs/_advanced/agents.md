@@ -74,8 +74,7 @@ end
 
 Supported class macros:
 
-These macros use the same arguments you already know from `RubyLLM.chat(...)` and `Chat#with_*` methods.
-For example, `model` maps to `RubyLLM.chat(model:, provider:, ...)`, `tools` maps to `with_tools`, `tool_options` maps to `with_tool_options`, `instructions` maps to `with_instructions`, and so on.
+These macros use the same arguments you already know from `RubyLLM.chat(...)` and `Chat#with_*` methods. For example, `model` maps to `RubyLLM.chat(model:, provider:, ...)`, `tools` maps to `with_tools`, `tool_options` maps to `with_tool_options`, `instructions` maps to `with_instructions`, and so on.
 
 * `model`, and its `provider:` and `protocol:` options (see [Chat]({% link _core_features/chat.md %}) and [Advanced Request Control]({% link _core_features/chat-request-control.md %}#choosing-the-wire-protocol))
 * `tools` (see [Tools]({% link _core_features/tools.md %}))
@@ -182,8 +181,7 @@ This works for both `WorkAssistant.chat` and Rails-backed agents configured with
 
 ## Configuration Contexts
 
-Use a configuration context to give an agent its own credentials, endpoint, or
-connection settings without changing global configuration.
+Use a configuration context to give an agent its own credentials, endpoint, or connection settings without changing global configuration.
 
 You can define a context elsewhere in your application and pass it to the agent:
 
@@ -214,13 +212,9 @@ class SupportAgent < RubyLLM::Agent
 end
 ```
 
-The block runs when the agent class is defined and receives a copy of the global
-configuration. Pass either a context object or a block. Both forms work with
-`SupportAgent.chat` and Rails-backed agents configured with `chat_model`.
-Call `SupportAgent.context` to read the configured context.
+The block runs when the agent class is defined and receives a copy of the global configuration. Pass either a context object or a block. Both forms work with `SupportAgent.chat` and Rails-backed agents configured with `chat_model`. Call `SupportAgent.context` to read the configured context.
 
-See [Contexts: Isolated Configurations]({% link _getting_started/configuration-connection.md %}#contexts-isolated-configurations)
-for more configuration examples.
+See [Contexts: Isolated Configurations]({% link _getting_started/configuration-connection.md %}#contexts-isolated-configurations) for more configuration examples.
 
 ## Runtime Context and Inputs
 
@@ -242,10 +236,7 @@ Most runtime blocks can use `chat` in their execution context:
 * In `.chat` mode, `chat` is a `RubyLLM::Chat`
 * In `.create/.create!/.find` mode, `chat` is your `chat_model` record
 
-The `model` block runs before the chat exists, so it can read `inputs` but not
-`chat`. A deferred `context` block follows the same timing in plain Ruby, so
-`chat` is `nil` there. In Rails mode, the context block runs while the
-`chat_model` record is being configured, so `chat` is available.
+The `model` block runs before the chat exists, so it can read `inputs` but not `chat`. A deferred `context` block follows the same timing in plain Ruby, so `chat` is `nil` there. In Rails mode, the context block runs while the `chat_model` record is being configured, so `chat` is available.
 
 This enables Rails-style usage:
 
@@ -381,12 +372,9 @@ response.cost.total
 agent.cost.total
 ```
 
-Agent instances delegate the conversation API from `RubyLLM::Chat` to the wrapped chat object.
-Direct transcript replacement with `messages=` stays on the wrapped chat because Rails-backed chat
-models own their message association.
+Agent instances delegate the conversation API from `RubyLLM::Chat` to the wrapped chat object. Direct transcript replacement with `messages=` stays on the wrapped chat because Rails-backed chat models own their message association.
 
-Agents delegate the `with_*` setters and their readers, the callbacks, and the conversation methods such as `ask`, `complete`, `step`, `approve`, and `cancel`.
-The [Agent API reference]({{ '/api/RubyLLM/Agent.html' | relative_url }}) lists every delegated method, and each one behaves as documented on [Chat]({{ '/api/RubyLLM/Chat.html' | relative_url }}).
+Agents delegate the `with_*` setters and their readers, the callbacks, and the conversation methods such as `ask`, `complete`, `step`, `approve`, and `cancel`. The [Agent API reference]({{ '/api/RubyLLM/Agent.html' | relative_url }}) lists every delegated method, and each one behaves as documented on [Chat]({{ '/api/RubyLLM/Chat.html' | relative_url }}).
 
 You can always access the wrapped chat object directly via `agent.chat`.
 
@@ -476,6 +464,7 @@ Instruction persistence contract in Rails mode:
 * `sync_instructions` explicitly persists the current agent instructions
 
 ### Using an Existing Chat Record
+
 If you already have a `Chat` record, pass it to `Agent.new(chat:)` instead of calling `Agent.find`. This applies all agent configuration (instructions, tools, etc.) without an extra database query:
 
 ```ruby

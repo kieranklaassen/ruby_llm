@@ -98,7 +98,7 @@ The default sandbox should be the smallest one that does the job. When the code 
 chat.with_code_execution(sandbox: ReadOnlySandbox, escalate_to: [WorkspaceSandbox, OnlineSandbox])
 chat.ask "Add a changelog entry for the new export feature"
 
-chat.pending_approvals.first.arguments # => {"code"=>"...", "sandbox"=>"workspace", "reason"=>"Edit CHANGELOG.md"}
+chat.pending_approvals.first.arguments # => {"code" => "...", "sandbox" => "workspace", "reason" => "Edit CHANGELOG.md"}
 chat.approve(chat.pending_approvals.first)
 chat.complete
 ```

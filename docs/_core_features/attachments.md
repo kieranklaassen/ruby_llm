@@ -235,11 +235,11 @@ response = chat.ask "Analyze these files", with: [
 
 **Recognized file types:**
 
-- **Images:** .jpg, .jpeg, .png, .gif, .webp, .bmp
-- **Videos:** .mp4, .mov, .avi, .webm
-- **Audio:** .mp3, .wav, .m4a, .ogg, .flac
-- **Documents:** .pdf, .txt, .md, .csv, .json, .xml
-- **Code:** .rb, .py, .js, .html, .css (and many others)
+* **Images:** .jpg, .jpeg, .png, .gif, .webp, .bmp
+* **Videos:** .mp4, .mov, .avi, .webm
+* **Audio:** .mp3, .wav, .m4a, .ogg, .flac
+* **Documents:** .pdf, .txt, .md, .csv, .json, .xml
+* **Code:** .rb, .py, .js, .html, .css (and many others)
 
 ## Next Steps
 

@@ -22,7 +22,7 @@ The default persistence flow is built for real-time UIs. Because RubyLLM creates
 
 ## Instant User Messages
 
-Show user messages immediately for better UX:
+Show user messages immediately:
 
 ```ruby
 # app/controllers/messages_controller.rb
@@ -255,9 +255,9 @@ Wrap the other role partials the same way.
 Action Cable uses concurrent processing by design for performance.
 
 For strict ordering requirements, consider:
-- Server-sent events (SSE) for unidirectional streaming
-- WebSocket libraries with ordered stream support like [Lively](https://github.com/socketry/lively/tree/main/examples/chatbot)
-- AnyCable for server-side ordering guarantees
+* Server-sent events (SSE) for unidirectional streaming
+* WebSocket libraries with ordered stream support like [Lively](https://github.com/socketry/lively/tree/main/examples/chatbot)
+* AnyCable for server-side ordering guarantees
 
 The async Ruby stack (Falcon + async-cable) may improve behavior but doesn't guarantee ordering.
 {: .note }

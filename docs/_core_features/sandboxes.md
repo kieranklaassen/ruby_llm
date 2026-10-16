@@ -109,7 +109,7 @@ chat.ask "Add a changelog entry for the new export feature"
 
 call = chat.pending_approvals.first
 call.arguments
-# => {"language"=>"shell", "code"=>"...", "sandbox"=>"workspace", "reason"=>"Edit CHANGELOG.md in the project"}
+# => {"language" => "shell", "code" => "...", "sandbox" => "workspace", "reason" => "Edit CHANGELOG.md in the project"}
 chat.tools[:run_code].summary(call.arguments["sandbox"])
 # => "Starts in /srv/app/storage/workspace. Can change /srv/app/storage/workspace. No network access. Stops after 300 seconds."
 

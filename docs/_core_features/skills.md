@@ -99,7 +99,7 @@ The model gets one tool, `load_skill`. Called with a skill's name, it returns th
 chat.ask "Bill order 1042 to ACME"
 
 chat.messages.select(&:tool_call?).flat_map { |message| message.tool_calls.values.map(&:arguments) }
-# => [{"skill"=>"invoices"}, {"skill"=>"invoices", "file"=>"references/TAX_RULES.md"}]
+# => [{"skill" => "invoices"}, {"skill" => "invoices", "file" => "references/TAX_RULES.md"}]
 ```
 
 What the model loads stays in the conversation as tool results, so it does not need to load a skill again on the next turn.

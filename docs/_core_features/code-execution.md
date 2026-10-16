@@ -110,7 +110,7 @@ chat.with_code_execution(mounts: { "templates" => Rails.root.join("app/templates
 chat.ask "Write the quarterly report using templates/report.docx"
 ```
 
-The code reads `templates/report.docx` but cannot change it, and the model's tool description lists the mounted folders. The keys are relative paths inside the run directory. `attachments/` and `skills/` are taken, and paths that leave the run directory raise ArgumentError.
+The code reads `templates/report.docx` but cannot change it, and the model's tool description lists the mounted folders. The keys are relative paths inside the run directory. `attachments/` and `skills/` are taken, and paths that leave the run directory raise `ArgumentError`.
 
 When the folders depend on who is asking, pass a lambda. RubyLLM calls it before each run, and an empty Hash mounts nothing:
 

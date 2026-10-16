@@ -306,8 +306,7 @@ Handlers cover the agent's chat operations, run on the agent instance, and follo
 
 ## Automatic Retries
 
-RubyLLM automatically retries requests that fail due to transient network or server issues using Faraday's retry middleware.
-Retries are driven by error classification (exception types), not raw HTTP status codes alone.
+RubyLLM automatically retries requests that fail due to transient network or server issues using Faraday's retry middleware. Retries are driven by error classification (exception types), not raw HTTP status codes alone.
 
 Retries are attempted for:
 

@@ -190,9 +190,7 @@ search_tool = DatabaseSearch.new(MyDatabase)
 chat.with_tools(search_tool)
 ```
 
-Use custom initialization for dependencies and runtime state. If two tools need
-different names, descriptions, or inputs, define separate tool classes so the
-parameter schema and `execute` signature stay together.
+Use custom initialization for dependencies and runtime state. If two tools need different names, descriptions, or inputs, define separate tool classes so the parameter schema and `execute` signature stay together.
 
 ## Advanced Tool Metadata
 
