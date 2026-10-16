@@ -144,11 +144,56 @@ module RubyLLM
     end
   end
 
+  # Raised for HTTP 401 responses when the API key is missing or invalid.
+  class UnauthorizedError < Error
+    def self.default_message # :nodoc:
+      'Invalid API key. Check your credentials.'
+    end
+  end
+
+  # Raised for HTTP 402 responses when the provider account has a billing
+  # or quota problem.
+  class PaymentRequiredError < Error
+    def self.default_message # :nodoc:
+      'Payment required. Top up your account.'
+    end
+  end
+
   # Raised for HTTP 403 responses when the API key lacks permission for the
   # requested resource.
   class ForbiddenError < Error
     def self.default_message # :nodoc:
       'Forbidden. You do not have permission to access this resource.'
+    end
+  end
+
+  # Raised for HTTP 429 responses when the provider rate limit is exceeded.
+  class RateLimitError < Error
+    def self.default_message # :nodoc:
+      'Rate limit exceeded. Wait a moment and retry.'
+    end
+  end
+
+  # Raised for HTTP 500 responses when the provider reports a server error.
+  class ServerError < Error
+    def self.default_message # :nodoc:
+      'API server error. Try again.'
+    end
+  end
+
+  # Raised for HTTP 502, 503, and 504 responses when the provider is
+  # temporarily unavailable.
+  class ServiceUnavailableError < Error
+    def self.default_message # :nodoc:
+      'API server unavailable. Try again later.'
+    end
+  end
+
+  # Raised for HTTP 529 responses when the provider is temporarily
+  # overloaded.
+  class OverloadedError < Error
+    def self.default_message # :nodoc:
+      'Service overloaded. Try again later.'
     end
   end
 
@@ -183,49 +228,4 @@ module RubyLLM
   # such as +SAFETY+. Chat responses report a block through
   # Message#content_filtered? instead of raising.
   class ContentFilterError < Error; end
-
-  # Raised for HTTP 529 responses when the provider is temporarily
-  # overloaded.
-  class OverloadedError < Error
-    def self.default_message # :nodoc:
-      'Service overloaded. Try again later.'
-    end
-  end
-
-  # Raised for HTTP 402 responses when the provider account has a billing
-  # or quota problem.
-  class PaymentRequiredError < Error
-    def self.default_message # :nodoc:
-      'Payment required. Top up your account.'
-    end
-  end
-
-  # Raised for HTTP 429 responses when the provider rate limit is exceeded.
-  class RateLimitError < Error
-    def self.default_message # :nodoc:
-      'Rate limit exceeded. Wait a moment and retry.'
-    end
-  end
-
-  # Raised for HTTP 500 responses when the provider reports a server error.
-  class ServerError < Error
-    def self.default_message # :nodoc:
-      'API server error. Try again.'
-    end
-  end
-
-  # Raised for HTTP 502, 503, and 504 responses when the provider is
-  # temporarily unavailable.
-  class ServiceUnavailableError < Error
-    def self.default_message # :nodoc:
-      'API server unavailable. Try again later.'
-    end
-  end
-
-  # Raised for HTTP 401 responses when the API key is missing or invalid.
-  class UnauthorizedError < Error
-    def self.default_message # :nodoc:
-      'Invalid API key. Check your credentials.'
-    end
-  end
 end
