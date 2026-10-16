@@ -15,11 +15,11 @@ redirect_from:
 
 After reading this guide, you will know:
 
-* How to enable document citations with `with_citations`
-* How to make tool results citable with `RubyLLM::SearchResults`
-* How to read normalized citations from responses and streams
-* Which citation fields your application can use
-* How to persist citations with ActiveRecord
+* How to enable document citations with `with_citations`.
+* How to make tool results citable with `RubyLLM::SearchResults`.
+* How to read normalized citations from responses and streams.
+* Which citation fields your application can use.
+* How to persist citations with ActiveRecord.
 
 ## What are Citations?
 

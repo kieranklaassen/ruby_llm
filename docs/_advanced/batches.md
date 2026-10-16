@@ -12,12 +12,12 @@ description: Process chats and embeddings in batches, then collect their results
 
 After reading this guide, you will know:
 
-* How to stage questions with `ask_later`
-* How to submit chats as a batch with `RubyLLM.batch`
-* How to check on a batch and collect its messages, from any process
-* How to handle tool calls in batched conversations
-* How to batch embeddings with `embed_later`
-* How to persist batch results with Active Record
+* How to stage questions with `ask_later`.
+* How to submit chats as a batch with `RubyLLM.batch`.
+* How to check on a batch and collect its messages, from any process.
+* How to handle tool calls in batched conversations.
+* How to batch embeddings with `embed_later`.
+* How to persist batch results with Active Record.
 
 ## What Are Batches?
 

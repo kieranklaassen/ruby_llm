@@ -16,10 +16,10 @@ redirect_from:
 
 After reading this guide, you will know:
 
-* How to control extended thinking with `with_thinking`
-* How effort and budget are sent to providers
-* How to access thinking output in responses and streams
-* How to persist thinking data with ActiveRecord
+* How to control extended thinking with `with_thinking`.
+* How effort and budget are sent to providers.
+* How to access thinking output in responses and streams.
+* How to persist thinking data with ActiveRecord.
 
 ## What is Extended Thinking?
 

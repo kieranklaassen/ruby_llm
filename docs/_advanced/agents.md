@@ -13,12 +13,12 @@ description: Give agents instructions, tools, and schemas in a Ruby class, then 
 
 After reading this guide, you will know:
 
-* How to define agents with a class-based DSL
-* How to use agents with plain Ruby chats and Rails-backed chats
-* How runtime context works (`chat`, `inputs`, and lazy evaluation)
-* How prompt conventions work in `app/prompts`
-* Which methods are available on agent instances
-* How to handle errors for a whole agent with `rescue_from`
+* How to define agents with a class-based DSL.
+* How to use agents with plain Ruby chats and Rails-backed chats.
+* How runtime context works (`chat`, `inputs`, and lazy evaluation).
+* How prompt conventions work in `app/prompts`.
+* Which methods are available on agent instances.
+* How to handle errors for a whole agent with `rescue_from`.
 
 ## What Are Agents?
 
