@@ -22,7 +22,7 @@ After reading this guide, you will know:
 
 RubyLLM separates service configuration from API formats. A **provider** knows *where* to talk and *who* you are: its host, its authentication headers, the configuration it needs, and its model catalog. A **protocol** knows *how* to talk to a family of APIs: rendering request payloads, parsing responses, streaming chunks, and naming the endpoints involved.
 
-The same protocol can serve several providers, and one provider can offer several protocols. One wire format serves many hosts - the OpenAI Chat Completions dialect is reused by Ollama, Perplexity, and DeepSeek, each with its own host and auth. One host can serve many wire formats - Vertex AI is a single provider that speaks Gemini, Anthropic, Mistral, and Chat Completions, picking one per model.
+The same protocol can serve several providers, and one provider can offer several protocols. One wire format serves many hosts: the OpenAI Chat Completions dialect is reused by Ollama, Perplexity, and DeepSeek, each with its own host and auth. One host can serve many wire formats: Vertex AI is a single provider that speaks Gemini, Anthropic, Mistral, and Chat Completions, picking one per model.
 
 So before you write anything, decide which case you are in:
 
@@ -89,11 +89,11 @@ module RubyLLM
 end
 ```
 
-That is the real shape of a RubyLLM provider - DeepSeek, Perplexity, and Mistral are all variations on it. Each piece earns its place:
+That is the real shape of a RubyLLM provider. DeepSeek, Perplexity, and Mistral are all variations on it. Each piece earns its place:
 
 * **`protocol :chat_completions, ChatCompletions`** registers a named protocol. The first protocol you declare becomes the provider's default. Here you subclass the built-in `Protocols::ChatCompletions` so you can later override wire-format seams; if the service is a perfect match you can register `Protocols::ChatCompletions` directly.
 * **`api_base`** is the host. RubyLLM hands it straight to Faraday, so a relative endpoint path like `chat/completions` is resolved against it. Reading `@config.acme_api_base` first lets users point at a proxy or self-hosted instance, with a default for the public API.
-* **`headers`** supplies authentication. The base returns `{}`, so this is optional - but nearly every remote service needs it. The hash is merged into every request.
+* **`headers`** supplies authentication. The base returns `{}`, so this is optional, but nearly every remote service needs it. The hash is merged into every request.
 * **`models_url`** names the model-listing endpoint. Change it when the provider does not expose models at `/models`.
 * **`configuration_options`** lists the config keys your provider contributes. **`configuration_requirements`** is the subset that must be present before the provider is usable.
 
@@ -130,7 +130,7 @@ Ollama mixes in a few small modules to adjust its dialect. That is the bridge to
 
 ## Writing a Protocol
 
-When a service's payloads, response shapes, or endpoints differ from anything RubyLLM ships, you write a protocol. A protocol is a subclass of `RubyLLM::Protocol`, but you rarely fill it in from scratch: the base class defines the orchestration - `complete` renders a payload then dispatches to `sync_response` or `stream_response` - and calls out to a set of seam methods that you supply.
+When a service's payloads, response shapes, or endpoints differ from anything RubyLLM ships, you write a protocol. A protocol is a subclass of `RubyLLM::Protocol`, but you rarely fill it in from scratch: the base class defines the orchestration (`complete` renders a payload then dispatches to `sync_response` or `stream_response`) and calls out to a set of seam methods that you supply.
 
 For the Chat Completions family, the seams you override most often are:
 
@@ -194,7 +194,7 @@ end
 
 For a genuinely new wire format (not a Chat Completions variant), subclass `RubyLLM::Protocol` directly and implement the seams the base operations call - `render_payload`, `completion_url`, `parse_completion_body`, and, for streaming, `stream_url` and `build_chunk`. Study `RubyLLM::Protocols::Anthropic` and `RubyLLM::Protocols::Gemini` as worked examples of non-OpenAI dialects.
 
-> A protocol instance is constructed against a live provider with `protocol_class.new(provider, model)`. Inside a protocol you have `provider`, `config`, `connection`, and `model` available - the protocol borrows the provider's Faraday connection, so you never build HTTP yourself.
+> A protocol instance is constructed against a live provider with `protocol_class.new(provider, model)`. Inside a protocol you have `provider`, `config`, `connection`, and `model` available. The protocol borrows the provider's Faraday connection, so you never build HTTP yourself.
 {: .note }
 
 ### Declaring Multiple Protocols
