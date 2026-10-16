@@ -20,7 +20,7 @@ module RubyLLM
 
         def download(file_id)
           file = find(file_id)
-          download_uri = file.metadata['downloadUri']
+          download_uri = file.raw['downloadUri']
           raise Error, 'gemini file has no download URI' unless download_uri
 
           gemini_connection(request_json: false, response_json: false).get(download_uri) do |request|

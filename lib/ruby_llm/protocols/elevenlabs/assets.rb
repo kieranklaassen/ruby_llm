@@ -7,7 +7,7 @@ module RubyLLM
       class Assets < Protocols::Files
         def download(file_id)
           file = find(file_id)
-          url = file.metadata['content_url']
+          url = file.raw['content_url']
           raise Error, 'ElevenLabs asset is still processing; retrieve it again before downloading' unless url
 
           Transport::Connection.basic(@config).get(url).body

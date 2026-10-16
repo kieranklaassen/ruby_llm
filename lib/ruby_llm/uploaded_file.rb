@@ -52,7 +52,12 @@ module RubyLLM
     attr_reader :downloadable
 
     # The raw provider response data for the file, as a Hash.
-    attr_reader :metadata
+    attr_reader :raw
+
+    def metadata # :nodoc:
+      RubyLLM.deprecator.deprecate('UploadedFile#metadata', replacement: 'UploadedFile#raw', removal: '3.0')
+      raw
+    end
 
     def initialize(id:, **attributes) # :nodoc:
       @id = id
@@ -66,7 +71,7 @@ module RubyLLM
       @purpose = attributes[:purpose]
       @uri = attributes[:uri]
       @downloadable = attributes[:downloadable]
-      @metadata = attributes[:metadata] || {}
+      @raw = attributes[:raw] || {}
     end
 
     EXPIRY_MARGIN = 60 # :nodoc:

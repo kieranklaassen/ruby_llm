@@ -244,6 +244,22 @@ job.status # => :succeeded
 
 A provider gem that implements `parse_video_job_status` returns `status: :succeeded` for a finished video.
 
+## Uploaded Files and Caches Keep the Provider Response in `raw`
+
+`UploadedFile` and `CachedContent` now expose the provider's response as `raw`, the name every other result uses. `metadata` still works and logs a deprecation warning. It is removed in 3.0:
+
+```ruby
+# 2.1
+file.metadata["downloadUri"]
+cache.metadata["usageMetadata"]
+
+# 2.2
+file.raw["downloadUri"]
+cache.raw["usageMetadata"]
+```
+
+The `metadata:` keyword on operations such as `RubyLLM.embed` is unrelated. It still carries your instrumentation payload.
+
 ## Deploy Without Mixing Versions
 
 Workers on 2.1 do not claim chats, so they can still overlap with workers on 2.2 while a deploy rolls out. Run the schema upgrade first, then let the new version replace every worker before you rely on claims. Chats that run once all workers are on 2.2 are covered.

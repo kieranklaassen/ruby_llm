@@ -38,6 +38,8 @@ file.byte_size  # => 1234
 file.mime_type  # => "application/jsonl"
 ```
 
+`file.raw` holds the provider's response as a Hash when you need a field RubyLLM does not name.
+
 When `provider:` is omitted, RubyLLM uses the provider of `config.default_model`. Select another provider explicitly:
 
 ```ruby

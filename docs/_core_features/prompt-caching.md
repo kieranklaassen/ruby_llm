@@ -138,6 +138,8 @@ cache.tokens     # => 7809
 cache.expires_at # => 2026-08-11 12:34:56 UTC
 ```
 
+`cache.raw` holds the provider's response as a Hash when you need a field RubyLLM does not name.
+
 Pass file attachments with `with:`, the same way `ask` accepts them:
 
 ```ruby

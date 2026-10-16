@@ -252,7 +252,7 @@ RSpec.describe RubyLLM::Protocols::Files do
 
     it 'refuses to download a file with no download URI' do
       allow(protocol).to receive(:find).and_return(
-        RubyLLM::UploadedFile.new(id: 'files/abc', provider: 'gemini', metadata: {})
+        RubyLLM::UploadedFile.new(id: 'files/abc', provider: 'gemini', raw: {})
       )
 
       expect { protocol.download('files/abc') }.to raise_error(RubyLLM::Error, 'gemini file has no download URI')
@@ -261,7 +261,7 @@ RSpec.describe RubyLLM::Protocols::Files do
     it 'downloads JSON files without parsing their contents' do
       allow(protocol).to receive(:find).and_return(
         RubyLLM::UploadedFile.new(
-          id: 'files/abc', provider: 'gemini', metadata: { 'downloadUri' => 'https://files.example/abc' }
+          id: 'files/abc', provider: 'gemini', raw: { 'downloadUri' => 'https://files.example/abc' }
         )
       )
       body = "{\"content\":\"Hello\"}\n"

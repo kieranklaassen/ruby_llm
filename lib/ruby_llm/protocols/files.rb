@@ -98,7 +98,7 @@ module RubyLLM
       end
 
       def uploaded_file(data, **attributes)
-        UploadedFile.new(**attributes, provider: @provider.slug, metadata: data)
+        UploadedFile.new(**attributes, provider: @provider.slug, raw: data)
       end
 
       def with_file_body(attachment, &)

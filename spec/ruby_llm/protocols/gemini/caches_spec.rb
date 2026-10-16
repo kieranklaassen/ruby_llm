@@ -83,7 +83,7 @@ RSpec.describe RubyLLM::Protocols::Gemini::Caches do
       expect(cache.created_at).to eq(Time.iso8601('2026-08-11T10:00:00Z'))
       expect(cache.expires_at).to eq(Time.iso8601('2026-08-11T11:00:00Z'))
       expect(cache.tokens).to eq(7809)
-      expect(cache.metadata).to eq(data)
+      expect(cache.raw).to eq(data)
     end
   end
 

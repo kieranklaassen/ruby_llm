@@ -37,7 +37,7 @@ module RubyLLM
             created_at: (Time.iso8601(data['createTime']) if data['createTime']),
             expires_at: (Time.iso8601(data['expireTime']) if data['expireTime']),
             tokens: data.dig('usageMetadata', 'totalTokenCount'),
-            metadata: data
+            raw: data
           )
         end
 

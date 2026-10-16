@@ -37,7 +37,12 @@ module RubyLLM
     attr_reader :tokens
 
     # The raw provider response data for the cache, as a Hash.
-    attr_reader :metadata
+    attr_reader :raw
+
+    def metadata # :nodoc:
+      RubyLLM.deprecator.deprecate('CachedContent#metadata', replacement: 'CachedContent#raw', removal: '3.0')
+      raw
+    end
 
     def initialize(name:, **attributes) # :nodoc:
       @name = name
@@ -47,7 +52,7 @@ module RubyLLM
       @created_at = attributes[:created_at]
       @expires_at = attributes[:expires_at]
       @tokens = attributes[:tokens]
-      @metadata = attributes[:metadata] || {}
+      @raw = attributes[:raw] || {}
     end
 
     # Deletes the cache resource from the provider. Returns +self+.
@@ -65,7 +70,7 @@ module RubyLLM
     def renew(ttl:)
       refreshed = @provider_instance.extend_cache(name, ttl: ttl)
       @expires_at = refreshed.expires_at
-      @metadata = refreshed.metadata
+      @raw = refreshed.raw
       self
     end
 
