@@ -13,7 +13,7 @@
 ## Scope check
 
 - [ ] I read the [Contributing Guide](https://github.com/crmne/ruby_llm/blob/main/CONTRIBUTING.md)
-- [ ] This aligns with RubyLLM's focus on **LLM communication**
+- [ ] This can't be built with what RubyLLM already offers
 - [ ] This isn't application-specific logic that belongs in user code
 - [ ] This benefits most users, not just my specific use case
 
