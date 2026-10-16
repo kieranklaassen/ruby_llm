@@ -190,7 +190,7 @@ end
 
 Calls to the shared modules change the same way, so `Protocols::ChatCompletions::Media.format_content` becomes `Protocols::ChatCompletions::Media.render_content`.
 
-A few methods keep their names: `format_cache_option_keys`, `extract_citations` in Chat Completions, and `extract_tool_calls` in the Anthropic, Cohere, and Converse streams.
+A few methods keep their names: `extract_citations` in Chat Completions, and `extract_tool_calls` in the Anthropic, Cohere, and Converse streams. `format_cache_option_keys` is gone from every protocol; call `RubyLLM::Support::Utils.option_list` in its place.
 
 ## Research Jobs Report Their Provider as a String
 

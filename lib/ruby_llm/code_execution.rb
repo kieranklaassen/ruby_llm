@@ -143,17 +143,13 @@ module RubyLLM
         unknown = options.keys - OPTIONS
         if unknown.any?
           raise ArgumentError,
-                "code execution accepts #{option_keys(OPTIONS)}, got #{option_keys(unknown)}"
+                "code execution accepts #{Support::Utils.option_list(OPTIONS)}, got #{Support::Utils.option_list(unknown)}"
         end
         raise ArgumentError, 'code execution options cannot be nil' if options.value?(nil)
 
         validate_packages(options)
         escalations(options[:escalate_to]) if options.key?(:escalate_to)
         validate_mounts(options[:mounts]) if options.key?(:mounts)
-      end
-
-      def option_keys(keys)
-        keys.map { |key| ":#{key}" }.join(', ')
       end
 
       def validate_packages(options)

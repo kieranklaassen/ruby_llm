@@ -233,13 +233,13 @@ protocols.method_names.matching(/\A(serialize|deserialize|to_wire|from_wire)_/)
 
 # format_* and extract_* are the same two jobs under older names, in protocols
 # and in the provider dialects that override them. The exceptions do neither
-# job (they word an error, resolve a speech format, or guess from a model id)
-# or would collide with a parse_* of another meaning in the same class.
+# job (they resolve a speech format or guess from a model id) or would collide
+# with a parse_* of another meaning in the same class.
 protocols.method_names.matching(/\A(format|extract)_/)
-         .forbidden(except: %i[format_cache_option_keys format_for extract_tool_calls extract_citations],
+         .forbidden(except: %i[format_for extract_tool_calls extract_citations],
                     because: 'serialize with render_*, deserialize with parse_*')
 providers.method_names.matching(/\A(format|extract)_/)
-         .forbidden(except: %i[format_cache_option_keys extract_capabilities],
+         .forbidden(except: %i[extract_capabilities],
                     because: 'serialize with render_*, deserialize with parse_*')
 
 # Protocols render and parse provider wire formats. They may create domain

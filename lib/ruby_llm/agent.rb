@@ -706,11 +706,7 @@ module RubyLLM
         unsupported = options.keys - supported
         return if unsupported.empty?
 
-        raise ArgumentError, "#{name} accepts #{option_keys(supported)}, got #{option_keys(unsupported)}"
-      end
-
-      def option_keys(keys)
-        keys.map { |key| ":#{key}" }.join(', ')
+        raise ArgumentError, "#{name} accepts #{Support::Utils.option_list(supported)}, got #{Support::Utils.option_list(unsupported)}"
       end
 
       def rescue_handler_key(exception_class)

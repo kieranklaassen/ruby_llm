@@ -308,11 +308,7 @@ module RubyLLM
           return options if unsupported.empty?
 
           raise ArgumentError,
-                "Bedrock Converse prompt caching accepts :ttl, got #{format_cache_option_keys(unsupported)}"
-        end
-
-        def format_cache_option_keys(keys)
-          keys.map { |key| ":#{key}" }.join(', ')
+                "Bedrock Converse prompt caching accepts :ttl, got #{Support::Utils.option_list(unsupported)}"
         end
 
         def render_inference_config(_model, temperature, max_output_tokens = nil)

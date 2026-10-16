@@ -39,11 +39,7 @@ module RubyLLM
           unsupported = options.keys - PROMPT_CACHE_OPTIONS
           return options if unsupported.empty?
 
-          raise ArgumentError, "Mistral prompt caching accepts :key, got #{format_cache_option_keys(unsupported)}"
-        end
-
-        def format_cache_option_keys(keys)
-          keys.map { |key| ":#{key}" }.join(', ')
+          raise ArgumentError, "Mistral prompt caching accepts :key, got #{Support::Utils.option_list(unsupported)}"
         end
 
         # extra_content carries Gemini's thought signatures on Google's

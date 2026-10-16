@@ -711,8 +711,8 @@ module RubyLLM
       raise ArgumentError, 'thinking options cannot be nil; pass false to disable' if options.value?(nil)
       if (unsupported = options.keys - THINKING_OPTIONS).any?
         raise ArgumentError,
-              "with_thinking accepts #{format_option_keys(THINKING_OPTIONS)}, " \
-              "got #{format_option_keys(unsupported)}"
+              "with_thinking accepts #{Support::Utils.option_list(THINKING_OPTIONS)}, " \
+              "got #{Support::Utils.option_list(unsupported)}"
       end
 
       @thinking = if enabled
@@ -1250,13 +1250,9 @@ module RubyLLM
       return compaction.freeze if unsupported.empty?
 
       raise ArgumentError,
-            "with_compaction accepts #{format_option_keys(COMPACTION_OPTIONS)}, " \
-            "got #{format_option_keys(unsupported)}. Provider-specific settings " \
+            "with_compaction accepts #{Support::Utils.option_list(COMPACTION_OPTIONS)}, " \
+            "got #{Support::Utils.option_list(unsupported)}. Provider-specific settings " \
             'go through with_provider_options.'
-    end
-
-    def format_option_keys(keys)
-      keys.map { |key| ":#{key}" }.join(', ')
     end
 
     def message_list(new_messages)

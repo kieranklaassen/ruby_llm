@@ -298,11 +298,7 @@ module RubyLLM
 
           raise ArgumentError,
                 'Chat Completions prompt caching accepts :key, :ttl, and :mode, ' \
-                "got #{format_cache_option_keys(unsupported)}"
-        end
-
-        def format_cache_option_keys(keys)
-          keys.map { |key| ":#{key}" }.join(', ')
+                "got #{Support::Utils.option_list(unsupported)}"
         end
 
         def render_messages(messages, caching: nil)

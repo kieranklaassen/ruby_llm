@@ -139,11 +139,7 @@ module RubyLLM
           return options if unsupported.empty?
 
           raise ArgumentError,
-                "OpenRouter prompt caching accepts :ttl, got #{format_cache_option_keys(unsupported)}"
-        end
-
-        def format_cache_option_keys(keys)
-          keys.map { |key| ":#{key}" }.join(', ')
+                "OpenRouter prompt caching accepts :ttl, got #{Support::Utils.option_list(unsupported)}"
         end
 
         def openai_prompt_caching?
