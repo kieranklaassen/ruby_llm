@@ -29,7 +29,7 @@ RSpec.describe RubyLLM::Protocols::DeepSeek::Files do
   it 'reports that stored images cannot be downloaded' do
     file = protocol.send(:parse_file_response, { 'id' => 'file-api-image', 'filename' => 'ruby.png', 'bytes' => 10 })
 
-    expect(file.downloadable).to be(false)
+    expect(file.downloadable?).to be(false)
     expect { protocol.download(file.id) }.to raise_error(RubyLLM::Error, /does not support downloading/)
   end
 

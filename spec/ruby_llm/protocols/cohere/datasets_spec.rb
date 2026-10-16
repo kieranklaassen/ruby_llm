@@ -37,7 +37,7 @@ RSpec.describe RubyLLM::Protocols::Cohere::Datasets do
     file = context.upload(StringIO.new(content), filename: 'input.jsonl', purpose: 'embed-input', provider: :cohere)
 
     expect(file).to have_attributes(id: 'dataset_ruby', purpose: 'embed-input', filename: 'input.jsonl',
-                                    mime_type: 'application/jsonl', downloadable: true)
+                                    mime_type: 'application/jsonl', downloadable?: true)
     expect(context.download(file.id, provider: :cohere)).to eq(content)
     expect(request).to have_been_requested.once
     expect(download).to have_been_requested.once

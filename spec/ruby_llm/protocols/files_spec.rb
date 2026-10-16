@@ -136,7 +136,7 @@ RSpec.describe RubyLLM::Protocols::Files do
         filename: 'document.pdf',
         byte_size: 1024,
         mime_type: 'application/pdf',
-        downloadable: false
+        downloadable?: false
       )
     end
   end
@@ -171,7 +171,7 @@ RSpec.describe RubyLLM::Protocols::Files do
         mime_type: 'application/pdf',
         byte_size: 1024,
         created_at: Time.iso8601('2025-01-01T00:00:00Z'),
-        downloadable: false
+        downloadable?: false
       )
     end
   end

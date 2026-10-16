@@ -260,6 +260,18 @@ cache.raw["usageMetadata"]
 
 The `metadata:` keyword on operations such as `RubyLLM.embed` is unrelated. It still carries your instrumentation payload.
 
+## Ask an Uploaded File With `downloadable?`
+
+`UploadedFile#downloadable?` replaces `downloadable`, so the predicate reads like `expired?` beside it. `downloadable` still works and logs a deprecation warning. It is removed in 3.0:
+
+```ruby
+# 2.1
+RubyLLM.download(file.id, provider: file.provider) if file.downloadable
+
+# 2.2
+RubyLLM.download(file.id, provider: file.provider) if file.downloadable?
+```
+
 ## Deploy Without Mixing Versions
 
 Workers on 2.1 do not claim chats, so they can still overlap with workers on 2.2 while a deploy rolls out. Run the schema upgrade first, then let the new version replace every worker before you rely on claims. Chats that run once all workers are on 2.2 are covered.
