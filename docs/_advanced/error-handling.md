@@ -296,7 +296,7 @@ class ApplicationAgent < RubyLLM::Agent
 end
 ```
 
-Handlers cover the agent's chat operations (`ask`, `say`, `ask_later`, `complete`, `generate`, `run_tools`, `step`), run on the agent instance, and follow `ActiveSupport::Rescuable` semantics. See [Handling Errors with `rescue_from`]({% link _advanced/agents.md %}#handling-errors-with-rescue_from).
+Handlers cover the agent's chat operations, run on the agent instance, and follow `ActiveSupport::Rescuable` semantics. See [Handling Errors with `rescue_from`]({% link _advanced/agents.md %}#handling-errors-with-rescue_from) for the operations they cover.
 
 ## Automatic Retries
 

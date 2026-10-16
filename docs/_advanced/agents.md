@@ -392,7 +392,7 @@ You can always access the wrapped chat object directly via `agent.chat`.
 
 ## Handling Errors with `rescue_from`
 
-`rescue_from` declares how an agent handles exceptions raised by its chat operations: `ask`, `say`, `ask_later`, `complete`, `generate`, `run_tools`, `step`, and `count_tokens`.
+`rescue_from` declares how an agent handles exceptions raised by its chat operations: `ask`, `say`, `ask_later`, `complete`, `generate`, `run_tools`, `step`, `count_tokens`, and `compact`.
 
 ```ruby
 class ApplicationAgent < RubyLLM::Agent
