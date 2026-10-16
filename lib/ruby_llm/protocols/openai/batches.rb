@@ -14,7 +14,7 @@ module RubyLLM
         private_constant :TERMINAL_STATUSES
 
         def create_batch(requests)
-          single_batch_model(requests, @provider.slug)
+          single_batch_model(requests, @provider.name)
           validate_batch_requests(requests)
 
           response = @connection.post(batch_create_url, {

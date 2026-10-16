@@ -158,14 +158,14 @@ RSpec.describe RubyLLM::Batch do
       it 'returns the one model the requests share' do
         requests = [{ model: model_for(:anthropic) }, { model: model_for(:anthropic) }]
 
-        expect(helpers.single_batch_model(requests, 'anthropic')).to eq(model_for(:anthropic))
+        expect(helpers.single_batch_model(requests, 'Anthropic')).to eq(model_for(:anthropic))
       end
 
       it 'refuses a batch that mixes models' do
         requests = [{ model: 'a' }, { model: 'b' }]
 
-        expect { helpers.single_batch_model(requests, 'anthropic') }.to raise_error(
-          ArgumentError, 'anthropic batches take one model per submission'
+        expect { helpers.single_batch_model(requests, 'Anthropic') }.to raise_error(
+          ArgumentError, 'Anthropic batches take one model per submission'
         )
       end
     end

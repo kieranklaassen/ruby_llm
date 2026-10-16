@@ -13,7 +13,7 @@ module RubyLLM
           private_constant :TERMINAL_STATUSES, :Response
 
           def create_batch(requests)
-            model = single_batch_model(requests, 'mistral')
+            model = single_batch_model(requests, 'Mistral')
             response = @connection.post('batch/jobs', {
                                           endpoint: mistral_batch_endpoint(requests),
                                           model: model,

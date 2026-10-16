@@ -20,7 +20,7 @@ module RubyLLM
         private_constant :TERMINAL
 
         def create_batch(requests)
-          model = single_batch_model(requests, 'vertexai')
+          model = single_batch_model(requests, 'Vertex AI')
           validate_batch_requests(requests)
           input_uri, output_uri = vertex_batch_storage_uris
           @provider.upload_file(
@@ -52,7 +52,7 @@ module RubyLLM
             status = parse_batch_status(job['state'], completed: TERMINAL.include?(job['state']))
             return [] if %i[failed cancelled].include?(status)
 
-            raise Error, 'vertexai batch has no GCS output URI yet'
+            raise Error, 'Vertex AI batch has no GCS output URI yet'
           end
 
           rows = @provider.list_file_uris(output_uri).grep(/\.jsonl\z/).flat_map do |uri|

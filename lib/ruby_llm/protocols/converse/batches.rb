@@ -27,7 +27,7 @@ module RubyLLM
           end
           return unless unsupported
 
-          raise Error, 'bedrock batch requests do not support tools or structured output'
+          raise Error, 'Bedrock batch requests do not support tools or structured output'
         end
 
         def parse_bedrock_outputs(outputs, **)

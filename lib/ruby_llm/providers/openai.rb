@@ -120,7 +120,7 @@ module RubyLLM
         return :responses if input
         return :chat_completions if payload.key?(:messages) || payload.key?('messages')
 
-        raise Error, 'openai batch requests only support chat, responses, or embedding payloads'
+        raise Error, "#{name} batch requests only support chat, responses, or embedding payloads"
       end
 
       # Responses payloads carry the conversation as an array of message hashes

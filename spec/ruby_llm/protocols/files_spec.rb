@@ -247,7 +247,7 @@ RSpec.describe RubyLLM::Protocols::Files do
         Struct.new(:headers, :body).new({}, {})
       end
 
-      expect { protocol.upload(fixture_path) }.to raise_error(RubyLLM::Error, 'gemini did not return an upload URL')
+      expect { protocol.upload(fixture_path) }.to raise_error(RubyLLM::Error, 'Gemini did not return an upload URL')
     end
 
     it 'refuses to download a file with no download URI' do
@@ -255,7 +255,7 @@ RSpec.describe RubyLLM::Protocols::Files do
         RubyLLM::UploadedFile.new(id: 'files/abc', provider: 'gemini', raw: {})
       )
 
-      expect { protocol.download('files/abc') }.to raise_error(RubyLLM::Error, 'gemini file has no download URI')
+      expect { protocol.download('files/abc') }.to raise_error(RubyLLM::Error, 'Gemini file has no download URI')
     end
 
     it 'downloads JSON files without parsing their contents' do

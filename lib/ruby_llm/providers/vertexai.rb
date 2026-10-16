@@ -94,7 +94,7 @@ module RubyLLM
         protocol = batch_protocol_for_name(protocol_name)
         return protocol if protocol
 
-        raise Error, 'vertexai batch requests currently support Gemini, Anthropic, and MaaS chat models'
+        raise Error, 'Vertex AI batch requests currently support Gemini, Anthropic, and MaaS chat models'
       end
       private :batch_protocol, :batch_protocol_for
 

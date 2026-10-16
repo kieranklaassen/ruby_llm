@@ -16,7 +16,7 @@ module RubyLLM
         def validate_batch_requests(requests)
           return if requests.all? { |request| chat_completion_payload?(request.fetch(:payload)) }
 
-          raise Error, "#{@provider.slug} batch requests require chat completion payloads"
+          raise Error, "#{@provider.name} batch requests require chat completion payloads"
         end
 
         def chat_completion_payload?(payload)

@@ -15,7 +15,7 @@ module RubyLLM
         private_constant :TERMINAL
 
         def create_batch(requests)
-          model = single_batch_model(requests, 'bedrock')
+          model = single_batch_model(requests, 'Bedrock')
           validate_bedrock_batch_requests(requests)
           role_arn = bedrock_batch_role_arn
           input_uri, output_uri = bedrock_batch_storage_uris
@@ -64,7 +64,7 @@ module RubyLLM
             status = parse_batch_status(job['status'], completed: TERMINAL.include?(job['status']))
             return [] if %i[failed cancelled].include?(status)
 
-            raise Error, 'bedrock batch has no S3 output URI yet'
+            raise Error, 'Bedrock batch has no S3 output URI yet'
           end
 
           outputs = @provider.list_file_uris(output_uri)

@@ -22,7 +22,7 @@ module RubyLLM
           def validate_batch_requests(requests)
             return if requests.all? { |request| chat_completion_payload?(request.fetch(:payload)) }
 
-            raise Error, 'vertexai MaaS batch requests require chat completion payloads'
+            raise Error, 'Vertex AI MaaS batch requests require chat completion payloads'
           end
 
           def chat_completion_payload?(payload)
@@ -31,7 +31,7 @@ module RubyLLM
 
           def vertex_batch_model_path(model)
             publisher, name = model.split('/', 2)
-            raise Error, 'vertexai MaaS batch requests require publisher/model ids' unless publisher && name
+            raise Error, 'Vertex AI MaaS batch requests require publisher/model ids' unless publisher && name
 
             @provider.model_path(name, publisher:)
           end

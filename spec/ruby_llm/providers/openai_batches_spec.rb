@@ -27,7 +27,7 @@ RSpec.describe RubyLLM::Providers::OpenAI do
 
     it 'refuses a payload it cannot route' do
       expect { provider.send(:batch_protocol_name_for, { prompt: 'hi' }) }.to raise_error(
-        RubyLLM::Error, 'openai batch requests only support chat, responses, or embedding payloads'
+        RubyLLM::Error, 'OpenAI batch requests only support chat, responses, or embedding payloads'
       )
     end
   end
