@@ -203,7 +203,7 @@ The same tool workflow works on these records: run pending tools, then batch the
 The batch workflow above is shared. These differences affect which requests you can submit:
 
 | Provider | Restriction |
-|----------|-------------|
+| --- | --- |
 | Azure | Requires a batch-capable deployment. Azure embedding batches are not currently available through RubyLLM. |
 | Bedrock | Chat batches do not support tools or structured output. Region and batch-size limits depend on the model. |
 | Cohere | Chat batches do not support structured output, forced tool choice, or retrieval documents. |

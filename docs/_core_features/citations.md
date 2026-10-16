@@ -131,7 +131,7 @@ File-search citations may identify a file without quoting a passage or marking a
 Each citation exposes a normalized set of fields. Fields a provider doesn't report are `nil`.
 
 | Field | Description |
-| :--- | :--- |
+| --- | --- |
 | `url` | Source URL or provider collection URI |
 | `title` | Document or page title |
 | `cited_text` | The quoted snippet from the source |

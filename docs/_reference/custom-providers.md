@@ -135,7 +135,7 @@ When a service's payloads, response shapes, or endpoints differ from anything Ru
 For the Chat Completions family, the seams you override most often are:
 
 | Seam | Responsibility |
-|------|----------------|
+| --- | --- |
 | `completion_url` | The (relative) endpoint path for completions |
 | `stream_url` | The streaming endpoint (defaults to `completion_url`) |
 | `render_payload` | Build the request body from messages, tools, temperature, etc. |

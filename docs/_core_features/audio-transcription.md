@@ -163,7 +163,7 @@ puts transcription.text
 ```
 
 | Predicate | What it carries |
-| :--- | :--- |
+| --- | --- |
 | `chunk.partial?` | `chunk.text`, tentative text that replaces the previous partial |
 | `chunk.delta?` | `chunk.delta`, committed text to append |
 | `chunk.segment?` | `chunk.segment`, a Hash with speaker and timing fields |
