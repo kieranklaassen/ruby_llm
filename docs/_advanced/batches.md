@@ -146,7 +146,7 @@ end
 batch = RubyLLM.batch(requests)
 ```
 
-`embed_later` accepts `model:`, `provider:`, and `dimensions:`, with the same defaults as `embed`. Choose a model that supports batches and use the same model and provider throughout the submission.
+`embed_later` accepts `model:`, `provider:`, `assume_model_exists:`, `context:`, and `dimensions:`, with the same defaults as `embed`. Choose a model that supports batches and use the same model and provider throughout the submission.
 
 Poll with `refresh` as usual. Once processing ends, `results` returns the embeddings in submission order and fills in each request's `result`:
 

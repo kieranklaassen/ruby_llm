@@ -32,10 +32,11 @@ module RubyLLM
     # Batch result collection writes it.
     attr_accessor :result
 
-    def initialize(text, model: nil, provider: nil, dimensions: nil, context: nil) # :nodoc:
+    def initialize(text, model: nil, provider: nil, assume_model_exists: false, context: nil, # :nodoc:
+                   dimensions: nil)
       config = context&.config || RubyLLM.config
       model ||= config.default_embedding_model
-      @model, @provider = Models.resolve(model, provider:, config:)
+      @model, @provider = Models.resolve(model, provider:, assume_model_exists:, config:)
       @text = text
       @dimensions = dimensions
     end

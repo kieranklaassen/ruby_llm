@@ -48,6 +48,8 @@ count = RubyLLM.count_tokens(
 )
 ```
 
+`count_tokens` accepts `model:`, `provider:`, `assume_model_exists:`, and `context:`, with the same meaning as on `RubyLLM.chat`.
+
 For a configured conversation, call `chat.count_tokens`:
 
 ```ruby

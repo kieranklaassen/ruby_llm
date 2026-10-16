@@ -41,8 +41,8 @@ module RubyLLM
 
     # Counts tokens using this context's configuration.
     # Accepts the same arguments as RubyLLM.count_tokens.
-    def count_tokens(text, model: nil, provider: nil)
-      chat(model:, provider:).count_tokens(text)
+    def count_tokens(*, **)
+      RubyLLM.count_tokens(*, **, context: self)
     end
 
     # Tokenizes plain text using this context's configuration.
@@ -65,8 +65,8 @@ module RubyLLM
 
     # Stages an embedding request using this context's configuration.
     # Accepts the same arguments as RubyLLM.embed_later.
-    def embed_later(text, model: nil, provider: nil, dimensions: nil)
-      EmbeddingRequest.new(text, model:, provider:, dimensions:, context: self)
+    def embed_later(*, **)
+      EmbeddingRequest.new(*, **, context: self)
     end
 
     # Generates an image using this context's configuration.
