@@ -7,18 +7,23 @@ RSpec.describe RubyLLM::Context do
 
   it 'counts tokens through a context-bound chat' do
     chat = instance_double(RubyLLM::Chat, count_tokens: 12)
-    allow(RubyLLM::Chat).to receive(:new).with(model: 'model', provider: :openai, context:).and_return(chat)
+    allow(RubyLLM::Chat).to receive(:new)
+      .with(model: 'model', provider: :openai, assume_model_exists: true, context:)
+      .and_return(chat)
 
-    expect(context.count_tokens('Hello', model: 'model', provider: :openai)).to eq(12)
+    expect(context.count_tokens('Hello', model: 'model', provider: :openai, assume_model_exists: true)).to eq(12)
   end
 
   it 'stages embedding requests with the context' do
     request = instance_double(RubyLLM::EmbeddingRequest)
     allow(RubyLLM::EmbeddingRequest).to receive(:new)
-      .with('Hello', model: 'model', provider: :openai, dimensions: 256, context:)
+      .with('Hello', model: 'model', provider: :openai, assume_model_exists: true, dimensions: 256, context:)
       .and_return(request)
 
-    expect(context.embed_later('Hello', model: 'model', provider: :openai, dimensions: 256)).to be(request)
+    staged = context.embed_later('Hello', model: 'model', provider: :openai, assume_model_exists: true,
+                                          dimensions: 256)
+
+    expect(staged).to be(request)
   end
 
   it 'connects to MCP servers with the context' do

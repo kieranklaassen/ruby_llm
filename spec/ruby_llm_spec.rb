@@ -3,6 +3,40 @@
 require 'spec_helper'
 
 RSpec.describe RubyLLM do
+  describe '.count_tokens' do
+    it 'forwards assume_model_exists and context to the chat' do
+      context = described_class.context
+      chat = instance_double(RubyLLM::Chat, count_tokens: 12)
+      allow(RubyLLM::Chat).to receive(:new)
+        .with(model: 'model', provider: :openai, assume_model_exists: true, context:)
+        .and_return(chat)
+
+      count = described_class.count_tokens('Hello', model: 'model', provider: :openai,
+                                                    assume_model_exists: true, context:)
+
+      expect(count).to eq(12)
+    end
+  end
+
+  describe '.embed_later' do
+    include_context 'with configured RubyLLM'
+
+    it 'stages a request for a model missing from the registry' do
+      request = described_class.embed_later('Hello', model: 'my-custom-embedder', provider: :openai,
+                                                     assume_model_exists: true)
+
+      expect(request.model.id).to eq('my-custom-embedder')
+    end
+
+    it 'resolves the provider with the context configuration' do
+      context = described_class.context { |config| config.request_timeout = 7 }
+
+      request = described_class.embed_later('Hello', model: model_for(:openai, :embedding), context:)
+
+      expect(request.provider.config).to be(context.config)
+    end
+  end
+
   describe '.logger' do
     let(:logger) { instance_double(Logger) }
     let(:log_file) { double }
