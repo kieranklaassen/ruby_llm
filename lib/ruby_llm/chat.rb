@@ -39,6 +39,10 @@ module RubyLLM
     # The Provider instance handling requests for the current model.
     attr_reader :provider
 
+    # The wire protocol set with +protocol:+ on Chat.new or #with_model, or
+    # +nil+ when the provider picks the protocol for the model.
+    attr_reader :protocol
+
     # The Message objects exchanged so far, including system instructions.
     attr_reader :messages
 
