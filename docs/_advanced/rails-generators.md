@@ -60,7 +60,7 @@ bin/rails generate ruby_llm:install chat:Conversation message:ChatMessage
 bin/rails generate ruby_llm:install chat:Discussion message:DiscussionMessage
 ```
 
-The `name:ClassName` syntax follows Rails conventions - specify only what you want to customize.
+The `name:ClassName` syntax follows Rails conventions. Specify only what you want to customize.
 
 The generated models are one line each:
 

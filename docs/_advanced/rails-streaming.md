@@ -244,7 +244,7 @@ Update your views to use the controller:
 
 #### Solution 3: Server-Side Ordering
 
-[AnyCable](https://anycable.io) provides order guarantees at the server level through "sticky concurrency" - ensuring messages from the same stream are processed by the same worker. This eliminates the need for client-side reordering code.
+[AnyCable](https://anycable.io) provides order guarantees at the server level through "sticky concurrency", which ensures messages from the same stream are processed by the same worker. This eliminates the need for client-side reordering code.
 
 #### Why This Happens
 

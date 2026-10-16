@@ -23,7 +23,7 @@ After reading this guide, you will know:
 
 ## What are Citations?
 
-Citations link spans of a model's answer back to the source material that supports them - a document you attached, or a web page found through search or grounding. They let readers inspect the source behind a claim. A citation points to evidence; your application or reader still needs to assess whether it supports the answer.
+Citations link spans of a model's answer back to the source material that supports them: a document you attached, or a web page found through search or grounding. They let readers inspect the source behind a claim. A citation points to evidence; your application or reader still needs to assess whether it supports the answer.
 
 Read citations as `RubyLLM::Citation` objects on `response.citations`. Available fields depend on the source and model.
 
