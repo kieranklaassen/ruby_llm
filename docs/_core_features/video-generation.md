@@ -2,7 +2,7 @@
 layout: default
 title: Video Generation
 nav_order: 6
-description: Generate, edit, and extend videos from prompts, images, and audio
+description: Generate, edit, and extend videos from prompts, images, and audio.
 ---
 
 # {{ page.title }}

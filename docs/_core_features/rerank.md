@@ -2,7 +2,7 @@
 layout: default
 title: Reranking
 nav_order: 4
-description: Order candidate documents by how well they answer a query, the second stage of a retrieval pipeline
+description: Order candidate documents by how well they answer a query, the second stage of a retrieval pipeline.
 ---
 
 # {{ page.title }}

@@ -3,7 +3,7 @@ layout: default
 title: Custom Endpoints and Unlisted Models
 parent: "Model Registry"
 nav_order: 3
-description: Target OpenAI-compatible endpoints and use model IDs the registry doesn't list
+description: Target OpenAI-compatible endpoints and use model IDs the registry doesn't list.
 ---
 
 # {{ page.title }}

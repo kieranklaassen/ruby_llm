@@ -2,7 +2,7 @@
 layout: default
 title: Image Generation
 nav_order: 5
-description: Generate and edit images from text prompts, reference images, and masks
+description: Generate and edit images from text prompts, reference images, and masks.
 redirect_from:
   - /guides/image-generation
 ---

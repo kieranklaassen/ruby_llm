@@ -3,7 +3,7 @@ layout: default
 title: Advanced Request Control
 parent: "Chat"
 nav_order: 8
-description: Reach provider-specific features with custom parameters, wire protocols, request hooks, and HTTP headers
+description: Reach provider-specific features with custom parameters, wire protocols, request hooks, and HTTP headers.
 ---
 
 # {{ page.title }}

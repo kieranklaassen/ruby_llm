@@ -3,7 +3,7 @@ layout: default
 title: Citations
 parent: "Chat"
 nav_order: 5
-description: Get verifiable answers with normalized citations pointing at documents and web sources, on every provider that supports them
+description: Get verifiable answers with normalized citations pointing at documents and web sources, on every provider that supports them.
 redirect_from:
   - /guides/citations
 ---

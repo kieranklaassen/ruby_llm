@@ -3,7 +3,7 @@ layout: default
 title: Instrumentation and Observability
 nav_order: 6
 has_children: true
-description: Observe RubyLLM model operations, provider attempts, tool calls, workflows, batches, and model refreshes
+description: Observe RubyLLM model operations, provider attempts, tool calls, workflows, batches, and model refreshes.
 redirect_from:
   - /guides/instrumentation
 ---

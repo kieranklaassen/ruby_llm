@@ -3,7 +3,7 @@ layout: default
 title: OpenTelemetry
 parent: Instrumentation and Observability
 nav_order: 1
-description: Trace RubyLLM model calls, tools, and workflows with your application's OpenTelemetry setup
+description: Trace RubyLLM model calls, tools, and workflows with your application's OpenTelemetry setup.
 ---
 
 # {{ page.title }}

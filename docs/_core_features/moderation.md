@@ -2,7 +2,7 @@
 layout: default
 title: Moderation
 nav_order: 10
-description: Screen text and images for harmful content before it reaches your models
+description: Screen text and images for harmful content before it reaches your models.
 redirect_from:
   - /guides/moderation
 ---
