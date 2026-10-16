@@ -69,7 +69,7 @@ module RubyLLM
 
         private
 
-        def validate_animate_inputs!(with:)
+        def validate_animate_inputs(with:)
           raise Error, 'xAI video generation takes a single reference image or video' if with.size > 1
 
           with.each do |attachment|

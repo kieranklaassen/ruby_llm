@@ -9,7 +9,7 @@ module RubyLLM
 
         # rubocop:disable-next Lint/UnusedMethodArgument
         def embed(text, model:, dimensions:, task_type: nil, title: nil, with: nil, provider_options: {})
-          ensure_no_embedding_media!(with)
+          ensure_no_embedding_media(with)
           track_usage(:embedding) do
             responses = [text].flatten.map do |value|
               payload = render_embedding_payload(value, dimensions:, task_type:, provider_options:)

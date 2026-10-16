@@ -725,7 +725,7 @@ module RubyLLM
       #   chat.complete
       #
       def ask_later(message = nil, with: nil)
-        to_llm.raise_if_pending_tool_calls!
+        to_llm.raise_if_pending_tool_calls
         if message.is_a?(RubyLLM::MCP::Prompt)
           message.messages.each { |prompt_message| add_message(prompt_message) }
         else

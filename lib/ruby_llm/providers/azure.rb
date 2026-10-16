@@ -145,7 +145,7 @@ module RubyLLM
         end
       end
 
-      def ensure_configured!
+      def ensure_configured
         missing = []
         missing << :azure_api_base unless @config.azure_api_base
         if @config.azure_api_key.nil? && @config.azure_ai_auth_token.nil?

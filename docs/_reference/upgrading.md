@@ -139,6 +139,15 @@ end
 
 In 2.1, `message.raw` and `error.response` still carried the request headers, including the API key, and `error.response` also carried the request body, the whole serialized conversation. In 2.2 they keep neither, so logging or reporting them no longer leaks keys or prompts. To see what a chat sends, use `render` or a `before_request` hook, described in [Advanced Request Control]({% link _core_features/chat-request-control.md %}#request-hooks).
 
+## Provider Gems Drop the Bang From Raising Validators
+
+Applications need no change. A provider gem or a custom protocol that overrides one of these methods renames its override, because RubyLLM no longer calls the old name. A bang marks the dangerous half of a pair, and these validators have no plain twin:
+
+* `ensure_configured!` is now `ensure_configured`.
+* `validate_paint_inputs!` is now `validate_paint_inputs`.
+* `validate_animate_inputs!` is now `validate_animate_inputs`.
+* `validate_batch_requests!` is now `validate_batch_requests`.
+
 ## Rename Chat Columns Named After New Methods
 
 `acts_as_chat` records gain `code_execution`, `skills`, `with_code_execution`, and `with_skills` in 2.2. A column of your own with one of those names is hidden behind RubyLLM's method, so reading it returns RubyLLM's setting, usually `nil`, instead of your value. Rename such a column before you upgrade, for example a `code_execution` toggle to `runs_code`:

@@ -75,7 +75,7 @@ module RubyLLM
           uri
         end
 
-        def validate_animate_inputs!(with:)
+        def validate_animate_inputs(with:)
           raise ArgumentError, 'Luma Ray 2 accepts at most two reference images' if with.length > 2
 
           with.each do |attachment|

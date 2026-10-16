@@ -441,7 +441,7 @@ module RubyLLM
         end
       end
 
-      def single_batch_model!(requests, provider_name)
+      def single_batch_model(requests, provider_name)
         models = requests.map { |request| request.fetch(:model) }.uniq
         return models.first if models.one?
 

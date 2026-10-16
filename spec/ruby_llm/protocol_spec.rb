@@ -126,18 +126,18 @@ RSpec.describe RubyLLM::Protocol do
     end
   end
 
-  describe '#validate_paint_inputs!' do
+  describe '#validate_paint_inputs' do
     let(:protocol) do
       config = RubyLLM::Configuration.new.tap { |c| c.openai_api_key = 'test' }
       Class.new(described_class).new(RubyLLM::Providers::OpenAI.new(config))
     end
 
     it 'accepts a plain prompt' do
-      expect { protocol.send(:validate_paint_inputs!, with: nil, mask: nil) }.not_to raise_error
+      expect { protocol.send(:validate_paint_inputs, with: nil, mask: nil) }.not_to raise_error
     end
 
     it 'refuses image references the protocol cannot send' do
-      expect { protocol.send(:validate_paint_inputs!, with: 'ref.png', mask: nil) }.to raise_error(
+      expect { protocol.send(:validate_paint_inputs, with: 'ref.png', mask: nil) }.to raise_error(
         RubyLLM::UnsupportedAttachmentError, /image reference/
       )
     end

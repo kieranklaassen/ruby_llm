@@ -15,8 +15,8 @@ module RubyLLM
         private_constant :TERMINAL
 
         def create_batch(requests)
-          model = single_batch_model!(requests, 'bedrock')
-          validate_bedrock_batch_requests!(requests)
+          model = single_batch_model(requests, 'bedrock')
+          validate_bedrock_batch_requests(requests)
           role_arn = bedrock_batch_role_arn
           input_uri, output_uri = bedrock_batch_storage_uris
           @provider.upload_file(

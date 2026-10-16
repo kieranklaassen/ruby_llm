@@ -17,7 +17,7 @@ module RubyLLM
             }
           end
 
-          def validate_batch_requests!(requests)
+          def validate_batch_requests(requests)
             if @config.vertexai_location.to_s == 'global'
               raise ConfigurationError, 'vertexai Anthropic batches require a regional vertexai_location'
             end

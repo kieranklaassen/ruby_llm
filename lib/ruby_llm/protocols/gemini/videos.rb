@@ -84,7 +84,7 @@ module RubyLLM
           { inlineData: { mimeType: image.mime_type, data: image.encoded } }
         end
 
-        def validate_animate_inputs!(with:)
+        def validate_animate_inputs(with:)
           raise Error, 'Veo takes a single reference image' if with.size > 1
 
           with.each do |attachment|

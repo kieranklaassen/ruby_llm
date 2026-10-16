@@ -20,8 +20,8 @@ module RubyLLM
         private_constant :TERMINAL
 
         def create_batch(requests)
-          model = single_batch_model!(requests, 'vertexai')
-          validate_batch_requests!(requests)
+          model = single_batch_model(requests, 'vertexai')
+          validate_batch_requests(requests)
           input_uri, output_uri = vertex_batch_storage_uris
           @provider.upload_file(
             StringIO.new(vertex_batch_jsonl(requests)),
@@ -90,7 +90,7 @@ module RubyLLM
           raise NotImplementedError
         end
 
-        def validate_batch_requests!(_requests); end
+        def validate_batch_requests(_requests); end
 
         def vertex_batch_model_path(model)
           @provider.model_path(model)

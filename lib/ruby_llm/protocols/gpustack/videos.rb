@@ -77,7 +77,7 @@ module RubyLLM
           { status: status, raw: body, error: body.dig('error', 'message') }
         end
 
-        def validate_animate_inputs!(with:)
+        def validate_animate_inputs(with:)
           @provider.backend_api_base
           with.each do |attachment|
             if attachment.provider_file?
