@@ -200,6 +200,6 @@ Apps upgrading from 1.16 get the column from the [2.0 upgrade](https://github.co
 
 ## Next Steps
 
-* [Chatting with AI Models]({% link _core_features/chat.md %})
-* [Streaming Responses]({% link _core_features/streaming.md %})
+* [Chat]({% link _core_features/chat.md %})
+* [Stream Responses]({% link _core_features/streaming.md %})
 * [Rails Integration]({% link _advanced/rails.md %})

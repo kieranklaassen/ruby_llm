@@ -156,7 +156,7 @@ response.tokens.output
 response.cost.total
 ```
 
-The accounting follows provider attempts, so a successful answer can include the cost of earlier failed attempts. Unknown costs stay unknown. In Rails, the usage ledger keeps those attempts separately from messages. See [Cost and Usage Tracking]({% link _core_features/cost-and-usage-tracking.md %}).
+The accounting follows provider attempts, so a successful answer can include the cost of earlier failed attempts. Unknown costs stay unknown. In Rails, the usage ledger keeps those attempts separately from messages. See [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}).
 
 [Instrumentation]({% link _advanced/instrumentation.md %}) lets you observe calls across chats, tools, and individual operations. `RubyLLM.workflow` groups events from ordinary Ruby code into a named workflow.
 
@@ -166,7 +166,7 @@ The accounting follows provider attempts, so a successful answer can include the
 
 [Batches]({% link _advanced/batches.md %}) submit chats or embedding requests for provider-side processing. Stage them with `ask_later` or `embed_later` and submit them with `RubyLLM.batch`.
 
-[File Storage]({% link _core_features/files.md %}) handles provider uploads and downloads with `RubyLLM.upload` and `RubyLLM.download`. [Prompt Caching]({% link _core_features/prompt-caching.md %}) supports reusing prompt content, including provider-managed caches through `RubyLLM.cache`.
+[Files]({% link _core_features/files.md %}) handles provider uploads and downloads with `RubyLLM.upload` and `RubyLLM.download`. [Prompt Caching]({% link _core_features/prompt-caching.md %}) supports reusing prompt content, including provider-managed caches through `RubyLLM.cache`.
 
 [Error Handling]({% link _advanced/error-handling.md %}) provides common exceptions, retries, and model fallbacks. These services support the public API without requiring you to manage each provider's request format.
 

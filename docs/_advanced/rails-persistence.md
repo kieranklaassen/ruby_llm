@@ -170,7 +170,7 @@ end
 current_user.ruby_llm_usages.sum(:total_cost)
 ```
 
-See [Cost and Usage Tracking]({% link _core_features/cost-and-usage-tracking.md %}) for owner rules, entry statuses, incomplete totals, cancellation behavior, and instrumentation.
+See [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) for owner rules, entry statuses, incomplete totals, cancellation behavior, and instrumentation.
 
 ## Tools
 
@@ -228,7 +228,7 @@ if batch.complete?
 end
 ```
 
-No application `Batch` model is required. See [Batch Processing]({% link _advanced/batches.md %}) for polling and multi-round tool workflows.
+No application `Batch` model is required. See [Batches]({% link _advanced/batches.md %}) for polling and multi-round tool workflows.
 
 ## Attachments and Structured Output
 
@@ -341,7 +341,7 @@ Keep transcript content and application relationships in these models. Observe p
 
 ## Next Steps
 
-* [Cost and Usage Tracking]({% link _core_features/cost-and-usage-tracking.md %}) - understand attempts, retries, cancellations, and incomplete totals.
+* [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) - understand attempts, retries, cancellations, and incomplete totals.
 * [Streaming with Hotwire/Turbo]({% link _advanced/rails-streaming.md %}) - broadcast persisted responses in real time.
 * [Generators and App Conventions]({% link _advanced/rails-generators.md %}) - see exactly what installation creates.
 * [Model Registry]({% link _reference/models.md %}) - inspect and refresh the internal registry through the public API.

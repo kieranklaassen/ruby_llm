@@ -212,7 +212,7 @@ This page covers the core `Chat` interface. Each facet of a conversation has its
 
 ## Next Steps
 
-* [Using Tools]({% link _core_features/tools.md %}) - enable the AI to call your Ruby code.
+* [Tools]({% link _core_features/tools.md %}) - enable the AI to call your Ruby code.
 * [Model Registry]({% link _reference/models.md %}) - choose the best model and handle custom endpoints.
 * [Rails Integration]({% link _advanced/rails.md %}) - use the same API on your Active Record models.
 * [Error Handling]({% link _advanced/error-handling.md %}) - retry requests and fall back to another model.

@@ -169,7 +169,7 @@ rescue RubyLLM::Error => e
 end
 ```
 
-Refer to the [Error Handling Guide]({% link _advanced/error-handling.md %}) for details on specific error types.
+Refer to [Error Handling]({% link _advanced/error-handling.md %}) for details on specific error types.
 
 ## Streaming with Tools
 
@@ -188,6 +188,6 @@ end
 
 ## Next Steps
 
-* [Using Tools]({% link _core_features/tools.md %})
+* [Tools]({% link _core_features/tools.md %})
 * [Rails Integration]({% link _advanced/rails.md %})
 * [Error Handling]({% link _advanced/error-handling.md %})

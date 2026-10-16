@@ -172,7 +172,7 @@ rescue Faraday::ConnectionFailed
 end
 ```
 
-See the [Error Handling Guide]({% link _advanced/error-handling.md %}#handling-errors-within-tools) for more discussion.
+See [Error Handling]({% link _advanced/error-handling.md %}#handling-errors-within-tools) for more discussion.
 
 ## Security Considerations
 
@@ -196,7 +196,7 @@ export RUBYLLM_DEBUG=true
 # Run your script
 ```
 
-See the [Error Handling Guide]({% link _advanced/error-handling.md %}#debugging) for more on debugging.
+See [Error Handling]({% link _advanced/error-handling.md %}#debugging) for more on debugging.
 
 ## Next Steps
 
@@ -204,5 +204,5 @@ See the [Error Handling Guide]({% link _advanced/error-handling.md %}#debugging)
 * [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - Steer tool choice, call counts, approval, concurrency, and callbacks.
 * [Tool Search]({% link _core_features/tool-search.md %}) - Keep large tool sets out of the model's context until it searches for them.
 * [Code Execution]({% link _core_features/code-execution.md %}) - Let the model run Ruby, Python, JavaScript, and shell code in a sandbox.
-* [Chatting with AI Models]({% link _core_features/chat.md %}) - The conversational core that tools plug into.
+* [Chat]({% link _core_features/chat.md %}) - The conversational core that tools plug into.
 * [Error Handling]({% link _advanced/error-handling.md %}) - Recover from failures across the whole stack.

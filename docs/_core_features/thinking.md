@@ -137,6 +137,6 @@ The generated schema also preserves the complete thinking blocks when you reload
 
 ## Next Steps
 
-* [Streaming Responses]({% link _core_features/streaming.md %})
+* [Stream Responses]({% link _core_features/streaming.md %})
 * [Rails Integration]({% link _advanced/rails.md %})
 * [Error Handling]({% link _advanced/error-handling.md %})

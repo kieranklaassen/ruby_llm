@@ -85,7 +85,7 @@ response = chat.ask "How do I create my first Rails app?"
 puts response.content
 ```
 
-See [Chatting with AI Models]({% link _core_features/chat.md %}) for choosing models and setting instructions.
+See [Chat]({% link _core_features/chat.md %}) for choosing models and setting instructions.
 
 ## Streaming a Response
 
@@ -97,7 +97,7 @@ chat.ask "Tell me a story about a Ruby programmer" do |chunk|
 end
 ```
 
-See the [Streaming Guide]({% link _core_features/streaming.md %}) for streaming into web pages and background jobs.
+See [Stream Responses]({% link _core_features/streaming.md %}) for streaming into web pages and background jobs.
 
 ## Asking About Files
 
@@ -284,7 +284,7 @@ response.tokens.output
 response.cost.total
 ```
 
-See [Cost and Usage Tracking]({% link _core_features/cost-and-usage-tracking.md %}) for cache usage, retries, and the Rails usage ledger. Use [Batches]({% link _advanced/batches.md %}) for bulk work that can run asynchronously.
+See [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) for cache usage, retries, and the Rails usage ledger. Use [Batches]({% link _advanced/batches.md %}) for bulk work that can run asynchronously.
 
 ## Using It in Rails
 
@@ -307,13 +307,13 @@ The API stays the same, and each message persists automatically. Pass Active Sto
 bin/rails generate ruby_llm:chat_ui
 ```
 
-Then visit `http://localhost:3000/chats` to start chatting. See the [Rails Integration Guide]({% link _advanced/rails.md %}) for full details.
+Then visit `http://localhost:3000/chats` to start chatting. See [Rails Integration]({% link _advanced/rails.md %}) for full details.
 
 ## What's Next?
 
 Continue with the guide for the feature you want to build:
 
-* [Chatting with AI Models]({% link _core_features/chat.md %})
+* [Chat]({% link _core_features/chat.md %})
 * [Models]({% link _reference/available-models.md %}) for comparing capabilities and pricing
 * [Agents]({% link _advanced/agents.md %}) and [Agentic Workflows]({% link _advanced/agentic-workflows.md %})
 * [Batches]({% link _advanced/batches.md %}) and [Prompt Caching]({% link _core_features/prompt-caching.md %})

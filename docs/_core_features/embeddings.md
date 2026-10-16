@@ -210,6 +210,6 @@ The `embedding` vector column must match your model's dimensions. This example g
 
 * [Reranking]({% link _core_features/rerank.md %}) to order your candidates by relevance before you use them.
 * [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) to ground answers in your own documents.
-* [Chatting with AI Models]({% link _core_features/chat.md %}) for interactive conversations.
-* [Using Tools]({% link _core_features/tools.md %}) to extend AI capabilities.
+* [Chat]({% link _core_features/chat.md %}) for interactive conversations.
+* [Tools]({% link _core_features/tools.md %}) to extend AI capabilities.
 * [Error Handling]({% link _advanced/error-handling.md %}) for retries and provider failures.
