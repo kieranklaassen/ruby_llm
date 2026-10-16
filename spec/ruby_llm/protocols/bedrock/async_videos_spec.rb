@@ -160,7 +160,7 @@ RSpec.describe RubyLLM::Protocols::Bedrock::AsyncVideos do
     end
 
     def completed_job(prefix)
-      RubyLLM::VideoJob.new(id: job_id, protocol:, model:, status: :completed,
+      RubyLLM::VideoJob.new(id: job_id, protocol:, model:, status: :succeeded,
                             raw: { 'outputDataConfig' => { 's3OutputDataConfig' => { 's3Uri' => prefix } } })
     end
   end
@@ -228,14 +228,14 @@ RSpec.describe RubyLLM::Protocols::Bedrock::AsyncVideos do
   end
 
   it 'refuses to guess an output object when metadata or the single MP4 is absent' do
-    missing = RubyLLM::VideoJob.new(id: job_id, protocol:, model:, status: :completed, raw: {})
+    missing = RubyLLM::VideoJob.new(id: job_id, protocol:, model:, status: :succeeded, raw: {})
     allow(provider).to receive(:list_file_uris)
     expect { missing.video }.to raise_error(RubyLLM::Error, /no output S3 URI/)
     expect(provider).not_to have_received(:list_file_uris)
   end
 
   it 'refuses multiple output videos instead of downloading an arbitrary object' do
-    job = RubyLLM::VideoJob.new(id: job_id, protocol:, model:, status: :completed,
+    job = RubyLLM::VideoJob.new(id: job_id, protocol:, model:, status: :succeeded,
                                 raw: JSON.parse(JSON.generate(state('Completed'))))
     allow(provider).to receive(:list_file_uris).and_return([],
                                                            ['s3://test-bucket/videos/a.mp4',

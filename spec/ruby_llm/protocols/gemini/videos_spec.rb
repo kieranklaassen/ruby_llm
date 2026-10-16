@@ -96,7 +96,7 @@ RSpec.describe RubyLLM::Protocols::Gemini::Videos do
     job = context.animate_later('The wave gently reaches the sandy shore', model:, provider: :gemini,
                                                                            extend: original)
 
-    expect(job.wait(timeout: 240)).to be_completed
+    expect(job.wait(timeout: 240)).to be_succeeded
     expect(job.video.mime_type).to eq('video/mp4')
     expect(job.video.to_blob.bytesize).to be > 1000
     expect(job.video.raw['done']).to be(true)
@@ -127,7 +127,7 @@ RSpec.describe RubyLLM::Protocols::Gemini::Videos do
       }
       response = instance_double(Faraday::Response, body: body)
 
-      expect(protocol.parse_video_job_status(response, job: job)).to eq(status: :completed, raw: body)
+      expect(protocol.parse_video_job_status(response, job: job)).to eq(status: :succeeded, raw: body)
     end
 
     it 'fails with the operation error message' do
@@ -170,7 +170,7 @@ RSpec.describe RubyLLM::Protocols::Gemini::Videos do
         }
       }
       RubyLLM::VideoJob.new(id: 'models/veo/operations/abc123', protocol: protocol,
-                            model: 'veo-3.1-fast-generate-preview', status: :completed, raw: raw)
+                            model: 'veo-3.1-fast-generate-preview', status: :succeeded, raw: raw)
     end
 
     it 'downloads the file URI through the authenticated connection' do

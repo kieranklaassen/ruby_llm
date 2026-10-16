@@ -52,7 +52,7 @@ module RubyLLM
     # The hosted agent's identity, separate from a model ID.
     attr_reader :agent
 
-    # The normalized state: +:pending+, +:completed+, +:incomplete+,
+    # The normalized state: +:pending+, +:succeeded+, +:incomplete+,
     # +:failed+, or +:cancelled+.
     attr_reader :status
 
@@ -138,7 +138,7 @@ module RubyLLM
     def done? = !pending?
 
     # Returns whether the task finished with a complete report.
-    def completed? = status == :completed
+    def succeeded? = status == :succeeded
 
     # Returns whether the provider stopped before completing the report.
     def incomplete? = status == :incomplete
@@ -234,7 +234,7 @@ module RubyLLM
     end
 
     def record_usage
-      status = { completed: :succeeded, incomplete: :succeeded, cancelled: :cancelled }.fetch(@status, :failed)
+      status = { succeeded: :succeeded, incomplete: :succeeded, cancelled: :cancelled }.fetch(@status, :failed)
       entry = Accounting::Usage::Entry.new(operation: :research, provider:, model: agent, status:, tokens:, cost:,
                                            owner: @usage_owner)
       Accounting::Usage.report(entry, config: @protocol.config)

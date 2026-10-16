@@ -226,6 +226,24 @@ chunk.type == :delta
 
 The `delta?`, `partial?`, `segment?`, and `done?` predicates work as before. An event RubyLLM does not normalize has a `nil` type; read the provider's own name from `chunk.raw`.
 
+## Finished Jobs Report `:succeeded`
+
+`VideoJob` and `ResearchJob` name success the way `Batch` and the usage ledger do. Their status is `:succeeded` where it was `:completed`, and `succeeded?` replaces `completed?`:
+
+```ruby
+# 2.1
+job.video.save("clip.mp4") if job.completed?
+job.status # => :completed
+
+# 2.2
+job.video.save("clip.mp4") if job.succeeded?
+job.status # => :succeeded
+```
+
+`done?`, `pending?`, and `failed?` are unchanged, and so are `incomplete?` and `cancelled?` on a research job. RubyLLM stores neither job, so there is nothing to migrate. If your application saves `job.status` in its own column, update the rows that hold `completed`.
+
+A provider gem that implements `parse_video_job_status` returns `status: :succeeded` for a finished video.
+
 ## Deploy Without Mixing Versions
 
 Workers on 2.1 do not claim chats, so they can still overlap with workers on 2.2 while a deploy rolls out. Run the schema upgrade first, then let the new version replace every worker before you rely on claims. Chats that run once all workers are on 2.2 are covered.

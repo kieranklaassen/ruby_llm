@@ -33,7 +33,7 @@ module RubyLLM
             loop do
               body = @connection.get("#{images_url}/#{id}").body
               state = parse_generation_status(body)
-              return body if state[:status] == :completed
+              return body if state[:status] == :succeeded
               raise Error, "ElevenLabs image generation failed: #{state[:error]}" if state[:status] == :failed
               if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
                 raise Error, "ElevenLabs image generation timed out: #{id}"

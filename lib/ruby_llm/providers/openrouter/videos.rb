@@ -59,7 +59,7 @@ module RubyLLM
 
         def job_status(body)
           case body['status']
-          when 'completed' then :completed
+          when 'completed' then :succeeded
           when 'failed' then :failed
           else :pending
           end

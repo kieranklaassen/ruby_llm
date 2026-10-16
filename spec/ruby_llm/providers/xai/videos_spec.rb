@@ -128,7 +128,7 @@ RSpec.describe RubyLLM::Providers::XAI::Videos do
       job = context.animate_later(prompt, model:, provider: :xai, **options)
 
       expect(job.id).not_to be_empty
-      expect(job.wait(timeout: 180)).to be_completed
+      expect(job.wait(timeout: 180)).to be_succeeded
       expect(job.video.mime_type).to eq('video/mp4')
       expect(job.video.to_blob.bytesize).to be > 1000
       expect(job.video.raw['status']).to eq('done')
@@ -157,10 +157,10 @@ RSpec.describe RubyLLM::Providers::XAI::Videos do
       response = instance_double(Faraday::Response, body: body)
 
       state = protocol.parse_video_job_status(response, job: job)
-      expect(state).to include(status: :completed, raw: body)
+      expect(state).to include(status: :succeeded, raw: body)
 
       video = protocol.download_video(
-        RubyLLM::VideoJob.new(id: '4482fadb', protocol: protocol, status: :completed, raw: body)
+        RubyLLM::VideoJob.new(id: '4482fadb', protocol: protocol, status: :succeeded, raw: body)
       )
       expect(video.url).to eq('https://vidgen.x.ai/xai-vidgen-bucket/xai-video-4482fadb.mp4')
       expect(video.duration).to eq(1)

@@ -45,7 +45,7 @@ module RubyLLM
             { status: :failed, raw: body, error: body.dig('error', 'message') }
           elsif body['done']
             video = generated_video(body)
-            video ? { status: :completed, raw: body } : filtered_video_failure(body)
+            video ? { status: :succeeded, raw: body } : filtered_video_failure(body)
           else
             { status: :pending, raw: body }
           end

@@ -83,7 +83,7 @@ RSpec.describe RubyLLM::Providers::Azure::Videos do
       body = { 'status' => 'succeeded', 'generations' => [{ 'id' => 'gen_01' }] }
       response = instance_double(Faraday::Response, body: body)
 
-      expect(protocol.parse_video_job_status(response, job: job)).to eq(status: :completed, raw: body)
+      expect(protocol.parse_video_job_status(response, job: job)).to eq(status: :succeeded, raw: body)
     end
 
     it 'fails with the failure reason' do
@@ -99,7 +99,7 @@ RSpec.describe RubyLLM::Providers::Azure::Videos do
   describe '#download_video' do
     it 'downloads the first generation content' do
       raw = { 'status' => 'succeeded', 'generations' => [{ 'id' => 'gen_01' }], 'model' => 'sora-2', 'n_seconds' => 5 }
-      job = RubyLLM::VideoJob.new(id: 'task_01', protocol: protocol, status: :completed, raw: raw)
+      job = RubyLLM::VideoJob.new(id: 'task_01', protocol: protocol, status: :succeeded, raw: raw)
       response = instance_double(Faraday::Response, body: 'mp4 bytes', headers: { 'content-type' => 'video/mp4' })
       allow(provider.connection).to receive(:get)
         .with('https://contoso.services.ai.azure.com/openai/v1/video/generations/gen_01/content/video' \
@@ -114,7 +114,7 @@ RSpec.describe RubyLLM::Providers::Azure::Videos do
     end
 
     it 'raises when the job carries no generations' do
-      job = RubyLLM::VideoJob.new(id: 'task_01', protocol: protocol, status: :completed,
+      job = RubyLLM::VideoJob.new(id: 'task_01', protocol: protocol, status: :succeeded,
                                   raw: { 'status' => 'succeeded', 'generations' => [] })
 
       expect { protocol.download_video(job) }.to raise_error(RubyLLM::Error, /no generations/)

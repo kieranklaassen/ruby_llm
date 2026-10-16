@@ -84,7 +84,7 @@ RSpec.describe RubyLLM::ResearchJob do
         described_class.new(id: 'job-1', provider: 'vertexai', agent: 'agent-id', protocol:, status: :pending)
       end
       tokens = RubyLLM::Tokens.new(input: 1200, output: 300, reported_cost: 0.42)
-      allow(protocol).to receive(:refresh_research_job).and_return(status: :completed, tokens:)
+      allow(protocol).to receive(:refresh_research_job).and_return(status: :succeeded, tokens:)
 
       job.refresh
       job.refresh
@@ -105,8 +105,10 @@ RSpec.describe RubyLLM::ResearchJob do
     end
 
     it 'leaves a job found already finished to the process that observed it finish' do
-      described_class.new(id: 'job-1', provider: 'vertexai', agent: 'agent-id', protocol:, status: :completed)
+      found = described_class.new(id: 'job-1', provider: 'vertexai', agent: 'agent-id', protocol:,
+                                  status: :succeeded)
 
+      expect(found).to have_attributes(succeeded?: true, done?: true)
       expect(usage_events).to be_empty
     end
   end

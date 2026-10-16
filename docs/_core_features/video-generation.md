@@ -49,13 +49,13 @@ Poll the job whenever it suits you, from a scheduled job or a retry loop:
 ```ruby
 job.refresh
 job.done?      # => true
-job.completed? # => true
+job.succeeded? # => true
 
 video = job.video
 video.save("hummingbird.mp4")
 ```
 
-`refresh` updates the job state and does nothing after completion. Read `job.video` when `job.completed?` is true. It is `nil` while pending and raises `RubyLLM::Error` if rendering failed. Use `job.wait` when you want RubyLLM to handle polling.
+`refresh` updates the job state and does nothing after completion. Read `job.video` when `job.succeeded?` is true. It is `nil` while pending and raises `RubyLLM::Error` if rendering failed. Use `job.wait` when you want RubyLLM to handle polling.
 
 A finished job carries the cost the provider billed for it:
 

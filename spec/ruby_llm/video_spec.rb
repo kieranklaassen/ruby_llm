@@ -86,18 +86,18 @@ RSpec.describe RubyLLM::Video, :live do
     end
 
     it 'returns no video while pending and stops refreshing once done' do
-      allow(protocol).to receive(:refresh_video_job).and_return({ status: :completed, raw: {} })
+      allow(protocol).to receive(:refresh_video_job).and_return({ status: :succeeded, raw: {} })
       job = described_class.new(id: 'operations/op-1', protocol: protocol)
 
       expect(job.video).to be_nil
-      expect(job.refresh.status).to eq(:completed)
+      expect(job.refresh).to have_attributes(status: :succeeded, succeeded?: true, done?: true)
 
       job.refresh
       expect(protocol).to have_received(:refresh_video_job).once
     end
 
     it 'records its usage once when it finishes, attributed to the owner at submission' do
-      allow(protocol).to receive(:refresh_video_job).and_return({ status: :pending }, { status: :completed })
+      allow(protocol).to receive(:refresh_video_job).and_return({ status: :pending }, { status: :succeeded })
       job = RubyLLM.with_usage_owner('account-1') do
         described_class.new(id: 'operations/op-1', protocol:, model: 'veo-3.1-fast-generate-preview')
       end

@@ -45,7 +45,7 @@ module RubyLLM
           body = response.body
           status = case body['status']
                    when 'InProgress' then :pending
-                   when 'Completed' then :completed
+                   when 'Completed' then :succeeded
                    when 'Failed' then :failed
                    else raise Error.new("Unknown Bedrock video status: #{body['status'].inspect}", response:)
                    end

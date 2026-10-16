@@ -15,7 +15,7 @@ module RubyLLM
     # The provider's id for the job.
     attr_reader :id
 
-    # The job state: +:pending+, +:completed+, or +:failed+.
+    # The job state: +:pending+, +:succeeded+, or +:failed+.
     attr_reader :status
 
     # The id of the model rendering the video, as a String.
@@ -105,8 +105,8 @@ module RubyLLM
     end
 
     # Returns +true+ when the job finished with a video.
-    def completed?
-      status == :completed
+    def succeeded?
+      status == :succeeded
     end
 
     # Returns +true+ when the job finished without a video. #error carries
@@ -166,7 +166,7 @@ module RubyLLM
     # Error when #failed?.
     def video
       raise Error, "Video generation failed: #{error}" if failed?
-      return unless completed?
+      return unless succeeded?
 
       @video ||= @protocol.download_video(self).tap { |video| video.config = @protocol.config }
     end
@@ -178,7 +178,7 @@ module RubyLLM
 
       @usage_recorded = true
       entry = Accounting::Usage::Entry.new(operation: :video, provider: @protocol.provider.slug, model:,
-                                           status: completed? ? :succeeded : :failed, cost:, owner: @usage_owner)
+                                           status: succeeded? ? :succeeded : :failed, cost:, owner: @usage_owner)
       Accounting::Usage.report(entry, config: @protocol.config)
     end
 

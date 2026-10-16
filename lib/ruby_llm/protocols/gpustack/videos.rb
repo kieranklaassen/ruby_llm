@@ -70,7 +70,7 @@ module RubyLLM
         def video_job_state(body)
           status = case body['status']
                    when 'queued', 'in_progress' then :pending
-                   when 'completed' then :completed
+                   when 'completed' then :succeeded
                    when 'failed' then :failed
                    else raise Error, "Unknown GPUStack video status: #{body['status'].inspect}"
                    end
