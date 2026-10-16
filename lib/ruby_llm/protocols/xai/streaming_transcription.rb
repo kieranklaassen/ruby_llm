@@ -18,7 +18,7 @@ module RubyLLM
           raise Error, 'xAI transcription ended before its final transcript' unless completed.size == audio.channels
 
           result = build_streamed_transcription(segments, completed, model:, language: payload[:language])
-          block.call(TranscriptionChunk.new(type: TranscriptionChunk::DONE, text: result.text, raw: completed.last))
+          block.call(TranscriptionChunk.new(type: :done, text: result.text, raw: completed.last))
           result
         ensure
           payload[:file]&.io&.close
@@ -79,7 +79,7 @@ module RubyLLM
           return if text.empty?
 
           unless event['is_final'] || event['type'] == 'transcript.done'
-            yield TranscriptionChunk.new(type: TranscriptionChunk::PARTIAL, text:, raw: event)
+            yield TranscriptionChunk.new(type: :partial, text:, raw: event)
             return
           end
 
@@ -88,7 +88,7 @@ module RubyLLM
 
           delta = segments.empty? ? text : " #{text}"
           segments << segment
-          yield TranscriptionChunk.new(type: TranscriptionChunk::SEGMENT, delta:, segment:, raw: event)
+          yield TranscriptionChunk.new(type: :segment, delta:, segment:, raw: event)
         end
 
         def parse_transcription_segment(event)

@@ -210,6 +210,22 @@ job.provider # => "vertexai"
 
 `RubyLLM::ResearchJob.find` still accepts a Symbol or a String for `provider:`, so a stored slug keeps working.
 
+## Transcription Chunk Types Are Symbols
+
+`TranscriptionChunk#type` is `:delta`, `:partial`, `:segment`, or `:done` on every provider. It no longer returns OpenAI's event names, and the `DELTA`, `PARTIAL`, `SEGMENT`, and `DONE` constants are gone:
+
+```ruby
+# 2.1
+chunk.type == RubyLLM::TranscriptionChunk::DONE
+chunk.type == "transcript.text.delta"
+
+# 2.2
+chunk.done?
+chunk.type == :delta
+```
+
+The `delta?`, `partial?`, `segment?`, and `done?` predicates work as before. An event RubyLLM does not normalize has a `nil` type; read the provider's own name from `chunk.raw`.
+
 ## Deploy Without Mixing Versions
 
 Workers on 2.1 do not claim chats, so they can still overlap with workers on 2.2 while a deploy rolls out. Run the schema upgrade first, then let the new version replace every worker before you rely on claims. Chats that run once all workers are on 2.2 are covered.

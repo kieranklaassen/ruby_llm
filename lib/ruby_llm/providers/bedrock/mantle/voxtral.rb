@@ -33,14 +33,14 @@ module RubyLLM
               @usage_tracker.observe(chunk) if chunk.tokens.input || chunk.tokens.output
               next if chunk.content.to_s.empty?
 
-              yield RubyLLM::TranscriptionChunk.new(type: RubyLLM::TranscriptionChunk::DELTA, delta: chunk.content)
+              yield RubyLLM::TranscriptionChunk.new(type: :delta, delta: chunk.content)
             end
             unless message.finish_reason == :stop
               raise Error.new('Bedrock Voxtral did not complete the transcript', response: message.raw)
             end
 
             result = RubyLLM::Transcription.new(text: message.content.to_s, model: message.model || model)
-            yield RubyLLM::TranscriptionChunk.new(type: RubyLLM::TranscriptionChunk::DONE, text: result.text)
+            yield RubyLLM::TranscriptionChunk.new(type: :done, text: result.text)
             tokens = message.tokens
             tokens = Tokens.new if tokens.input.nil? && tokens.output.nil?
             @usage_tracker.succeed_attempts(tokens: [tokens])

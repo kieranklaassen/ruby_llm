@@ -14,7 +14,7 @@ module RubyLLM
             @usage_tracker.start
             events = collect_transcription(audio, setup, &block)
             result = parse_transcription_events(events, audio:, model:)
-            block&.call(TranscriptionChunk.new(type: TranscriptionChunk::DONE, text: result.text, raw: events.last))
+            block&.call(TranscriptionChunk.new(type: :done, text: result.text, raw: events.last))
             result
           end
         end
@@ -118,10 +118,10 @@ module RubyLLM
 
           content = event['serverContent'] || {}
           if content['interimInputTranscription']
-            yield TranscriptionChunk.new(type: TranscriptionChunk::PARTIAL,
+            yield TranscriptionChunk.new(type: :partial,
                                          text: content.dig('interimInputTranscription', 'text'), raw: event)
           elsif content['inputTranscription']
-            yield TranscriptionChunk.new(type: TranscriptionChunk::DELTA,
+            yield TranscriptionChunk.new(type: :delta,
                                          delta: content.dig('inputTranscription', 'text'), raw: event)
           end
         end

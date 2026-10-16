@@ -145,7 +145,7 @@ RSpec.describe RubyLLM::Providers::Deepgram do
       headers: hash_including('Authorization' => a_string_starting_with('Token ')), config: RubyLLM.config
     )
     expect(result.duration).to eq(3.7)
-    expect(chunks.map(&:type)).to eq([RubyLLM::TranscriptionChunk::DONE])
+    expect(chunks.map(&:type)).to eq([:done])
   end
 
   describe 'audio', :live do

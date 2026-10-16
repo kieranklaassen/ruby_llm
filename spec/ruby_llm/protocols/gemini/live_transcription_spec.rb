@@ -34,8 +34,7 @@ RSpec.describe RubyLLM::Protocols::Gemini::LiveTranscription do
 
     expect(result).to have_attributes(text: 'Hello.', duration: 3.7, words: nil)
     expect(result.tokens).to have_attributes(input: 12, output: 2)
-    expect(chunks.map(&:type)).to eq([RubyLLM::TranscriptionChunk::PARTIAL,
-                                      RubyLLM::TranscriptionChunk::DELTA, RubyLLM::TranscriptionChunk::DONE])
+    expect(chunks.map(&:type)).to eq(%i[partial delta done])
     expect(chunks.filter_map(&:delta).join).to eq(result.text)
     expect(socket).to have_received(:close).once
   end

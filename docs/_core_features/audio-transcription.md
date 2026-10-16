@@ -169,7 +169,7 @@ puts transcription.text
 | `chunk.segment?` | `chunk.segment`, a Hash with speaker and timing fields |
 | `chunk.done?` | `chunk.text`, the complete transcript when supplied by the endpoint |
 
-Read the final transcript from `transcription.text`. `chunk.raw` holds the original event when you need additional fields.
+Read the final transcript from `transcription.text`. `chunk.type` names the event as `:partial`, `:delta`, `:segment`, or `:done`, whichever provider sent it. `chunk.raw` holds the original event when you need additional fields.
 
 Diarization models can stream speaker segments:
 

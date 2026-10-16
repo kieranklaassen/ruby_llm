@@ -3,6 +3,31 @@
 require 'spec_helper'
 
 RSpec.describe RubyLLM::Protocols::ChatCompletions::Transcription do
+  describe '.build_transcription_chunk' do
+    it 'maps the wire event names onto chunk types' do
+      events = [
+        { 'type' => 'transcript.text.delta', 'delta' => 'Hello' },
+        { 'type' => 'transcript.text.segment', 'text' => 'Hello', 'speaker' => 'A' },
+        { 'type' => 'transcript.text.done', 'text' => 'Hello' }
+      ]
+
+      chunks = events.map { |event| described_class.build_transcription_chunk(event) }
+
+      expect(chunks.map(&:type)).to eq(%i[delta segment done])
+      expect(chunks.map(&:raw)).to eq(events)
+      expect(chunks[1].segment).to eq('text' => 'Hello', 'speaker' => 'A')
+      expect(chunks[2]).to have_attributes(text: 'Hello', done?: true)
+    end
+
+    it 'leaves the type of an unknown event nil and keeps the event' do
+      event = { 'type' => 'transcript.text.unknown', 'detail' => 'x' }
+
+      chunk = described_class.build_transcription_chunk(event)
+
+      expect(chunk).to have_attributes(type: nil, raw: event, done?: false)
+    end
+  end
+
   describe '.render_transcription_payload' do
     it 'defaults diarize models to diarized_json and chooses no chunking strategy' do
       payload = described_class.render_transcription_payload(
