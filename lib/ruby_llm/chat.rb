@@ -85,7 +85,9 @@ module RubyLLM
     # The Fallback models tried in order when generation fails.
     attr_reader :fallbacks
 
-    # Whether #with_citations asked the provider for citations.
+    # Whether #with_citations asked the provider for citations. Always
+    # +true+ or +false+, never +nil+: citations take no options, so a new
+    # chat starts with +false+.
     attr_reader :citations
 
     # The code execution options set with #with_code_execution, +false+
