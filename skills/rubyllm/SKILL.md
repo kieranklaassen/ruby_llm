@@ -35,8 +35,10 @@ Read the relevant page instead of loading the entire documentation site:
 | --- | --- |
 | Understand the framework's structure | `overview/` |
 | Configure a provider or select a model | `configuration/`, `configuration-providers/`, `models/` |
+| Set timeouts, logging, or per-tenant contexts | `configuration-connection/` |
 | Chat, stream, or attach files | `chat/`, `streaming/`, `attachments/` |
-| Declare tools or require approval | `tools/`, `tool-parameters/`, `tool-execution/` |
+| Observe chat events or customize requests | `chat-callbacks/`, `chat-request-control/` |
+| Declare tools, defer them, or require approval | `tools/`, `tool-parameters/`, `tool-execution/`, `tool-search/` (2.1) |
 | Use tools from MCP servers (2.1) | `mcp/` |
 | Use provider-hosted tools such as web search | `provider-tools/`, `citations/` |
 | Parse structured output | `structured-output/` |
