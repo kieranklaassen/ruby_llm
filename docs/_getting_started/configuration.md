@@ -68,14 +68,14 @@ end
 ```
 
 Defaults if not configured:
-- Chat: `gpt-6.1-sol`
+- Chat: `{{ site.models.default_chat }}`
 - Embeddings: `{{ site.models.default_embedding }}`
 - Images: `{{ site.models.default_image }}`
-- Videos: `grok-imagine-video-1.5`
+- Videos: `{{ site.models.default_video }}`
 - Speech: `{{ site.models.default_speech }}`
-- Moderation: `omni-moderation-latest`
-- Transcription: `gpt-transcribe`
-- OCR: `mistral-ocr-latest`
+- Moderation: `{{ site.models.default_moderation }}`
+- Transcription: `{{ site.models.default_transcription }}`
+- OCR: `{{ site.models.default_ocr }}`
 - Judgments: `{{ site.models.judgment }}`
 
 `rerank` requires `model:` on each call; it has no default model setting.
