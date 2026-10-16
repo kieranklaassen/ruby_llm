@@ -3,7 +3,7 @@ layout: default
 title: Model Resolution
 parent: "Model Registry"
 nav_order: 1
-description: How RubyLLM turns a model name into a concrete model and provider, step by step, covering aliases, the registry, provider preference, and unlisted models.
+description: Follow how RubyLLM turns a model name into a concrete model and provider, step by step, covering aliases, the registry, provider preference, and unlisted models.
 ---
 
 # {{ page.title }}

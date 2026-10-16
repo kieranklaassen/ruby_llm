@@ -3,7 +3,7 @@ layout: default
 title: Tool Parameters
 parent: "Tools"
 nav_order: 1
-description: Declare tool arguments - from inferred signatures to full JSON Schema, rich return values, and provider-specific metadata.
+description: Declare tool arguments, from inferred signatures to full JSON Schema, with rich return values and provider-specific metadata.
 ---
 
 # {{ page.title }}
