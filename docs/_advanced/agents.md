@@ -79,6 +79,7 @@ For example, `model` maps to `RubyLLM.chat(model:, provider:, ...)`, `tools` map
 
 * `model`, and its `provider:` and `protocol:` options (see [Chat]({% link _core_features/chat.md %}) and [Advanced Request Control]({% link _core_features/chat-request-control.md %}#choosing-the-wire-protocol))
 * `tools` (see [Tools]({% link _core_features/tools.md %}))
+* `mcp` (see [MCP Client]({% link _core_features/mcp.md %}))
 * `tool_options` (see [Controlling Tool Execution]({% link _core_features/tool-execution.md %}))
 * `provider_tools` (see [Provider Tools]({% link _core_features/provider-tools.md %}))
 * `instructions` (see [Chat]({% link _core_features/chat.md %}))
@@ -90,6 +91,7 @@ For example, `model` maps to `RubyLLM.chat(model:, provider:, ...)`, `tools` map
 * `end_user` (see [Advanced Request Control]({% link _core_features/chat-request-control.md %}#identifying-end-users))
 * `compaction` (see [Advanced Request Control]({% link _core_features/chat-request-control.md %}#compacting-long-conversations))
 * `code_execution` (see [Code Execution]({% link _core_features/code-execution.md %}))
+* `skills` (see [Skills]({% link _core_features/skills.md %}))
 * `provider_options` (see [Advanced Request Control]({% link _core_features/chat-request-control.md %}))
 * `headers` (see [Advanced Request Control]({% link _core_features/chat-request-control.md %}#custom-http-headers))
 * `schema` (see [Structured Output]({% link _core_features/structured-output.md %}))
@@ -97,6 +99,7 @@ For example, `model` maps to `RubyLLM.chat(model:, provider:, ...)`, `tools` map
 * `context` (see [Configuration Contexts](#configuration-contexts))
 * `chat_model` (Rails-backed mode)
 * `inputs` (declared runtime inputs)
+* `rescue_from` (see [Handling Errors with `rescue_from`](#handling-errors-with-rescue_from))
 
 Call `caching` without options to use the provider's default prompt cache policy:
 
