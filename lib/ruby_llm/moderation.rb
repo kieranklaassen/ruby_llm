@@ -98,7 +98,7 @@ module RubyLLM
                       metadata: nil,
                       owner: nil)
       attachments = Attachment.wrap(with)
-      raise ArgumentError, 'must provide input text, image attachment, or both' if input.nil? && attachments.empty?
+      raise ArgumentError, 'Moderation needs text, an image attachment, or both' if input.nil? && attachments.empty?
 
       config = context&.config || RubyLLM.config
       model, provider_instance = Models.resolve(model, provider: provider, assume_model_exists: assume_model_exists,
