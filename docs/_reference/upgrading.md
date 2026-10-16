@@ -372,6 +372,8 @@ rescue RubyLLM::ConfigurationError => e
   e.message # => 'Vertex AI hosted research requires vertexai_location = "global"'
 ```
 
+An agent class without `chat_model` raises it as well, from `find`, `create`, `create!`, and `sync_instructions`, where 2.1 raised `ArgumentError`.
+
 `ConfigurationError` inherits from `StandardError`, so `rescue RubyLLM::Error` no longer catches the GPUStack case.
 
 ## Deploy Without Mixing Versions

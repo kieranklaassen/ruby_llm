@@ -411,16 +411,16 @@ RSpec.describe RubyLLM::Agent do
   describe 'Rails mode' do
     it 'requires a chat model for find' do
       expect { Class.new(described_class).find(1) }.to raise_error(
-        ArgumentError, 'chat_model must be configured to use find'
+        RubyLLM::ConfigurationError, 'chat_model must be configured to use find'
       )
     end
 
     it 'requires a chat model for create' do
       expect { Class.new(described_class).create }.to raise_error(
-        ArgumentError, 'chat_model must be configured to use create/create!'
+        RubyLLM::ConfigurationError, 'chat_model must be configured to use create/create!'
       )
       expect { Class.new(described_class).create! }.to raise_error(
-        ArgumentError, 'chat_model must be configured to use create/create!'
+        RubyLLM::ConfigurationError, 'chat_model must be configured to use create/create!'
       )
     end
 

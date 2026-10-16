@@ -587,7 +587,7 @@ module RubyLLM
       #
       #   chat = WorkAssistant.create(user: current_user)
       #
-      # Raises ArgumentError if ::chat_model is not configured.
+      # Raises ConfigurationError if ::chat_model is not configured.
       def create(**)
         with_rails_chat_record(:create, **)
       end
@@ -607,9 +607,9 @@ module RubyLLM
       #
       #   chat = WorkAssistant.find(params[:id])
       #
-      # Raises ArgumentError if ::chat_model is not configured.
+      # Raises ConfigurationError if ::chat_model is not configured.
       def find(id, **kwargs)
-        raise ArgumentError, 'chat_model must be configured to use find' unless resolved_chat_model
+        raise ConfigurationError, 'chat_model must be configured to use find' unless resolved_chat_model
 
         input_values, = partition_inputs(kwargs)
         record = resolved_chat_model.find(id)
@@ -625,9 +625,9 @@ module RubyLLM
       #
       #   WorkAssistant.sync_instructions(chat)
       #
-      # Raises ArgumentError if ::chat_model is not configured.
+      # Raises ConfigurationError if ::chat_model is not configured.
       def sync_instructions(chat_or_id, **kwargs)
-        raise ArgumentError, 'chat_model must be configured to use sync_instructions' unless resolved_chat_model
+        raise ConfigurationError, 'chat_model must be configured to use sync_instructions' unless resolved_chat_model
 
         input_values, = partition_inputs(kwargs)
         record = chat_or_id.is_a?(resolved_chat_model) ? chat_or_id : resolved_chat_model.find(chat_or_id)
@@ -740,7 +740,7 @@ module RubyLLM
       end
 
       def with_rails_chat_record(method_name, **kwargs)
-        raise ArgumentError, 'chat_model must be configured to use create/create!' unless resolved_chat_model
+        raise ConfigurationError, 'chat_model must be configured to use create/create!' unless resolved_chat_model
 
         input_values, chat_options = partition_inputs(kwargs)
         record = resolved_chat_model.public_send(
