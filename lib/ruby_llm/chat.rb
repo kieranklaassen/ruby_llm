@@ -648,10 +648,11 @@ module RubyLLM
       self
     end
 
-    # Sets fallback models to try, in order, when generation fails. +on:+
-    # selects the error classes that trigger a fallback; the default covers
-    # transient provider and network errors. Pass +nil+ to remove all
-    # fallbacks and restore the default error classes. Returns +self+.
+    # Sets fallback models to try, in order, when generation fails,
+    # replacing any fallbacks set earlier. +on:+ selects the error classes
+    # that trigger a fallback; the default covers transient provider and
+    # network errors. Pass +nil+ to remove all fallbacks and restore the
+    # default error classes. Returns +self+.
     #
     #   chat.with_fallbacks("gpt-4.1-mini", "claude-haiku-4-5")
     #   chat.with_fallbacks(nil)
