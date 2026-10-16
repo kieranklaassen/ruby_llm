@@ -107,12 +107,13 @@ module RubyLLM
 
       # Returns +true+, +false+, or the skill names and paths in
       # +selection+, the arguments of Chat#with_skills. Raises
-      # ArgumentError for +nil+, and for +true+ or +false+ with names.
-      def selection(selection) # :nodoc:
-        raise ArgumentError, 'Skills cannot be nil; pass false to remove them' if selection.include?(nil)
+      # ArgumentError for +nil+, and for +true+ or +false+ with names,
+      # naming the caller's method +name+.
+      def selection(selection, name: :with_skills) # :nodoc:
+        raise ArgumentError, "#{name} cannot take nil. Pass false to remove skills." if selection.include?(nil)
         return true if selection.empty? || selection == [true]
         return false if selection == [false]
-        raise ArgumentError, 'Skills true and false take no skill names' if selection.intersect?([true, false])
+        raise ArgumentError, "#{name} true and false take no skill names" if selection.intersect?([true, false])
 
         selection.flatten.freeze
       end

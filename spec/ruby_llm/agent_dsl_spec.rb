@@ -122,7 +122,7 @@ RSpec.describe RubyLLM::Agent do
       expect { Class.new(described_class) { compaction nil } }.to raise_error(ArgumentError)
       expect { Class.new(described_class) { citations nil } }.to raise_error(ArgumentError)
       expect { Class.new(described_class) { thinking effort: nil } }
-        .to raise_error(ArgumentError, 'thinking options cannot be nil; pass false to disable')
+        .to raise_error(ArgumentError, 'thinking options cannot be nil. Pass false to disable.')
     end
 
     it 'names the accepted values the same way on every feature declaration' do
@@ -148,7 +148,7 @@ RSpec.describe RubyLLM::Agent do
       expect { Class.new(described_class) { compaction keep: 1 } }
         .to raise_error(ArgumentError, 'compaction accepts :at, :instructions, :pause_after, got :keep')
       expect { Class.new(described_class) { compaction false, at: 1 } }
-        .to raise_error(ArgumentError, 'compaction false does not accept options')
+        .to raise_error(ArgumentError, 'compaction(false) does not accept options')
     end
 
     it 'does not carry verb aliases' do

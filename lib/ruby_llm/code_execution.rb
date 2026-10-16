@@ -57,16 +57,17 @@ module RubyLLM
       end
 
       # Returns the options +enabled+ and +options+ describe, +false+ when
-      # disabled. Raises ArgumentError for anything else.
-      def options(enabled, options) # :nodoc:
-        return options(true, enabled.transform_keys(&:to_sym).merge(options)) if enabled.is_a?(Hash)
+      # disabled. Raises ArgumentError for anything else, naming the
+      # caller's method +name+.
+      def options(enabled, options, name: :with_code_execution) # :nodoc:
+        return options(true, enabled.transform_keys(&:to_sym).merge(options), name:) if enabled.is_a?(Hash)
         unless [true, false].include?(enabled)
-          raise ArgumentError, 'Code execution accepts true, false, or code execution options'
+          raise ArgumentError, "#{name} accepts true, false, or code execution options"
         end
-        raise ArgumentError, 'Disabled code execution does not accept options' if !enabled && options.any?
+        raise ArgumentError, "#{name}(false) does not accept options" if !enabled && options.any?
         return false unless enabled
 
-        validate_options(options)
+        validate_options(options, name)
         options.merge(languages: languages_for(options)).freeze
       end
 
@@ -139,13 +140,13 @@ module RubyLLM
         Array(escalate_to).map { |sandbox| [Sandbox.name_for(sandbox), sandbox] }
       end
 
-      def validate_options(options)
+      def validate_options(options, name)
         unknown = options.keys - OPTIONS
         if unknown.any?
           raise ArgumentError,
-                "Code execution accepts #{Support::Utils.option_list(OPTIONS)}, got #{Support::Utils.option_list(unknown)}"
+                "#{name} accepts #{Support::Utils.option_list(OPTIONS)}, got #{Support::Utils.option_list(unknown)}"
         end
-        raise ArgumentError, 'Code execution options cannot be nil' if options.value?(nil)
+        raise ArgumentError, "#{name} options cannot be nil" if options.value?(nil)
 
         validate_packages(options)
         escalations(options[:escalate_to]) if options.key?(:escalate_to)

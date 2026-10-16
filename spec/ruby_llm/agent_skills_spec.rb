@@ -47,8 +47,8 @@ RSpec.describe RubyLLM::Agent do
   end
 
   it 'rejects nil and true or false with names when declared' do
-    expect { agent_with { skills nil } }.to raise_error(ArgumentError, /cannot be nil/)
-    expect { agent_with { skills true, :ticket_codes } }.to raise_error(ArgumentError, /take no skill names/)
+    expect { agent_with { skills nil } }.to raise_error(ArgumentError, /\Askills cannot take nil/)
+    expect { agent_with { skills true, :ticket_codes } }.to raise_error(ArgumentError, /\Askills true and false/)
   end
 
   it 'raises when the chat is built with a missing skill' do

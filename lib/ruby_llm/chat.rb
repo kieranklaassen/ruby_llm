@@ -708,7 +708,7 @@ module RubyLLM
         raise ArgumentError, 'with_thinking accepts true, false, or thinking options'
       end
       raise ArgumentError, 'with_thinking(false) does not accept options' if !enabled && options.any?
-      raise ArgumentError, 'thinking options cannot be nil; pass false to disable' if options.value?(nil)
+      raise ArgumentError, 'with_thinking options cannot be nil. Pass false to disable.' if options.value?(nil)
       if (unsupported = options.keys - THINKING_OPTIONS).any?
         raise ArgumentError,
               "with_thinking accepts #{Support::Utils.option_list(THINKING_OPTIONS)}, " \

@@ -270,7 +270,7 @@ module RubyLLM
         return thinking(**enabled.transform_keys(&:to_sym), **options) if enabled.is_a?(Hash)
 
         validate_switch_options(:thinking, enabled, options, THINKING_OPTIONS)
-        raise ArgumentError, 'thinking options cannot be nil; pass false to disable' if options.value?(nil)
+        raise ArgumentError, 'thinking options cannot be nil. Pass false to disable.' if options.value?(nil)
 
         @thinking = enabled ? options : false
       end
@@ -305,7 +305,7 @@ module RubyLLM
       # A +mounts+ lambda runs before each run, with +chat+ and the
       # agent's inputs in scope, like the agent's other lambdas.
       def code_execution(enabled = true, **options) # rubocop:disable Style/OptionalBooleanParameter
-        @code_execution = CodeExecution.options(enabled, options)
+        @code_execution = CodeExecution.options(enabled, options, name: :code_execution)
       end
 
       # Gives chats this agent builds the skills named, applied via
@@ -323,7 +323,7 @@ module RubyLLM
       def skills(*skills)
         return @skills if skills.empty?
 
-        @skills = Skill.selection(skills)
+        @skills = Skill.selection(skills, name: :skills)
       end
 
       # Sets the safety identifier for chats this agent builds, applied via
@@ -369,7 +369,7 @@ module RubyLLM
 
         raise ArgumentError, 'caching accepts true, false, or caching options' unless [true, false].include?(enabled)
         raise ArgumentError, 'Pass caching options or a block, not both' if options.any? && block
-        raise ArgumentError, 'caching false does not accept options or a block' if !enabled && (options.any? || block)
+        raise ArgumentError, 'caching(false) does not accept options or a block' if !enabled && (options.any? || block)
 
         @caching = block || (enabled ? options : false)
       end
@@ -702,7 +702,7 @@ module RubyLLM
 
       def validate_switch_options(name, enabled, options, supported)
         raise ArgumentError, "#{name} accepts true, false, or #{name} options" unless [true, false].include?(enabled)
-        raise ArgumentError, "#{name} false does not accept options" if !enabled && options.any?
+        raise ArgumentError, "#{name}(false) does not accept options" if !enabled && options.any?
 
         unsupported = options.keys - supported
         return if unsupported.empty?
