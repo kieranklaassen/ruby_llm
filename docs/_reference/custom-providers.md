@@ -302,7 +302,7 @@ RubyLLM.chat(model: model.id).ask('Hi')
 > If your provider uses an acronym or mixed-case constant (like `OpenAI` or `XAI`), Zeitwerk needs an inflection rule to map the file name to the constant. With explicit `require_relative` calls as shown, you sidestep autoloading entirely and avoid the inflection setup.
 {: .note }
 
-## What's Next?
+## Next Steps
 
 You can now teach RubyLLM to speak to any AI service, whether it reuses an existing wire format or needs a brand-new one. From here:
 

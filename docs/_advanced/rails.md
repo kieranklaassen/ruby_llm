@@ -149,7 +149,7 @@ A process that dies mid-request removes nothing: its placeholder stays blank, an
 
 Allow assistant messages to have empty content. Streaming begins before text arrives, and tool calls can be valid responses without text. A blanket `validates :content, presence: true` on `Message` prevents these flows.
 
-## Going further
+## Next Steps
 
 * [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - records, associations, tools, usage, and custom model names.
 * [Streaming with Hotwire/Turbo]({% link _advanced/rails-streaming.md %}) - broadcasts, cancellation, and message ordering.

@@ -309,7 +309,7 @@ bin/rails generate ruby_llm:chat_ui
 
 Then visit `http://localhost:3000/chats` to start chatting. See [Rails Integration]({% link _advanced/rails.md %}) for full details.
 
-## What's Next?
+## Next Steps
 
 Continue with the guide for the feature you want to build:
 

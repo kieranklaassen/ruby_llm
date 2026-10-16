@@ -96,7 +96,7 @@ Three values take part in every case:
 
 RubyLLM finds the dataset by class name. `SupportEvaluation` uses `app/evals/support_evaluation.yml`, and `Support::AnswerEvaluation` uses `app/evals/support/answer_evaluation.yml`. Rails resolves `app/evals` from the application root and autoloads the classes in it. Plain Ruby resolves it from the working directory.
 
-## Continue the Guide
+## Next Steps
 
 * [Evaluation Datasets]({% link _advanced/evaluation-datasets.md %}): file formats, structured inputs, and cases from your database.
 * [Evaluating Conversations and Tools]({% link _advanced/evaluation-conversations.md %}): several turns, saved transcripts, and tool calls.
