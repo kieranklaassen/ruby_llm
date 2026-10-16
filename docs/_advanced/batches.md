@@ -214,6 +214,6 @@ See [batch setup]({% link _getting_started/configuration-providers.md %}#batch-p
 
 ## Next Steps
 
-* [Chatting with AI Models]({% link _core_features/chat.md %})
-* [Using Tools]({% link _core_features/tools.md %})
+* [Chat]({% link _core_features/chat.md %})
+* [Tools]({% link _core_features/tools.md %})
 * [Rails Integration]({% link _advanced/rails.md %})

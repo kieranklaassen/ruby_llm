@@ -339,6 +339,6 @@ Debug logs show request and response headers and bodies, with API keys filtered.
 
 ## Next Steps
 
-* [Using Tools]({% link _core_features/tools.md %})
-* [Streaming Responses]({% link _core_features/streaming.md %})
+* [Tools]({% link _core_features/tools.md %})
+* [Stream Responses]({% link _core_features/streaming.md %})
 * [Rails Integration]({% link _advanced/rails.md %})

@@ -196,7 +196,7 @@ report = RubyLLM.with_usage_owner(account) do
 end
 ```
 
-See [Cost and Usage Tracking]({% link _core_features/cost-and-usage-tracking.md %}) for owners and unknown costs.
+See [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) for owners and unknown costs.
 
 ## Comparing Runs
 

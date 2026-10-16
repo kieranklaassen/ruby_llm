@@ -273,7 +273,7 @@ judgment.tokens.output
 judgment.cost.total
 ```
 
-Unknown costs remain `nil`. The provider's catalog does not necessarily include pricing. See [Cost and Usage Tracking]({% link _core_features/cost-and-usage-tracking.md %}).
+Unknown costs remain `nil`. The provider's catalog does not necessarily include pricing. See [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}).
 
 Pass `model:`, `provider:`, `context:`, `provider_options:`, or instrumentation `metadata:` to `judge`. You can also declare `provider_options` on a Judge class as a Hash, proc, or block. Reserved input, question, and model fields must use the public arguments. `RubyLLM.context` exposes the same `judge` entry point for isolated credentials and settings.
 

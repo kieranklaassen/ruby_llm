@@ -76,7 +76,7 @@ end
 
 ## Usage Events
 
-`after_message` observes transcript changes. A cancelled request may produce no message, so use `usage.ruby_llm` for accounting across provider attempts, including retries and cancellations. See [Cost and Usage Tracking]({% link _core_features/cost-and-usage-tracking.md %}) and [Instrumentation]({% link _advanced/instrumentation.md %}).
+`after_message` observes transcript changes. A cancelled request may produce no message, so use `usage.ruby_llm` for accounting across provider attempts, including retries and cancellations. See [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) and [Instrumentation]({% link _advanced/instrumentation.md %}).
 
 The 1.x `on_*` handlers were replaced in 2.0. See the [2.0 upgrade guide](https://github.com/crmne/ruby_llm/blob/v2.0.0/docs/_reference/upgrading.md#chat-callbacks) for the name changes.
 
@@ -84,7 +84,7 @@ The 1.x `on_*` handlers were replaced in 2.0. See the [2.0 upgrade guide](https:
 
 * [Chat]({% link _core_features/chat.md %}) - the core conversation interface these events fire on.
 * [Streaming]({% link _core_features/streaming.md %}) - stream chunks as the assistant generates them.
-* [Cost and Usage Tracking]({% link _core_features/cost-and-usage-tracking.md %}) - observe provider attempts independently from messages.
+* [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) - observe provider attempts independently from messages.
 * [Tools]({% link _core_features/tools.md %}) - define the tools whose calls and results these callbacks observe.
 * [Error Handling]({% link _advanced/error-handling.md %}#model-fallbacks) - configure model fallbacks and fallback error handling.
 * [Rails Integration]({% link _advanced/rails.md %}) - see how persistence callbacks run alongside your own.
