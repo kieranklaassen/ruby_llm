@@ -113,6 +113,17 @@ RSpec.describe RubyLLM::MCP::OAuth do
     expect(registration).to have_been_made
   end
 
+  it 'keeps the query of the authorization endpoint' do
+    stub_request(:get, 'https://auth.example.com/.well-known/oauth-authorization-server')
+      .to_return(body: authorization_server.merge(
+        authorization_endpoint: 'https://auth.example.com/authorize?p=b2c_1_signin'
+      ).to_json)
+
+    params = URI.decode_www_form(URI(linear.authorization_url(redirect_uri:)).query).to_h
+
+    expect(params).to include('p' => 'b2c_1_signin', 'response_type' => 'code', 'client_id' => 'registered')
+  end
+
   it 'registers for the scopes it requests, and again when it needs more' do
     linear.authorization_url(redirect_uri:)
     url = linear_class.new(user: 'ada').authorization_url(redirect_uri:)
@@ -142,6 +153,45 @@ RSpec.describe RubyLLM::MCP::OAuth do
       form.values_at('grant_type', 'resource') == ['authorization_code', server_url] && form['code_verifier']
     end
     expect(exchange).to have_been_made
+  end
+
+  describe 'the resource the server publishes' do
+    def resource = 'https://mcp.example.com'
+    def store = RubyLLM.config.mcp_credential_store
+    def key = "ada@#{server_url}"
+
+    def token_resources
+      resources = []
+      expect(a_request(:post, 'https://auth.example.com/token').with do |request|
+        resources << URI.decode_www_form(request.body).to_h['resource']
+      end).to have_been_made.at_least_once
+      resources
+    end
+
+    before do
+      stub_request(:get, 'https://mcp.example.com/.well-known/oauth-protected-resource/mcp')
+        .to_return(body: { resource:, authorization_servers: ['https://auth.example.com'] }.to_json)
+    end
+
+    it 'is the resource of the authorization, the code exchange, and every refresh' do
+      url = linear.authorization_url(redirect_uri:)
+      linear_class.new(user: 'ada').authorize(callback(url))
+      store.write(key, store.read(key).merge('access_token' => 'stale'))
+
+      linear_class.new(user: 'ada').tools
+
+      expect(URI.decode_www_form(URI(url).query).to_h['resource']).to eq(resource)
+      expect(token_resources).to eq([resource, resource])
+    end
+
+    it 'falls back to the server URL for credentials stored without it' do
+      linear.authorize(callback(linear.authorization_url(redirect_uri:)))
+      store.write(key, store.read(key).except('resource').merge('access_token' => 'stale'))
+
+      linear_class.new(user: 'ada').tools
+
+      expect(token_resources).to eq([resource, server_url])
+    end
   end
 
   it 'declares no authorization extension for apps that users authorize' do

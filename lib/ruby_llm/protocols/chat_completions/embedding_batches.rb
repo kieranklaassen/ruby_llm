@@ -26,20 +26,30 @@ module RubyLLM
           payload.key?(:input) || payload.key?('input')
         end
 
-        def parse_batch_completion_response(body)
-          parse_embedding_response(Response.new(body), model: body['model'], text: nil)
+        def batch_request_line(request)
+          line = super
+          line[:custom_id] = "#{line[:custom_id]}:array" if request[:text].is_a?(Array)
+          line
+        end
+
+        def parse_batch_completion_response(body, shape: nil)
+          parse_embedding_response(Response.new(body), model: body['model'], text: shape == 'array' ? [] : nil)
         end
 
         def parse_batch_result(line)
+          custom_id, shape = line['custom_id'].split(':', 2)
+          line = line.merge('custom_id' => custom_id)
           body = line.dig('response', 'body')
           return super unless body.is_a?(Hash) && body['data'].is_a?(Array)
+
+          index = batch_result_index(custom_id)
           unless valid_embedding_positions?(body['data'])
-            return [batch_result_index(line['custom_id']), nil,
-                    batch_failure(line['custom_id'], 'Invalid or duplicate embedding record positions')]
+            return [index, nil, batch_failure(custom_id, 'Invalid or duplicate embedding record positions')]
           end
+          return super unless line['response']['status_code'].to_i.between?(200, 299)
 
           ordered = body.merge('data' => body['data'].sort_by { |row| row['index'] })
-          super(line.merge('response' => line['response'].merge('body' => ordered)))
+          [index, parse_batch_completion_response(ordered, shape:)]
         end
 
         # A row's index names the input its vector belongs to, so rows are put

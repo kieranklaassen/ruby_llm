@@ -135,6 +135,52 @@ RSpec.describe RubyLLM::ActiveRecord::ChatMethods do
       expect(chat.model).to be_a(RubyLLM::ActiveRecord::Model)
     end
 
+    it 'uses a model assigned to a saved record before saving it again' do
+      chat = Chat.create!(model: model_id)
+      other = model_for(:openai, :alternate_chat)
+
+      Chat.find(chat.id).tap { |record| record.model = other }.then do |record|
+        expect(record.model_id).to eq(other)
+        expect(record.to_llm.model.id).to eq(other)
+      end
+      Chat.find(chat.id).tap { |record| record.model_id = other }.then do |record|
+        expect(record.model_id).to eq(other)
+        expect(record.to_llm.model.id).to eq(other)
+      end
+    end
+
+    it 'leaves the provider of a newly assigned model to the registry' do
+      chat = Chat.create!(model: model_id)
+
+      chat.model = model_for(:anthropic)
+
+      expect(chat.provider).to be_nil
+      expect(chat.to_llm.model.provider).to eq('anthropic')
+      expect(chat.tap(&:save!).reload.provider).to eq('anthropic')
+    end
+
+    it 'switches the underlying chat when a model is assigned after it was built' do
+      chat = Chat.create!(model: model_id)
+      llm_chat = chat.to_llm.with_temperature(0.2)
+
+      chat.model = model_for(:openai, :alternate_chat)
+
+      expect(chat.to_llm).to be(llm_chat)
+      expect(llm_chat.model.id).to eq(model_for(:openai, :alternate_chat))
+      expect(llm_chat.temperature).to eq(0.2)
+    end
+
+    it 'uses a provider assigned to a saved record' do
+      chat = Chat.create!(model: model_id)
+
+      chat.provider = 'azure'
+
+      expect(chat.provider).to eq('azure')
+      expect(chat.to_llm.model.provider).to eq('azure')
+      expect(chat.tap(&:save!).reload.provider).to eq('azure')
+      expect(chat.model_id).to eq(model_id)
+    end
+
     it 'switches models with #with_model' do
       chat = Chat.create!(model: model_id)
 
@@ -803,6 +849,25 @@ RSpec.describe RubyLLM::ActiveRecord::ChatMethods do
       expect(RubyLLM::ActiveRecord::ToolCall.find_by(tool_call_id: call.id).approval).to eq('denied')
     end
 
+    it 'denies a call it approved earlier' do
+      runs = []
+      charge = Class.new(RubyLLM::Tool) do
+        requires_approval
+        define_method(:name) { 'charge_card' }
+        define_method(:execute) { runs << :charged }
+      end
+      call = tool_call(name: 'charge_card')
+      chat = Chat.create!(model: model_id).with_tools(charge)
+      chat.add_message(RubyLLM::Message.new(role: :assistant, content: '', tool_calls: { call.id => call }))
+
+      chat.approve(call.id)
+      chat.deny(call.id)
+      chat.run_tools
+
+      expect(runs).to be_empty
+      expect(chat.messages.reload.last.content).to include('The user denied the charge_card tool call.')
+    end
+
     it 'accepts a RubyLLM::ToolCall value' do
       call = tool_call
       chat = Chat.create!(model: model_id)
@@ -939,7 +1004,8 @@ RSpec.describe RubyLLM::ActiveRecord::ChatMethods do
       record = chat.instance_variable_get(:@message)
       restored = record.to_llm
       expect(restored.server_tool_calls.first.type).to eq('server_tool_use')
-      expect(restored.server_tool_calls.first.raw).to eq(RubyLLM::Support::Utils.deep_symbolize_keys(raw_block))
+      expect(restored.server_tool_calls.first.input).to eq('query' => 'ruby')
+      expect(restored.server_tool_calls.first.raw).to eq(raw_block)
       expect(restored.raw_content.length).to eq(2)
     end
   end
