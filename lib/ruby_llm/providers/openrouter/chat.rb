@@ -170,7 +170,7 @@ module RubyLLM
           attachment.pdf?
         end
 
-        def extract_thinking_text(message_data)
+        def parse_thinking_text(message_data)
           candidate = message_data['reasoning']
           return candidate if candidate.is_a?(String)
 
@@ -189,7 +189,7 @@ module RubyLLM
           text.empty? ? nil : text
         end
 
-        def extract_thinking_signature(message_data)
+        def parse_thinking_signature(message_data)
           details = message_data['reasoning_details']
           return nil unless details.is_a?(Array)
 
@@ -204,7 +204,7 @@ module RubyLLM
 
         # OpenRouter requires the reasoning_details array back untouched for
         # signed reasoning to survive multi-turn tool calls.
-        def extract_raw_reasoning(message_data)
+        def parse_raw_reasoning(message_data)
           details = message_data['reasoning_details']
           details if details.is_a?(Array) && !details.empty?
         end

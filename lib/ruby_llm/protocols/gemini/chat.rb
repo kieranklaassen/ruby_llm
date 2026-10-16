@@ -185,20 +185,20 @@ module RubyLLM
 
         def parse_completion_body(data, raw:)
           parts = data.dig('candidates', 0, 'content', 'parts') || []
-          tool_calls = extract_tool_calls(data)
+          tool_calls = parse_tool_calls(data)
           content, attachments = parse_content(data)
 
           Message.new(
             role: :assistant,
             content: content,
             attachments: attachments,
-            citations: extract_citations(data, content),
+            citations: parse_citations(data, content),
             thinking: Thinking.build(
-              text: extract_thought_parts(parts),
-              signature: extract_thought_signature(parts)
+              text: parse_thought_parts(parts),
+              signature: parse_thought_signature(parts)
             ),
             tool_calls: tool_calls,
-            server_tool_calls: extract_server_tool_calls(data, parts),
+            server_tool_calls: parse_server_tool_calls(data, parts),
             raw_content: parts.any? { |part| server_tool_part?(part) } ? without_search_suggestions(parts) : nil,
             input_tokens: input_tokens(data),
             output_tokens: calculate_output_tokens(data),
@@ -264,7 +264,7 @@ module RubyLLM
           end
         end
 
-        def extract_server_tool_calls(data, parts)
+        def parse_server_tool_calls(data, parts)
           calls = parts.select { |part| server_tool_part?(part) }.map do |part|
             ServerToolCall.new(
               type: part.key?('executableCode') ? 'executable_code' : 'code_execution_result',
@@ -295,7 +295,7 @@ module RubyLLM
         end
 
         # Normalizes grounding metadata (Google Search grounding) into citations.
-        def extract_citations(data, content)
+        def parse_citations(data, content)
           metadata = data.dig('candidates', 0, 'groundingMetadata')
           return [] unless metadata
 
@@ -348,7 +348,7 @@ module RubyLLM
           content.byteslice(0, byte_index)&.length
         end
 
-        def extract_thought_parts(parts)
+        def parse_thought_parts(parts)
           thought_parts = parts.select { |p| p['thought'] }
           thoughts = thought_parts.filter_map { |p| p['text'] }.join
           thoughts.empty? ? nil : thoughts
@@ -356,7 +356,7 @@ module RubyLLM
 
         # Agentic video navigation steps carry signatures of their own, which
         # Gemini refuses on the answer they precede.
-        def extract_thought_signature(parts)
+        def parse_thought_signature(parts)
           parts.each do |part|
             next if part.key?('toolCall') || part.key?('toolResponse')
 

@@ -9,7 +9,7 @@ RSpec.describe RubyLLM::Protocols::Gemini::Tools do
     Object.new.tap { |obj| obj.extend(RubyLLM::Protocols::Gemini::Chat, described_class) }
   end
 
-  describe '#extract_tool_calls' do
+  describe '#parse_tool_calls' do
     it 'captures all function calls returned in a single candidate' do
       data = {
         'candidates' => [
@@ -25,7 +25,7 @@ RSpec.describe RubyLLM::Protocols::Gemini::Tools do
         ]
       }
 
-      tool_calls = test_obj.extract_tool_calls(data)
+      tool_calls = test_obj.parse_tool_calls(data)
 
       expect(tool_calls&.size).to eq(2)
       expect(tool_calls.values.map(&:name)).to eq(%w[weather best_language_to_learn])
@@ -201,12 +201,12 @@ RSpec.describe RubyLLM::Protocols::Gemini::Tools do
     end
   end
 
-  describe '#extract_tool_calls on malformed responses' do
+  describe '#parse_tool_calls on malformed responses' do
     it 'is nil for a response Gemini did not send' do
-      expect(test_obj.send(:extract_tool_calls, nil)).to be_nil
-      expect(test_obj.send(:extract_tool_calls, 'not a hash')).to be_nil
-      expect(test_obj.send(:extract_tool_calls, { 'candidates' => [] })).to be_nil
-      expect(test_obj.send(:extract_tool_calls, { 'candidates' => [{ 'content' => {} }] })).to be_nil
+      expect(test_obj.send(:parse_tool_calls, nil)).to be_nil
+      expect(test_obj.send(:parse_tool_calls, 'not a hash')).to be_nil
+      expect(test_obj.send(:parse_tool_calls, { 'candidates' => [] })).to be_nil
+      expect(test_obj.send(:parse_tool_calls, { 'candidates' => [{ 'content' => {} }] })).to be_nil
     end
   end
 

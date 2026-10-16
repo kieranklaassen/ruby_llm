@@ -64,7 +64,7 @@ module RubyLLM
           [{ functionResponse: function_response }, *sibling_parts]
         end
 
-        def extract_tool_calls(data) # rubocop:disable Metrics/PerceivedComplexity
+        def parse_tool_calls(data) # rubocop:disable Metrics/PerceivedComplexity
           return nil unless data
 
           candidate = data.is_a?(Hash) ? data.dig('candidates', 0) : nil

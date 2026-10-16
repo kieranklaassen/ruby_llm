@@ -184,7 +184,7 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Tools do
     end
   end
 
-  describe '.extract_tool_call_thought_signature' do
+  describe '.parse_tool_call_thought_signature' do
     it 'extracts signature from nested structure' do
       tool_call = {
         'extra_content' => {
@@ -194,28 +194,28 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Tools do
         }
       }
 
-      result = described_class.extract_tool_call_thought_signature(tool_call)
+      result = described_class.parse_tool_call_thought_signature(tool_call)
       expect(result).to eq('test_sig')
     end
 
     it 'returns nil when extra_content is missing' do
       tool_call = { 'id' => 'call_1' }
 
-      result = described_class.extract_tool_call_thought_signature(tool_call)
+      result = described_class.parse_tool_call_thought_signature(tool_call)
       expect(result).to be_nil
     end
 
     it 'returns nil when google key is missing' do
       tool_call = { 'extra_content' => {} }
 
-      result = described_class.extract_tool_call_thought_signature(tool_call)
+      result = described_class.parse_tool_call_thought_signature(tool_call)
       expect(result).to be_nil
     end
 
     it 'returns nil when thought_signature is missing' do
       tool_call = { 'extra_content' => { 'google' => {} } }
 
-      result = described_class.extract_tool_call_thought_signature(tool_call)
+      result = described_class.parse_tool_call_thought_signature(tool_call)
       expect(result).to be_nil
     end
   end

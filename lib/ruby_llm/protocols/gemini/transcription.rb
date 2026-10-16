@@ -74,10 +74,10 @@ module RubyLLM
 
         def parse_transcription_response(response, model:)
           data = response.body
-          text = extract_text(data)
+          text = parse_text(data)
           raise_if_transcription_blocked(data, text, response)
 
-          usage = extract_usage(data)
+          usage = parse_usage(data)
 
           RubyLLM::Transcription.new(
             text: text,
@@ -94,12 +94,12 @@ module RubyLLM
           reason = data.dig('candidates', 0, 'finishReason') || data.dig('promptFeedback', 'blockReason')
           return unless data.dig('candidates', 0).nil? || normalize_finish_reason(reason) == :content_filter
 
-          usage = extract_usage(data)
+          usage = parse_usage(data)
           @usage_tracker&.observe_tokens(Tokens.new(input: usage[:input_tokens], output: usage[:output_tokens]))
           raise ContentFilterError.new(['Gemini blocked the transcription', reason].compact.join(': '), response:)
         end
 
-        def extract_text(data)
+        def parse_text(data)
           candidate = data.is_a?(Hash) ? data.dig('candidates', 0) : nil
           return unless candidate
 
@@ -108,7 +108,7 @@ module RubyLLM
           texts.join if texts.any?
         end
 
-        def extract_usage(data)
+        def parse_usage(data)
           metadata = data.is_a?(Hash) ? data['usageMetadata'] : nil
           return { input_tokens: nil, output_tokens: nil } unless metadata
 

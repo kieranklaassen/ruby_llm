@@ -108,7 +108,7 @@ module RubyLLM
           content_blocks = data.dig('output', 'message', 'content') || []
           usage = data['usage'] || {}
           thinking_text, thinking_signature = parse_thinking(content_blocks)
-          text_content, citations = extract_text_and_citations(content_blocks)
+          text_content, citations = parse_text_and_citations(content_blocks)
 
           Message.new(
             role: :assistant,
@@ -117,7 +117,7 @@ module RubyLLM
             thinking: Thinking.build(text: thinking_text, signature: thinking_signature),
             raw_reasoning: parse_thinking_blocks(content_blocks),
             tool_calls: parse_tool_calls(content_blocks),
-            server_tool_calls: extract_server_tool_calls(content_blocks),
+            server_tool_calls: parse_server_tool_calls(content_blocks),
             input_tokens: input_tokens(usage),
             output_tokens: usage['outputTokens'],
             cache_read_tokens: usage['cacheReadInputTokens'],
@@ -424,7 +424,7 @@ module RubyLLM
           end
         end
 
-        def extract_text_and_citations(content_blocks)
+        def parse_text_and_citations(content_blocks)
           text = +''
           citations = []
 
@@ -554,7 +554,7 @@ module RubyLLM
           !type.nil? && type != 'tool_result'
         end
 
-        def extract_server_tool_calls(content_blocks)
+        def parse_server_tool_calls(content_blocks)
           content_blocks.filter_map do |block|
             tool_use = block['toolUse']
             tool_result = block['toolResult']

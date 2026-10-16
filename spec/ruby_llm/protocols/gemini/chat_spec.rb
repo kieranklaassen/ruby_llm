@@ -317,9 +317,9 @@ RSpec.describe RubyLLM::Protocols::Gemini::Chat do
     end
   end
 
-  describe '#extract_citations' do
+  describe '#parse_citations' do
     it 'returns nothing without grounding metadata' do
-      expect(test_obj.send(:extract_citations, {}, 'text')).to eq([])
+      expect(test_obj.send(:parse_citations, {}, 'text')).to eq([])
     end
 
     it 'cites every grounding chunk when there are no supports' do
@@ -338,7 +338,7 @@ RSpec.describe RubyLLM::Protocols::Gemini::Chat do
         ]
       }
 
-      citations = test_obj.send(:extract_citations, data, 'text')
+      citations = test_obj.send(:parse_citations, data, 'text')
 
       expect(citations.map(&:url)).to eq(['https://a.example', 'https://b.example'])
       expect(citations.map(&:source_index)).to eq([0, 1])
@@ -358,7 +358,7 @@ RSpec.describe RubyLLM::Protocols::Gemini::Chat do
         ]
       }
 
-      citations = test_obj.send(:extract_citations, data, 'Café is French')
+      citations = test_obj.send(:parse_citations, data, 'Café is French')
 
       expect(citations.length).to eq(1)
       expect(citations.first.start_index).to eq(0)
@@ -377,7 +377,7 @@ RSpec.describe RubyLLM::Protocols::Gemini::Chat do
         ]
       }
 
-      citation = test_obj.send(:extract_citations, data, 'text').first
+      citation = test_obj.send(:parse_citations, data, 'text').first
 
       expect(citation.start_index).to be_nil
       expect(citation.end_index).to be_nil
@@ -394,15 +394,15 @@ RSpec.describe RubyLLM::Protocols::Gemini::Chat do
     end
   end
 
-  describe '#extract_thought_signature' do
+  describe '#parse_thought_signature' do
     it 'reads the signature off a function call part' do
       parts = [{ 'functionCall' => { 'thought_signature' => 'sig' } }]
 
-      expect(test_obj.send(:extract_thought_signature, parts)).to eq('sig')
+      expect(test_obj.send(:parse_thought_signature, parts)).to eq('sig')
     end
 
     it 'returns nil when no part carries one' do
-      expect(test_obj.send(:extract_thought_signature, [{ 'text' => 'hi' }])).to be_nil
+      expect(test_obj.send(:parse_thought_signature, [{ 'text' => 'hi' }])).to be_nil
     end
   end
 

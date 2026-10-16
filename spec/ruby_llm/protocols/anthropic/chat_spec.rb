@@ -886,8 +886,8 @@ RSpec.describe RubyLLM::Protocols::Anthropic::Chat do
     it 'keeps a display-omitted thinking block as thinking, not redacted data' do
       blocks = [{ 'type' => 'thinking', 'thinking' => '', 'signature' => 'sig' }, { 'type' => 'text', 'text' => 'hi' }]
       thinking = RubyLLM::Thinking.build(
-        text: protocol.send(:extract_thinking_content, blocks),
-        signature: protocol.send(:extract_thinking_signature, blocks)
+        text: protocol.send(:parse_thinking_content, blocks),
+        signature: protocol.send(:parse_thinking_signature, blocks)
       )
 
       expect(protocol.send(:build_thinking_block, claude_answer(thinking))).to eq(
@@ -940,24 +940,24 @@ RSpec.describe RubyLLM::Protocols::Anthropic::Chat do
     end
   end
 
-  describe '.extract_thinking_signature' do
+  describe '.parse_thinking_signature' do
     let(:protocol) { RubyLLM::Protocols::Anthropic.allocate }
 
     it 'reads the data field off a redacted thinking block' do
       blocks = [{ 'type' => 'redacted_thinking', 'data' => 'blob' }]
 
-      expect(protocol.send(:extract_thinking_signature, blocks)).to eq('blob')
+      expect(protocol.send(:parse_thinking_signature, blocks)).to eq('blob')
     end
 
     it 'is nil when no block carries thinking' do
-      expect(protocol.send(:extract_thinking_signature, [{ 'type' => 'text' }])).to be_nil
-      expect(protocol.send(:extract_thinking_content, [{ 'type' => 'text' }])).to be_nil
+      expect(protocol.send(:parse_thinking_signature, [{ 'type' => 'text' }])).to be_nil
+      expect(protocol.send(:parse_thinking_content, [{ 'type' => 'text' }])).to be_nil
     end
 
     it 'falls back to the text field of a thinking block' do
       blocks = [{ 'type' => 'thinking', 'text' => 'why' }]
 
-      expect(protocol.send(:extract_thinking_content, blocks)).to eq('why')
+      expect(protocol.send(:parse_thinking_content, blocks)).to eq('why')
     end
   end
 

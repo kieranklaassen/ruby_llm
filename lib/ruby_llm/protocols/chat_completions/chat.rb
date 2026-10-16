@@ -112,9 +112,9 @@ module RubyLLM
 
           usage = data['usage'] || {}
           thinking_tokens = thinking_tokens(usage)
-          content, thinking_from_blocks = extract_content_and_thinking(message_data['content'])
-          thinking_text = thinking_from_blocks || extract_thinking_text(message_data)
-          thinking_signature = extract_thinking_signature(message_data)
+          content, thinking_from_blocks = parse_content_and_thinking(message_data['content'])
+          thinking_text = thinking_from_blocks || parse_thinking_text(message_data)
+          thinking_signature = parse_thinking_signature(message_data)
 
           finish_reason = normalize_finish_reason(data.dig('choices', 0, 'finish_reason'))
 
@@ -123,7 +123,7 @@ module RubyLLM
             content: content,
             citations: extract_citations(message_data, data, content),
             thinking: Thinking.build(text: thinking_text, signature: thinking_signature),
-            raw_reasoning: extract_raw_reasoning(message_data),
+            raw_reasoning: parse_raw_reasoning(message_data),
             tool_calls: parse_tool_calls(message_data['tool_calls'], response: raw, finish_reason: finish_reason),
             input_tokens: input_tokens(usage),
             output_tokens: output_tokens(usage),
@@ -429,44 +429,44 @@ module RubyLLM
           payload
         end
 
-        def extract_thinking_text(message_data)
+        def parse_thinking_text(message_data)
           candidate = message_data['reasoning_content'] || message_data['reasoning'] || message_data['thinking']
           candidate.is_a?(String) ? candidate : nil
         end
 
-        def extract_thinking_signature(message_data)
+        def parse_thinking_signature(message_data)
           candidate = message_data['reasoning_signature'] || message_data['signature']
           candidate.is_a?(String) ? candidate : nil
         end
 
-        def extract_raw_reasoning(_message_data)
+        def parse_raw_reasoning(_message_data)
           nil
         end
 
-        def extract_content_and_thinking(content)
+        def parse_content_and_thinking(content)
           return [content, nil] unless content.is_a?(Array)
 
-          text = extract_text_from_blocks(content)
-          thinking = extract_thinking_from_blocks(content)
+          text = parse_text_from_blocks(content)
+          thinking = parse_thinking_from_blocks(content)
 
           [text.empty? ? nil : text, thinking.empty? ? nil : thinking]
         end
 
-        def extract_text_from_blocks(blocks)
+        def parse_text_from_blocks(blocks)
           blocks.filter_map do |block|
             block['text'] if block['type'] == 'text' && block['text'].is_a?(String)
           end.join
         end
 
-        def extract_thinking_from_blocks(blocks)
+        def parse_thinking_from_blocks(blocks)
           blocks.filter_map do |block|
             next unless block['type'] == 'thinking'
 
-            extract_thinking_text_from_block(block)
+            parse_thinking_text_from_block(block)
           end.join
         end
 
-        def extract_thinking_text_from_block(block)
+        def parse_thinking_text_from_block(block)
           thinking_block = block['thinking']
           return thinking_block if thinking_block.is_a?(String)
 

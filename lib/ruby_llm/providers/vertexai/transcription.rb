@@ -38,7 +38,7 @@ module RubyLLM
           raise_if_transcription_blocked(data, text, response)
           words = segments.flat_map { |segment| segment['words'] }
           RubyLLM::Transcription.new(text:, model:, segments: segments.empty? ? nil : segments,
-                                     words: words.empty? ? nil : words, **extract_usage(data))
+                                     words: words.empty? ? nil : words, **parse_usage(data))
         end
 
         def parse_transcription_segment(part)

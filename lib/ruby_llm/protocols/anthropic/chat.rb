@@ -208,11 +208,11 @@ module RubyLLM
         def parse_completion_body(data, raw:)
           content_blocks = data['content'] || []
 
-          text_content, citations = extract_text_and_citations(content_blocks)
-          thinking_content = extract_thinking_content(content_blocks)
-          thinking_signature = extract_thinking_signature(content_blocks)
+          text_content, citations = parse_text_and_citations(content_blocks)
+          thinking_content = parse_thinking_content(content_blocks)
+          thinking_signature = parse_thinking_signature(content_blocks)
           tool_use_blocks = Tools.find_tool_uses(content_blocks)
-          server_tool_calls = extract_server_tool_calls(content_blocks)
+          server_tool_calls = parse_server_tool_calls(content_blocks)
 
           build_message(data, content: text_content, citations:, thinking: thinking_content,
                               thinking_signature:, tool_use_blocks:, server_tool_calls:,
@@ -228,7 +228,7 @@ module RubyLLM
             type.end_with?('_tool_result')
         end
 
-        def extract_server_tool_calls(blocks)
+        def parse_server_tool_calls(blocks)
           blocks.select { |block| server_tool_block?(block) }.map do |block|
             ServerToolCall.new(
               type: block['type'],
@@ -241,7 +241,7 @@ module RubyLLM
           end
         end
 
-        def extract_text_and_citations(blocks)
+        def parse_text_and_citations(blocks)
           text = +''
           citations = []
 
@@ -284,14 +284,14 @@ module RubyLLM
 
         # An empty thinking text is a real block whose display was omitted;
         # collapsing it to nil would replay the signature as redacted data.
-        def extract_thinking_content(blocks)
+        def parse_thinking_content(blocks)
           thinking_blocks = blocks.select { |c| c['type'] == 'thinking' }
           return nil if thinking_blocks.empty?
 
           thinking_blocks.map { |c| c['thinking'] || c['text'] }.join
         end
 
-        def extract_thinking_signature(blocks)
+        def parse_thinking_signature(blocks)
           thinking_block = blocks.find { |c| c['type'] == 'thinking' } ||
                            blocks.find { |c| c['type'] == 'redacted_thinking' }
           thinking_block&.dig('signature') || thinking_block&.dig('data')
@@ -321,9 +321,9 @@ module RubyLLM
             raw_content: raw_content,
             input_tokens: usage['input_tokens'],
             output_tokens: usage['output_tokens'],
-            cache_read_tokens: extract_cache_read_tokens(data),
-            cache_write_tokens: extract_cache_write_tokens(data),
-            cache_write_tokens_by_ttl: extract_cache_write_by_ttl(data),
+            cache_read_tokens: parse_cache_read_tokens(data),
+            cache_write_tokens: parse_cache_write_tokens(data),
+            cache_write_tokens_by_ttl: parse_cache_write_by_ttl(data),
             thinking_tokens: thinking_tokens,
             server_tool_use: usage['server_tool_use'],
             finish_reason: normalize_finish_reason(data['stop_reason']),

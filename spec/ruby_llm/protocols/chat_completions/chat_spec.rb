@@ -538,21 +538,21 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
 
   describe 'thinking round-trips' do
     it 'reads reasoning out of the alternate field names' do
-      expect(described_class.extract_thinking_text({ 'reasoning' => 'why' })).to eq('why')
-      expect(described_class.extract_thinking_text({ 'thinking' => 'why' })).to eq('why')
-      expect(described_class.extract_thinking_text({ 'reasoning_content' => 42 })).to be_nil
-      expect(described_class.extract_thinking_signature({ 'signature' => 'sig' })).to eq('sig')
-      expect(described_class.extract_thinking_signature({ 'reasoning_signature' => 42 })).to be_nil
+      expect(described_class.parse_thinking_text({ 'reasoning' => 'why' })).to eq('why')
+      expect(described_class.parse_thinking_text({ 'thinking' => 'why' })).to eq('why')
+      expect(described_class.parse_thinking_text({ 'reasoning_content' => 42 })).to be_nil
+      expect(described_class.parse_thinking_signature({ 'signature' => 'sig' })).to eq('sig')
+      expect(described_class.parse_thinking_signature({ 'reasoning_signature' => 42 })).to be_nil
     end
 
     it 'hands string content back untouched, markup and all' do
-      expect(described_class.extract_content_and_thinking('plain')).to eq(['plain', nil])
-      expect(described_class.extract_content_and_thinking('<think>why</think>answer'))
+      expect(described_class.parse_content_and_thinking('plain')).to eq(['plain', nil])
+      expect(described_class.parse_content_and_thinking('<think>why</think>answer'))
         .to eq(['<think>why</think>answer', nil])
     end
 
     it 'leaves a content shape it does not understand alone' do
-      expect(described_class.extract_content_and_thinking(nil)).to eq([nil, nil])
+      expect(described_class.parse_content_and_thinking(nil)).to eq([nil, nil])
     end
 
     it 'reads thinking out of structured content blocks' do
@@ -563,7 +563,7 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
         { 'type' => 'text', 'text' => 'answer' }
       ]
 
-      expect(described_class.extract_content_and_thinking(content)).to eq(['answer', 'first second third'])
+      expect(described_class.parse_content_and_thinking(content)).to eq(['answer', 'first second third'])
     end
 
     it 'sends assistant thinking back under every field name providers accept' do

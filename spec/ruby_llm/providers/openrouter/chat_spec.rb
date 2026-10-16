@@ -477,16 +477,16 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
         ]
       }
 
-      expect(provider.send(:extract_thinking_text, message_data)).to eq('first second')
+      expect(provider.send(:parse_thinking_text, message_data)).to eq('first second')
     end
 
     it 'is nil when the response carries no reasoning details' do
-      expect(provider.send(:extract_thinking_text, {})).to be_nil
-      expect(provider.send(:extract_thinking_signature, {})).to be_nil
+      expect(provider.send(:parse_thinking_text, {})).to be_nil
+      expect(provider.send(:parse_thinking_signature, {})).to be_nil
     end
 
     it 'is nil when the details carry no text' do
-      expect(provider.send(:extract_thinking_text, { 'reasoning_details' => [] })).to be_nil
+      expect(provider.send(:parse_thinking_text, { 'reasoning_details' => [] })).to be_nil
     end
 
     it 'prefers an explicit signature over encrypted data' do
@@ -497,13 +497,13 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
         ]
       }
 
-      expect(provider.send(:extract_thinking_signature, message_data)).to eq('sig')
+      expect(provider.send(:parse_thinking_signature, message_data)).to eq('sig')
     end
 
     it 'falls back to encrypted data' do
       message_data = { 'reasoning_details' => [{ 'type' => 'reasoning.encrypted', 'data' => 'blob' }] }
 
-      expect(provider.send(:extract_thinking_signature, message_data)).to eq('blob')
+      expect(provider.send(:parse_thinking_signature, message_data)).to eq('blob')
     end
   end
 

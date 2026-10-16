@@ -111,14 +111,14 @@ module RubyLLM
 
           message_data = data['message'] || {}
           blocks = Array(message_data['content'])
-          content, offsets = extract_text(blocks)
+          content, offsets = parse_text(blocks)
           finish_reason = normalize_finish_reason(data['finish_reason'])
 
           Message.new(
             role: :assistant,
             content: content,
             citations: parse_citations(message_data['citations'], offsets),
-            thinking: Thinking.build(text: extract_thinking(blocks, message_data)),
+            thinking: Thinking.build(text: parse_thinking(blocks, message_data)),
             tool_calls: Tools.parse_tool_calls(message_data['tool_calls'], response: raw, finish_reason:),
             finish_reason: finish_reason,
             model: model&.id,
@@ -150,7 +150,7 @@ module RubyLLM
         # Returns the joined text of the response along with the offset each
         # content block starts at, so citation spans resolve against the
         # content string RubyLLM exposes.
-        def extract_text(blocks)
+        def parse_text(blocks)
           text = +''
           offsets = {}
 
@@ -166,7 +166,7 @@ module RubyLLM
 
         # The tool plan is the model's reasoning for a tool-calling turn, and
         # is the only reasoning Cohere returns when thinking blocks are absent.
-        def extract_thinking(blocks, message_data)
+        def parse_thinking(blocks, message_data)
           thoughts = blocks.select { |block| block['type'] == 'thinking' }
                            .map { |block| block['thinking'] }.join
           thoughts.empty? ? message_data['tool_plan'] : thoughts

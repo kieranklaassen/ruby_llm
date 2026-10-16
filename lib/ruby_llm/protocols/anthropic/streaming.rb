@@ -38,27 +38,27 @@ module RubyLLM
 
           Chunk.new(
             role: :assistant,
-            model: extract_model_id(data),
-            content: extract_content_delta(data, delta_type),
-            citations: extract_citations_delta(data, delta_type),
+            model: parse_model_id(data),
+            content: parse_content_delta(data, delta_type),
+            citations: parse_citations_delta(data, delta_type),
             thinking: Thinking.build(
-              text: extract_thinking_delta(data, delta_type),
-              signature: extract_signature_delta(data, delta_type)
+              text: parse_thinking_delta(data, delta_type),
+              signature: parse_signature_delta(data, delta_type)
             ),
-            input_tokens: extract_input_tokens(data),
-            output_tokens: extract_output_tokens(data),
-            thinking_tokens: extract_thinking_tokens(data),
-            cache_read_tokens: extract_cache_read_tokens(data),
-            cache_write_tokens: extract_cache_write_tokens(data),
-            cache_write_tokens_by_ttl: extract_cache_write_by_ttl(data),
-            server_tool_use: extract_server_tool_use(data),
+            input_tokens: parse_input_tokens(data),
+            output_tokens: parse_output_tokens(data),
+            thinking_tokens: parse_thinking_tokens(data),
+            cache_read_tokens: parse_cache_read_tokens(data),
+            cache_write_tokens: parse_cache_write_tokens(data),
+            cache_write_tokens_by_ttl: parse_cache_write_by_ttl(data),
+            server_tool_use: parse_server_tool_use(data),
             tool_calls: extract_tool_calls(data),
             finish_reason: normalize_finish_reason(data.dig('delta', 'stop_reason')),
             **stream_end_fields(data)
           )
         end
 
-        def extract_server_tool_use(data)
+        def parse_server_tool_use(data)
           data.dig('message', 'usage', 'server_tool_use') || data.dig('usage', 'server_tool_use')
         end
 
@@ -131,30 +131,30 @@ module RubyLLM
 
           blocks = (@stream_blocks || {}).sort.map { |_index, block| block }
           {
-            server_tool_calls: extract_server_tool_calls(blocks),
+            server_tool_calls: parse_server_tool_calls(blocks),
             raw_content: @saw_server_block ? blocks : nil,
             raw_reasoning: parse_thinking_blocks(blocks)
           }
         end
 
-        def extract_content_delta(data, delta_type)
+        def parse_content_delta(data, delta_type)
           return data.dig('delta', 'text') if delta_type == 'text_delta'
 
           nil
         end
 
-        def extract_citations_delta(data, delta_type)
+        def parse_citations_delta(data, delta_type)
           citation = data.dig('delta', 'citation') if delta_type == 'citations_delta'
           citation ? [Chat.parse_citation(citation)] : nil
         end
 
-        def extract_thinking_delta(data, delta_type)
+        def parse_thinking_delta(data, delta_type)
           return data.dig('delta', 'thinking') if delta_type == 'thinking_delta'
 
           nil
         end
 
-        def extract_signature_delta(data, delta_type)
+        def parse_signature_delta(data, delta_type)
           return data.dig('delta', 'signature') if delta_type == 'signature_delta'
 
           nil

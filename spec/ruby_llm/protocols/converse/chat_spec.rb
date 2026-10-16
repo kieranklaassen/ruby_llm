@@ -818,7 +818,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
       ]
 
       expect(described_class.parse_tool_calls(blocks)).to have_key('tooluse_1')
-      expect(described_class.extract_server_tool_calls(blocks)).to be_empty
+      expect(described_class.parse_server_tool_calls(blocks)).to be_empty
     end
 
     it 'renders SearchResults tool output as citable searchResult blocks' do
