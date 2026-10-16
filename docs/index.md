@@ -467,7 +467,7 @@ app/
 
   <div class="home-code-cta">
     <p><a href="{% link _advanced/rails-generators.md %}#generators">Generators</a> create each piece where Rails expects it.
-      Store files with <a href="{% link _advanced/rails-generators.md %}#setting-up-activestorage">Active Storage</a>
+      Store files with <a href="{% link _advanced/rails-generators.md %}#setting-up-active-storage">Active Storage</a>
       and write your prompts in <a href="{% link _advanced/agents.md %}#prompt-management-and-conventions">ERB templates</a>.
       Use <a href="{% link _advanced/rails-streaming.md %}#full-streaming-implementation">Turbo Streams</a> to show replies
       and <a href="{% link _advanced/durable-agents.md %}">Active Job</a> to run agents in the background,
