@@ -43,7 +43,7 @@ More than a client for model APIs. RubyLLM gives your application the convention
 * **MCP:** Connect agents to your systems with server classes in `app/mcp`, per-user inputs, tool filtering, and OAuth with [`RubyLLM::MCP`](https://rubyllm.com/mcp/)
 * **Agents:** Reusable assistants with `RubyLLM::Agent`
 * **The agentic loop:** Drive it yourself with `ask_later`, `step`, and `complete?`
-* **Evaluations (main):** Reusable datasets, model criteria, and Ruby assertions with [`RubyLLM::Evaluation`](https://rubyllm.com/next/evaluations/)
+* **Evaluations:** Reusable datasets, model criteria, and Ruby assertions with [`RubyLLM::Evaluation`](https://rubyllm.com/evaluations/)
 * **Chat:** Conversational AI with `RubyLLM.chat`
 * **Vision:** Analyze images and videos
 * **Audio:** Transcribe speech with `RubyLLM.transcribe` and generate it with `RubyLLM.speak`
@@ -79,8 +79,6 @@ More than a client for model APIs. RubyLLM gives your application the convention
 ## Evaluate your agents
 
 Keep questions and expected answers in a dataset. RubyLLM checks correctness by default. Run the same evaluation from Ruby, RSpec, Minitest, or Rake.
-
-Evaluations are available on `main`. Follow the [development installation guide](https://rubyllm.com/next/getting-started/) to try them.
 
 `app/agents/support_agent.rb`
 
@@ -120,7 +118,7 @@ report.passed?
 report.cost.total
 ```
 
-The model evaluator checks meaning, so answers can use different wording. Declare your own criteria, add Ruby assertions, or choose a configured evaluator agent or judgment model. [Read the evaluation guides](https://rubyllm.com/next/evaluations/).
+The model evaluator checks meaning, so answers can use different wording. Declare your own criteria, add Ruby assertions, or choose a configured evaluator agent or judgment model. [Read the evaluation guides](https://rubyllm.com/evaluations/).
 
 ## Feels at home in Rails
 
