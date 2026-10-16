@@ -365,7 +365,7 @@ module RubyLLM
     #   end
     #
     def execute(...)
-      raise NotImplementedError, 'Subclasses must implement #execute'
+      raise NotImplementedError, "#{self.class} must implement #execute"
     end
 
     # Reports what the tool is doing while #execute runs, so an application

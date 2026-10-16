@@ -228,7 +228,7 @@ RSpec.describe RubyLLM::Evaluation do
   end
 
   it 'rejects an evaluation without perform before starting cases' do
-    expect { Class.new(described_class).run(dataset: cases) }.to raise_error(ArgumentError, /Define perform/)
+    expect { Class.new(described_class).run(dataset: cases) }.to raise_error(ArgumentError, /must implement #perform/)
   end
 
   it 'names the unknown fields of a case as a list' do

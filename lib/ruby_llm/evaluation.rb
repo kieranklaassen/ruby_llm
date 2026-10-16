@@ -141,7 +141,7 @@ module RubyLLM
       end
 
       def validate_run(repetitions)
-        raise ArgumentError, 'Define perform(input) in your evaluation' if instance_method(:perform).owner == Evaluation
+        raise ArgumentError, "#{self} must implement #perform" if instance_method(:perform).owner == Evaluation
         if evaluator == false && definitions.any?
           raise ArgumentError, 'Cannot declare semantic evaluations with evaluator false'
         end
@@ -201,7 +201,7 @@ module RubyLLM
 
     # Runs the application under evaluation. Override in your evaluation class.
     def perform(_input)
-      raise NotImplementedError, 'Define perform(input) in your evaluation'
+      raise NotImplementedError, "#{self.class} must implement #perform"
     end
 
     # Runs Ruby assertions after perform. Override to use assert, refute, and the Minitest assertion family.

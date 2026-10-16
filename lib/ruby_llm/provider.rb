@@ -64,7 +64,7 @@ module RubyLLM
     #   end
     #
     def api_base
-      raise NotImplementedError
+      raise NotImplementedError, "#{self.class} must implement #api_base"
     end
 
     # Returns the headers merged into every request. The default is an
