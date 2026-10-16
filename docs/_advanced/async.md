@@ -263,5 +263,5 @@ For more on fibers, threads, and processes, read [Ruby Concurrency: What Actuall
 ## Next Steps
 
 * [Batches]({% link _advanced/batches.md %}) - Provider-side batching at a discount when nobody is waiting.
-* [Stream Responses]({% link _core_features/streaming.md %})
-* [Rails Integration]({% link _advanced/rails.md %})
+* [Stream Responses]({% link _core_features/streaming.md %}) - Stream chunks to your users as they arrive.
+* [Rails Integration]({% link _advanced/rails.md %}) - Persist chats and run them in background jobs.

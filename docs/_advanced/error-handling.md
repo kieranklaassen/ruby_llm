@@ -339,6 +339,6 @@ Debug logs show request and response headers and bodies, with API keys filtered.
 
 ## Next Steps
 
-* [Tools]({% link _core_features/tools.md %})
-* [Stream Responses]({% link _core_features/streaming.md %})
-* [Rails Integration]({% link _advanced/rails.md %})
+* [Tools]({% link _core_features/tools.md %}) - handle errors inside tool execution.
+* [Stream Responses]({% link _core_features/streaming.md %}) - handle errors that arrive during a stream.
+* [Rails Integration]({% link _advanced/rails.md %}) - use RubyLLM with your Active Record models.

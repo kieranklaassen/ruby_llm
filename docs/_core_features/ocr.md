@@ -127,6 +127,6 @@ A provider without OCR support raises `RubyLLM::Error`. Rejected files or option
 
 ## Next Steps
 
-* [Attachments]({% link _core_features/attachments.md %}): Send documents to chat models instead.
+* [Attachments]({% link _core_features/attachments.md %}) - send documents to chat models instead.
 * [Structured Output]({% link _core_features/structured-output.md %}) - extract fields from document text.
 * [Embeddings]({% link _core_features/embeddings.md %}) - make extracted documents searchable.

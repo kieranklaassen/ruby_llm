@@ -415,7 +415,7 @@ Blank strings are treated as unset, so environment variables can be wired direct
 
 ## Next Steps
 
-- [Custom Endpoints and Unlisted Models]({% link _reference/custom-endpoints.md %}) - work with models RubyLLM doesn't know about.
-- [Connection, Logging and Contexts]({% link _getting_started/configuration-connection.md %}) - timeouts, proxies, and per-tenant isolation.
-- [Configuration]({% link _getting_started/configuration.md %}#full-reference) - the complete option list.
-- [Model Registry]({% link _reference/models.md %}) - discover, select, and refresh the model registry.
+* [Custom Endpoints and Unlisted Models]({% link _reference/custom-endpoints.md %}) - work with models RubyLLM doesn't know about.
+* [Connection, Logging and Contexts]({% link _getting_started/configuration-connection.md %}) - timeouts, proxies, and per-tenant isolation.
+* [Configuration]({% link _getting_started/configuration.md %}#full-reference) - the complete option list.
+* [Model Registry]({% link _reference/models.md %}) - discover, select, and refresh the model registry.

@@ -246,7 +246,7 @@ end
 
 ## Next Steps
 
-- [Provider Setup and Custom Endpoints]({% link _getting_started/configuration-providers.md %}) - every provider's keys, OpenAI organization headers, Vertex AI auth, and OpenAI-compatible endpoints.
-- [Connection, Logging and Contexts]({% link _getting_started/configuration-connection.md %}) - timeouts, retries, proxies, debug logging, the model registry file, and isolated per-tenant contexts.
-- [Start chatting with AI models]({% link _core_features/chat.md %}) - put your configuration to work.
-- [Set up Rails integration]({% link _advanced/rails.md %}) - persistence, streaming, and generators.
+* [Provider Setup and Custom Endpoints]({% link _getting_started/configuration-providers.md %}) - every provider's keys, OpenAI organization headers, Vertex AI auth, and OpenAI-compatible endpoints.
+* [Connection, Logging and Contexts]({% link _getting_started/configuration-connection.md %}) - timeouts, retries, proxies, debug logging, the model registry file, and isolated per-tenant contexts.
+* [Start chatting with AI models]({% link _core_features/chat.md %}) - put your configuration to work.
+* [Set up Rails integration]({% link _advanced/rails.md %}) - persistence, streaming, and generators.

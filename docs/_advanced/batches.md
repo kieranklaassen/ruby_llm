@@ -214,6 +214,6 @@ See [batch setup]({% link _getting_started/configuration-providers.md %}#batch-p
 
 ## Next Steps
 
-* [Chat]({% link _core_features/chat.md %})
-* [Tools]({% link _core_features/tools.md %})
-* [Rails Integration]({% link _advanced/rails.md %})
+* [Chat]({% link _core_features/chat.md %}) - the conversations you stage with `ask_later`.
+* [Tools]({% link _core_features/tools.md %}) - define the tools batched conversations call.
+* [Rails Integration]({% link _advanced/rails.md %}) - persist chats and batch results with Active Record.

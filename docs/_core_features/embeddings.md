@@ -208,8 +208,8 @@ The `embedding` vector column must match your model's dimensions. This example g
 
 ## Next Steps
 
-* [Reranking]({% link _core_features/rerank.md %}) to order your candidates by relevance before you use them.
-* [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) to ground answers in your own documents.
-* [Chat]({% link _core_features/chat.md %}) for interactive conversations.
-* [Tools]({% link _core_features/tools.md %}) to extend AI capabilities.
-* [Error Handling]({% link _advanced/error-handling.md %}) for retries and provider failures.
+* [Reranking]({% link _core_features/rerank.md %}) - order your candidates by relevance before you use them.
+* [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) - ground answers in your own documents.
+* [Chat]({% link _core_features/chat.md %}) - hold interactive conversations.
+* [Tools]({% link _core_features/tools.md %}) - let the model call your Ruby code.
+* [Error Handling]({% link _advanced/error-handling.md %}) - handle retries and provider failures.
