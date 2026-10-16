@@ -341,15 +341,16 @@ module RubyLLM
       end
 
       # Enables citations for chats this agent builds, applied via
-      # Chat#with_citations. Pass +false+ to disable them.
+      # Chat#with_citations. Pass +false+ to disable them. Passing +nil+
+      # raises ArgumentError.
       #
       #   citations
       #   citations false
       #
-      def citations(value = true) # rubocop:disable Style/OptionalBooleanParameter
-        raise ArgumentError, 'citations accepts true or false' unless [true, false].include?(value)
+      def citations(enabled = true) # rubocop:disable Style/OptionalBooleanParameter
+        raise ArgumentError, 'citations accepts true or false' unless [true, false].include?(enabled)
 
-        @citations = value
+        @citations = enabled
       end
 
       # Enables prompt caching for chats this agent builds, applied via

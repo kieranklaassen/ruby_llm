@@ -29,7 +29,7 @@ module RubyLLM
       end
 
       # Sets the model and provider used by this judge. A block or proc resolves
-      # the model using runtime inputs. With no arguments, returns the settings.
+      # the model using runtime inputs. Called with no arguments, returns the settings.
       # Without a declaration, uses Configuration#default_judgment_model.
       def model(value = nil, **options, &block)
         return @model_options || {} if value.nil? && options.empty? && !block
@@ -40,7 +40,7 @@ module RubyLLM
       end
 
       # Declares required runtime inputs available in question and data blocks.
-      # With no arguments, returns the declared names.
+      # Called with no arguments, returns the declared names.
       #
       #   inputs :teams
       #   choice :department, "Which team?", -> { teams.to_h { |team| [team.slug, team.description] } }
@@ -51,7 +51,7 @@ module RubyLLM
       end
 
       # Sets provider-specific request options as a Hash, proc, or block.
-      # With no arguments, returns the declared options.
+      # Called with no arguments, returns the declared options.
       def provider_options(value = nil, &block)
         return @provider_options || {} if value.nil? && !block
 

@@ -114,7 +114,8 @@ module RubyLLM
         @transport = block || value
       end
 
-      # Sets the working directory for a stdio server's process.
+      # Sets the working directory for a stdio server's process. Called with
+      # no arguments, returns the declared directory.
       #
       #   directory Rails.root
       #
@@ -216,7 +217,8 @@ module RubyLLM
       end
 
       # Sets how many seconds a request to the server may take. Defaults to
-      # the configured +request_timeout+.
+      # the configured +request_timeout+. Called with no arguments, returns
+      # the declared seconds.
       #
       #   timeout 30
       #
@@ -239,7 +241,8 @@ module RubyLLM
         @input_names.each { |input| define_method(input) { @inputs[input] } }
       end
 
-      # Limits the tools the model sees to the named server tools.
+      # Limits the tools the model sees to the named server tools. Called
+      # with no arguments, returns the declared names.
       #
       #   only :search_issues, :get_issue
       #
@@ -249,7 +252,8 @@ module RubyLLM
         @only = names.flatten.map(&:to_s)
       end
 
-      # Hides the named server tools from the model.
+      # Hides the named server tools from the model. Called with no
+      # arguments, returns the declared names.
       #
       #   except :delete_repository
       #
@@ -261,7 +265,8 @@ module RubyLLM
 
       # Prefixes the names of the server's tools, so tools from servers that
       # share names, such as two servers with a +search+ tool, can join one
-      # chat. Tools renamed with ::tool keep the name you gave them.
+      # chat. Tools renamed with ::tool keep the name you gave them. Called
+      # with no arguments, returns the declared prefix.
       #
       #   prefix :github   # search_issues becomes github_search_issues
       #

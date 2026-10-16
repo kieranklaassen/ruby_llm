@@ -190,7 +190,7 @@ module RubyLLM
       # Sets how long a run of this tool may take before a persisted chat
       # treats it as crashed, overriding Configuration#max_run_time. Another
       # process that resumes the chat after that time runs the call again.
-      # Without an argument, returns the declared value, or +nil+.
+      # Called with no arguments, returns the declared value, or +nil+.
       #
       #   class GenerateReport < RubyLLM::Tool
       #     max_run_time 2.hours
@@ -207,7 +207,7 @@ module RubyLLM
       #
       # Sets provider-specific metadata, such as Anthropic's +cache_control+
       # hints, merged verbatim into the tool payload sent to the provider.
-      # Without an argument, returns the current options.
+      # Called with no arguments, returns the current options.
       #
       #   provider_options cache_control: { type: "ephemeral" }
       #

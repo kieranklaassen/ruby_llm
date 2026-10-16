@@ -26,7 +26,7 @@ module RubyLLM
       end
 
       # Sets the dataset path, enumerable of cases, or block returning cases.
-      # With no argument, returns the configured source. The default is discovered by class name.
+      # Called with no arguments, returns the configured source. The default is discovered by class name.
       def dataset(source = nil, &block)
         return @dataset if source.nil? && !block
 
