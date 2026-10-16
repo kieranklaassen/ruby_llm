@@ -20,7 +20,7 @@ hero:
   <div class="home-section-inner">
     <div class="home-hero-install home-code-grid home-code-grid--bare" markdown="1">
 
-```sh
+```bash
 {% if site.docs_unreleased %}bundle add ruby_llm --git https://github.com/crmne/ruby_llm --branch main{% else %}bundle add ruby_llm --version 2.1.1{% endif %}
 ```
 {: .home-code-card }
@@ -86,7 +86,7 @@ chat.ask "Hello!"
       </div>
       <div class="home-step-code home-code-grid home-code-grid--bare" markdown="1">
 
-```sh
+```bash
 gem install ruby_llm --pre
 ruby_llm provider-gem Acme \
   --api-base https://api.acme.example/v1
@@ -252,7 +252,7 @@ cases:
 ```
 {: .home-code-card data-title="app/evals/support_evaluation.yml" }
 
-```sh
+```bash
 bin/rails "ruby_llm:eval[SupportEvaluation]"
 ```
 {: .home-code-card }
@@ -639,7 +639,7 @@ SupportAgent.find(chat_id).ask "Where's my refund?"
 
     <div class="home-skill-install home-code-grid home-code-grid--bare" markdown="1">
 
-```sh
+```bash
 npx skills add "$(bundle show ruby_llm)" --skill rubyllm
 ```
 {: .home-code-card }

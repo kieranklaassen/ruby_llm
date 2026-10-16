@@ -113,7 +113,7 @@ See [Sandboxes]({% link _core_features/sandboxes.md %}).
 
 Some tasks need a procedure, not a sentence: how your company formats an invoice, or the script that turns a spreadsheet into slides. Putting every procedure in every chat's instructions fills the model's context with work it rarely does. Skills keep them in folders, in the open [Agent Skills format](https://agentskills.io/specification), and the model loads one only when a task needs it:
 
-```
+```text
 app/skills/invoices/
 ├── SKILL.md
 ├── references/TAX_RULES.md
@@ -135,7 +135,7 @@ See [Skills]({% link _core_features/skills.md %}).
 
 Every building block now has a generator that puts it in its `app/` folder, ready to use:
 
-```sh
+```bash
 bin/rails generate ruby_llm:mcp Linear https://mcp.linear.app/mcp
 bin/rails generate ruby_llm:skill invoices "Bills an order to a customer as a PDF."
 bin/rails generate ruby_llm:sandbox Workspace
@@ -176,7 +176,7 @@ If a process dies, its claims expire and another process picks the chat up. See 
 
 RubyLLM 2.2 requires Ruby 3.2 or later. Install it:
 
-```sh
+```bash
 bundle add ruby_llm --version "~> 2.2.0"
 ```
 

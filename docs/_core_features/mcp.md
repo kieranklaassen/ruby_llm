@@ -534,7 +534,7 @@ ensure
 end
 ```
 
-```
+```text
 # Procfile
 handbook: bin/rails runner script/listen_to_handbook.rb
 ```

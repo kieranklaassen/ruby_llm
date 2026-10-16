@@ -245,7 +245,7 @@ When you pass an isolated `context:`, its default replaces the global default. T
 
 Ollama runs decision models such as Cloudflare's Clef on your own hardware, so the data you judge never leaves it. Pull a model:
 
-```sh
+```bash
 ollama pull clef-flash
 ```
 
