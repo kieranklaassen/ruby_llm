@@ -133,9 +133,9 @@ end
 
 `schema` supports:
 
-* A schema class (for example `PersonSchema`) - same as `with_schema`
-* A JSON schema hash - same as `with_schema`
-* An inline DSL block with `schema do ... end` - agent-specific convenience
+* A schema class (for example `PersonSchema`): same as `with_schema`
+* A JSON schema hash: same as `with_schema`
+* An inline DSL block with `schema do ... end`: agent-specific convenience
 
 Inline DSL example:
 

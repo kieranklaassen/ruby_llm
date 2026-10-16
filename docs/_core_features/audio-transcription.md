@@ -102,7 +102,7 @@ For Google's dedicated transcription model on Vertex AI, use `model: "{{ site.mo
 
 ### Identifying Known Speakers
 
-OpenAI's diarization models can match speakers against 2–10 second reference clips:
+OpenAI's diarization models can match speakers against 2 to 10 second reference clips:
 
 ```ruby
 transcription = RubyLLM.transcribe(

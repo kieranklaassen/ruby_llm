@@ -93,7 +93,7 @@ With the default supervisor mode, `processes: 2` creates two worker processes wi
 
 ### Database Connections
 
-On Rails 7.2+, Solid Queue recommends starting with 3–5 queue database connections per fiber worker process. The pool does not need to match the number of jobs waiting on provider I/O. Size application database pools for the database work your jobs actually perform, and avoid holding a transaction or leased connection open across an AI call. Rails 7.1 needs more conservative pool sizing.
+On Rails 7.2+, Solid Queue recommends starting with 3 to 5 queue database connections per fiber worker process. The pool does not need to match the number of jobs waiting on provider I/O. Size application database pools for the database work your jobs actually perform, and avoid holding a transaction or leased connection open across an AI call. Rails 7.1 needs more conservative pool sizing.
 
 See Solid Queue's [worker configuration](https://github.com/rails/solid_queue#configuration) and [Fiber-Safe Active Record Connections]({% link _advanced/rails-advanced-config.md %}#fiber-safe-active-record-connections-for-asyncfiber-workloads) for details.
 
