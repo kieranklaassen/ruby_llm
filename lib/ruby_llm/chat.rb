@@ -118,10 +118,6 @@ module RubyLLM
     # which requires +provider:+. Pass a Context as +context:+ to use its
     # configuration instead of the global one.
     def initialize(model: nil, provider: nil, protocol: nil, assume_model_exists: false, context: nil)
-      if assume_model_exists && !provider
-        raise ArgumentError, 'Provider must be specified if assume_model_exists is true'
-      end
-
       @context = context
       @config = context&.config || RubyLLM.config
       with_model(model, provider: provider, protocol: protocol, assume_model_exists: assume_model_exists)
