@@ -75,7 +75,7 @@ RSpec.describe RubyLLM::Protocols::Cohere::Datasets do
       .to raise_error(ArgumentError, /do not accept expires_in/)
     allow(protocol).to receive(:require).with('avro').and_raise(LoadError)
     expect { protocol.records(RubyLLM::UploadedFile.new(id: 'dataset')) }
-      .to raise_error(LoadError, /Add gem "avro"/)
+      .to raise_error(LoadError, /require the avro gem/)
   end
 
   it 'uploads validates retrieves and downloads a Cohere dataset', :live do

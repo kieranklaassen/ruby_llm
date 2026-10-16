@@ -94,7 +94,7 @@ module RubyLLM
         def load_avro
           require 'avro'
         rescue LoadError
-          raise LoadError, 'Add gem "avro" to your Gemfile to read Cohere batch results and processed datasets'
+          raise LoadError, 'Cohere batch results and processed datasets require the avro gem. Add it to your Gemfile.'
         end
       end
     end

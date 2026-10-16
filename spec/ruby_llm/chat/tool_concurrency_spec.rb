@@ -180,7 +180,7 @@ RSpec.describe RubyLLM::Chat::ToolConcurrency do
     allow(described_class).to receive(:require).with('async').and_raise(LoadError)
 
     expect { described_class.run(:fibers, tool_calls) { |tool_call| tool_call } }.to raise_error(
-      LoadError, /The 'async' gem is required/
+      LoadError, /requires the async gem/
     )
   end
 
