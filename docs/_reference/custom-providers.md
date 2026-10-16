@@ -243,7 +243,7 @@ A provider does nothing until it is registered. Register Acme after its classes 
 RubyLLM::Provider.register :acme, RubyLLM::Providers::Acme
 ```
 
-That one call does three things: it sets `Acme.slug` to `"acme"` (which is how `@config.acme_api_key` and `@config.acme_protocol` resolve), adds the class to `RubyLLM::Provider.providers`, and defines a config accessor for every option in `configuration_options` plus the synthetic `acme_protocol`. After registering, your provider is a first-class citizen:
+That one call does three things: it sets `Acme.slug` to `"acme"` (which is how `@config.acme_api_key` and `@config.acme_protocol` resolve), adds the class to `RubyLLM::Provider.providers`, and defines a config accessor for every option in `configuration_options` plus the synthetic `acme_protocol`. After registering, your provider works like a built-in one:
 
 ```ruby
 RubyLLM.configure do |config|
@@ -299,7 +299,7 @@ model = RubyLLM.models.by_provider(:acme).chat_models.first
 RubyLLM.chat(model: model.id).ask('Hi')
 ```
 
-> If your provider uses an acronym or mixed-case constant (like `OpenAI` or `XAI`), Zeitwerk needs an inflection rule to map the file name to the constant. With explicit `require_relative` calls as shown, you sidestep autoloading entirely and avoid the inflection setup.
+> If your provider uses an acronym or mixed-case constant (like `OpenAI` or `XAI`), Zeitwerk needs an inflection rule to map the file name to the constant. With an explicit `require` as shown, you sidestep autoloading entirely and avoid the inflection setup.
 {: .note }
 
 ## Next Steps

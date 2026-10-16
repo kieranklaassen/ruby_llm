@@ -26,7 +26,7 @@ Sometimes you need to interact with models or endpoints not covered by the stand
 * Brand-new model releases.
 * Custom fine-tunes or deployments with unique names.
 
-Azure has a first-class provider: configure `azure_api_base` and use `provider: :azure` instead. See [Provider Setup and Custom Endpoints]({% link _getting_started/configuration-providers.md %}).
+Azure has its own provider: configure `azure_api_base` and use `provider: :azure` instead. See [Provider Setup and Custom Endpoints]({% link _getting_started/configuration-providers.md %}).
 
 RubyLLM offers two mechanisms for these cases.
 
