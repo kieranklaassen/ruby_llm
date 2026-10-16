@@ -74,7 +74,7 @@ module RubyLLM
         end
 
         def validate_paint_inputs(with:, mask:) # rubocop:disable Lint/UnusedMethodArgument
-          raise Error, 'xAI image editing does not support a mask parameter' if mask
+          raise UnsupportedAttachmentError, 'image mask' if mask
         end
 
         def editing?(with, mask)
