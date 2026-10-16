@@ -189,6 +189,39 @@ RSpec.describe RubyLLM::Chat do
         expect { chat.public_send(setter, nil) }.to raise_error(ArgumentError)
       end
     end
+
+    it 'takes true with options on every switch that has options' do
+      expect(chat.with_thinking(true, effort: :high).thinking).to eq(effort: :high)
+      expect(chat.with_caching(true, ttl: '1h').caching).to eq(ttl: '1h')
+      expect(chat.with_compaction(true, at: 50_000).compaction).to eq(at: 50_000)
+    end
+
+    it 'takes an options Hash on caching and compaction without changing it' do
+      caching = { 'ttl' => '1h' }
+      compaction = { 'at' => 50_000 }
+
+      expect(chat.with_caching(caching).caching).to eq(ttl: '1h')
+      expect(chat.with_compaction(compaction).compaction).to eq(at: 50_000)
+      expect([caching, compaction]).to eq([{ 'ttl' => '1h' }, { 'at' => 50_000 }])
+    end
+
+    it 'rejects options with false on every switch that has options' do
+      expect { chat.with_thinking(false, effort: :high) }
+        .to raise_error(ArgumentError, 'with_thinking(false) does not accept options')
+      expect { chat.with_caching(false, ttl: '1h') }
+        .to raise_error(ArgumentError, 'with_caching(false) does not accept options')
+      expect { chat.with_compaction(false, at: 50_000) }
+        .to raise_error(ArgumentError, 'with_compaction(false) does not accept options')
+    end
+
+    it 'names the accepted values the same way on every switch' do
+      expect { chat.with_thinking(:on) }
+        .to raise_error(ArgumentError, 'with_thinking accepts true, false, or thinking options')
+      expect { chat.with_caching(:on) }
+        .to raise_error(ArgumentError, 'with_caching accepts true, false, or caching options')
+      expect { chat.with_compaction(:on) }
+        .to raise_error(ArgumentError, 'with_compaction accepts true, false, or compaction options')
+    end
   end
 
   describe '#thinking' do

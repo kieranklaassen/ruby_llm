@@ -64,7 +64,7 @@ RSpec.describe RubyLLM::Agent do
 
   it 'rejects nil and unknown options when declared' do
     expect { agent_with { code_execution nil } }.to raise_error(ArgumentError)
-    expect { agent_with { code_execution memory: 1 } }.to raise_error(ArgumentError, /got memory/)
+    expect { agent_with { code_execution memory: 1 } }.to raise_error(ArgumentError, /got :memory/)
   end
 
   it 'raises ConfigurationError when the chat is built without a sandbox' do

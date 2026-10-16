@@ -85,7 +85,7 @@ RSpec.describe RubyLLM::Chat do
 
     it 'rejects nil instead of treating it as false' do
       expect { RubyLLM.chat.with_thinking(nil) }
-        .to raise_error(ArgumentError, /accepts false or thinking options/)
+        .to raise_error(ArgumentError, /accepts true, false, or thinking options/)
       expect { RubyLLM.chat.with_thinking(effort: nil) }
         .to raise_error(ArgumentError, /options cannot be nil/)
     end
