@@ -94,7 +94,7 @@ Options such as domain filters, connector IDs, and search-store IDs depend on th
 A raw Hash lets you use a tool without a RubyLLM alias or select a particular tool version:
 
 ```ruby
-chat.with_provider_tools({ type: "tool_search_tool_regex_20251119", name: "tool_search" })
+chat.with_provider_tools({ type: "tool_search_tool_regex_20251119", name: "tool_search_tool_regex" })
 ```
 
 The selected protocol must support that tool's request and results. Passing a raw definition does not enable another endpoint.
