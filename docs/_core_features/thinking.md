@@ -91,7 +91,7 @@ chat.with_thinking(effort: :high, display: :omitted)     # think, but return no 
 Thinking content is delivered alongside normal content in streaming chunks:
 
 ```ruby
-chat = RubyLLM.chat(model: 'claude-opus-5')
+chat = RubyLLM.chat(model: '{{ site.models.anthropic_opus }}')
   .with_thinking(effort: :medium, display: :summarized)
 
 chat.ask("Solve this step by step: What is 127 * 43?") do |chunk|
