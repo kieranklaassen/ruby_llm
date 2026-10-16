@@ -124,6 +124,16 @@ RSpec.describe RubyLLM::Protocols::Gemini::LiveTranscription do
     expect { protocol.transcription_audio(path) }.to raise_error(ArgumentError, /16-bit/)
   end
 
+  it 'reports a regional Vertex AI location as a configuration error' do
+    RubyLLM.config.vertexai_location = 'us-central1'
+    dialect = RubyLLM::Providers::VertexAI::LiveTranscription.new(RubyLLM::Providers::VertexAI.new(RubyLLM.config))
+
+    expect do
+      dialect.validate_transcription_request(format: nil, speaker_names: nil, speaker_references: nil,
+                                             temperature: nil)
+    end.to raise_error(RubyLLM::ConfigurationError, /requires vertexai_location/)
+  end
+
   it 'uses the Vertex Live service, project model path, and global endpoint without changing Gemini URLs' do
     vertex = RubyLLM::Providers::VertexAI.new(RubyLLM.config)
     dialect = RubyLLM::Providers::VertexAI::LiveTranscription.new(vertex)

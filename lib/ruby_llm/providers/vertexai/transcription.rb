@@ -17,7 +17,7 @@ module RubyLLM
           super
           return if @config.vertexai_location == 'global'
 
-          raise ArgumentError, 'Vertex AI dedicated transcription requires vertexai_location = "global"'
+          raise ConfigurationError, 'Vertex AI dedicated transcription requires vertexai_location = "global"'
         end
 
         def render_transcription_payload(attachment, language:, speaker_names:, provider_options:, prompt:, **)

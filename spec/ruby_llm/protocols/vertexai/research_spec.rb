@@ -159,6 +159,13 @@ RSpec.describe RubyLLM::Protocols::VertexAI::Research do
     expect(cancellation).to have_been_requested.once
   end
 
+  it 'reports a regional location as a configuration error' do
+    context.config.vertexai_location = 'us-central1'
+
+    expect { context.research_later('Question', provider: :vertexai, agent:) }
+      .to raise_error(RubyLLM::ConfigurationError, 'Vertex AI hosted research requires vertexai_location = "global"')
+  end
+
   it 'rejects transcript continuation and lifecycle overrides before submission' do
     %i[model previous_interaction_id background stream input agent].each do |key|
       expect do

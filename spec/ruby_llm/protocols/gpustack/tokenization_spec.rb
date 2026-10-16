@@ -30,7 +30,7 @@ RSpec.describe RubyLLM::Protocols::GPUStack::Tokenization do
     context.config.gpustack_api_base = 'https://gpu.example.test/cluster/v1'
 
     expect { context.tokenize('Ruby', model:, provider: :gpustack) }
-      .to raise_error(RubyLLM::Error, %r{/model/proxy/ROUTE_ID/v1})
+      .to raise_error(RubyLLM::ConfigurationError, %r{/model/proxy/ROUTE_ID/v1})
     expect(a_request(:post, /gpu.example.test/)).not_to have_been_made
   end
 

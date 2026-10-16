@@ -129,6 +129,6 @@ RSpec.describe RubyLLM::Protocols::Gemini::FileTranscription do
 
     expect do
       RubyLLM.transcribe(audio_path, model: model_for(:vertexai, :dedicated_transcription), provider: :vertexai)
-    end.to raise_error(ArgumentError, /requires vertexai_location/)
+    end.to raise_error(RubyLLM::ConfigurationError, /requires vertexai_location/)
   end
 end

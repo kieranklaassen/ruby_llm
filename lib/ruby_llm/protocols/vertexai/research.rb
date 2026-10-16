@@ -50,7 +50,7 @@ module RubyLLM
 
         def research_url(id = nil)
           unless @config.vertexai_location == 'global'
-            raise ArgumentError, 'Vertex AI hosted research requires vertexai_location = "global"'
+            raise ConfigurationError, 'Vertex AI hosted research requires vertexai_location = "global"'
           end
 
           path = "#{@provider.location_path}/interactions"

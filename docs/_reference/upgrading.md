@@ -355,6 +355,25 @@ rescue ArgumentError => e
   e.message # => "Veo takes a single reference image"
 ```
 
+## Rescue `ConfigurationError` for a Wrong Setting
+
+An operation that needs a different configuration value now raises `RubyLLM::ConfigurationError`, the class a missing API key raises:
+
+* Vertex AI transcription and hosted research with a `vertexai_location` other than `"global"` raised `ArgumentError`.
+* A GPUStack operation that needs `gpustack_api_base` to end in `/model/proxy/ROUTE_ID/v1` raised `RubyLLM::Error`.
+
+```ruby
+# 2.1
+rescue ArgumentError => e
+  e.message # => 'Vertex AI hosted research requires vertexai_location = "global"'
+
+# 2.2
+rescue RubyLLM::ConfigurationError => e
+  e.message # => 'Vertex AI hosted research requires vertexai_location = "global"'
+```
+
+`ConfigurationError` inherits from `StandardError`, so `rescue RubyLLM::Error` no longer catches the GPUStack case.
+
 ## Deploy Without Mixing Versions
 
 Workers on 2.1 do not claim chats, so they can still overlap with workers on 2.2 while a deploy rolls out. Run the schema upgrade first, then let the new version replace every worker before you rely on claims. Chats that run once all workers are on 2.2 are covered.
