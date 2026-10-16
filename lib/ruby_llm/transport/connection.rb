@@ -86,7 +86,7 @@ module RubyLLM
         instrument_request(:post, url) do
           connection(stream:).post url, payload do |req|
             prepare(req)
-            set_usage_tracker(req, usage) if usage
+            attach_usage_tracker(req, usage) if usage
             mark_non_idempotent(req) unless idempotent
             yield req if block_given?
           end
@@ -263,7 +263,7 @@ module RubyLLM
       private_class_method :setup_timeout, :setup_logging, :logging_regexp, :setup_retry, :stream_delivered?,
                            :idempotent?, :setup_middleware, :setup_http_proxy, :retry_exceptions
 
-      def set_usage_tracker(request, tracker)
+      def attach_usage_tracker(request, tracker)
         context = request.options.context ||= {}
         context[UsageMiddleware::CONTEXT_KEY] = tracker
       end
