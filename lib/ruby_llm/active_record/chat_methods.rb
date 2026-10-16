@@ -95,7 +95,8 @@ module RubyLLM
       # Raises RubyLLM::ToolCallRunningError when the call is already
       # running.
       def deny(tool_call)
-        record_tool_call_decision(tool_call, 'denied')
+        record = record_tool_call_decision(tool_call, 'denied')
+        to_llm.deny(record.to_llm)
         self
       end
 
