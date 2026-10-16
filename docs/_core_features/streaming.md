@@ -20,7 +20,7 @@ After reading this guide, you will know:
 * How the final accumulated message is handled.
 * How to integrate streaming with web frameworks like Rails and Sinatra.
 * How streaming interacts with Tools.
-* Performance considerations for streaming.
+* How to cancel a stream.
 
 ## Basic Streaming
 
