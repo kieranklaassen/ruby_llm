@@ -202,7 +202,7 @@ Individual operations such as `paint`, `transcribe`, and `ocr` also work directl
 | Part | In practice |
 | --- | --- |
 | Ruby API: conversations | Chats, messages, tools, agents, structured output, and streaming. |
-| Ruby API: individual operations | Images, video, speech, transcription, OCR, moderation, embeddings, and reranking. |
+| Ruby API: individual operations | Images, video, speech, transcription, OCR, moderation, embeddings, reranking, and judgments. |
 | Providers and protocols | Providers choose the service and its settings; protocols translate the API format. |
 | Shared services | Model selection, configuration, usage and costs, instrumentation, batches, and provider resources. |
 | Rails integration | The same API with Active Record, Active Storage, Hotwire, jobs, and generators. |
