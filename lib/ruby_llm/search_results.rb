@@ -15,6 +15,8 @@ module RubyLLM
   #
   # Cited passages come back on the response as Message#citations.
   class SearchResults
+    include Support::Inspectable
+
     KEY = 'search_results' # :nodoc:
 
     # The normalized results, as an array of hashes with +:title+, +:text+,
@@ -63,6 +65,10 @@ module RubyLLM
       raise ArgumentError, 'Search results require :title and :text' unless entry[:title] && entry[:text]
 
       entry.slice(:title, :url, :text)
+    end
+
+    def inspect_attributes # :nodoc:
+      { results: results.length }
     end
   end
 end

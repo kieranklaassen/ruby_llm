@@ -272,6 +272,25 @@ RubyLLM.download(file.id, provider: file.provider) if file.downloadable
 RubyLLM.download(file.id, provider: file.provider) if file.downloadable?
 ```
 
+## Rerank Results and OCR Pages Are Immutable
+
+`Rerank::Result` and `OCR::Page` are value objects now, not Structs. Their readers, keyword construction, and `to_h` are unchanged. Setters and the Struct collection methods, such as `[]`, `to_a`, and `each`, are gone:
+
+```ruby
+# 2.1
+result = rerank.results.first
+result.score = 1.0
+result[:document]
+page.to_a
+
+# 2.2
+result = rerank.results.first.with(score: 1.0)
+result.document
+page.to_h.values
+```
+
+`OCR::Page.new` requires `index:` and `markdown:`, and `Rerank::Result.new` requires all three of its values. Both print one short line in the console, and so does `SearchResults`.
+
 ## Deploy Without Mixing Versions
 
 Workers on 2.1 do not claim chats, so they can still overlap with workers on 2.2 while a deploy rolls out. Run the schema upgrade first, then let the new version replace every worker before you rely on claims. Chats that run once all workers are on 2.2 are covered.

@@ -3,6 +3,24 @@
 require 'spec_helper'
 
 RSpec.describe RubyLLM::Rerank, :live do
+  describe 'Result', live: false do
+    let(:result) { described_class::Result.new(index: 1, document: 'Ruby', score: 0.9) }
+
+    it 'reads its values and serializes them' do
+      expect(result).to have_attributes(index: 1, document: 'Ruby', score: 0.9)
+      expect(result.to_h).to eq(index: 1, document: 'Ruby', score: 0.9)
+    end
+
+    it 'is immutable' do
+      expect(result).to be_frozen
+      expect(result).not_to respond_to(:score=)
+    end
+
+    it 'inspects in one line' do
+      expect(result.inspect).to eq('#<RubyLLM::Rerank::Result index: 1, document: "Ruby", score: 0.9>')
+    end
+  end
+
   describe 'payload rendering' do
     it 'renders the Jina-style rerank request' do
       protocol = RubyLLM::Providers::OpenRouter::ChatCompletions.new(

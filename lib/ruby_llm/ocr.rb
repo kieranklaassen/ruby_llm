@@ -17,7 +17,19 @@ module RubyLLM
     # +markdown+, and the +images+ and +tables+ the provider reports for the
     # page, or +nil+ when it reports none. +raw+ holds the provider's
     # unmodified page hash, including any fields beyond these.
-    Page = Struct.new(:index, :markdown, :images, :tables, :raw, keyword_init: true)
+    Page = Data.define(:index, :markdown, :images, :tables, :raw) do
+      include Support::Inspectable
+
+      def initialize(index:, markdown:, images: nil, tables: nil, raw: nil) # :nodoc:
+        super
+      end
+
+      private
+
+      def inspect_attributes # :nodoc:
+        to_h.except(:raw)
+      end
+    end
 
     # The id of the model that performed the OCR, as a String.
     attr_reader :model
@@ -90,7 +102,7 @@ module RubyLLM
       @raw = raw
     end
 
-    # Returns the pages of the document as an array of Page structs.
+    # Returns the pages of the document as an array of Page.
     def pages
       @pages ||= @page_hashes.map.with_index do |page, position|
         next page if page.is_a?(Page)

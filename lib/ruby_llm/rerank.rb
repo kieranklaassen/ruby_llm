@@ -16,7 +16,15 @@ module RubyLLM
 
     # One reranked document: its +index+ in the input array, the
     # +document+ text, and the provider's relevance +score+.
-    Result = Struct.new(:index, :document, :score, keyword_init: true)
+    Result = Data.define(:index, :document, :score) do
+      include Support::Inspectable
+
+      private
+
+      def inspect_attributes # :nodoc:
+        to_h
+      end
+    end
 
     # The reranked results, most relevant first, as an array of Result.
     attr_reader :results
