@@ -127,6 +127,15 @@ RSpec.describe RubyLLM::ActiveRecord::MessageMethods do
       expect(result.to_llm.tool_call_id).to eq(call.id)
     end
 
+    it 'reads tool_call_id like a plain message' do
+      call = tool_call
+      request = chat.add_message(RubyLLM::Message.new(role: :assistant, content: '', tool_calls: { call.id => call }))
+      result = chat.add_message(RubyLLM::Message.new(role: :tool, content: 'done', tool_call_id: call.id))
+
+      expect(result.tool_call_id).to eq(result.to_llm.tool_call_id)
+      expect(request.tool_call_id).to be_nil
+    end
+
     it 'collects the results of the tool calls it made' do
       call = tool_call
       caller_record = chat.add_message(

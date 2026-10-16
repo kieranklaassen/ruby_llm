@@ -202,7 +202,7 @@ tool_call.arguments
 message.tool_results
 ```
 
-The tool result itself is an application-owned message with the `tool` role. The internal tool-call row only preserves the provider request and links it to that result message.
+The tool result itself is an application-owned message with the `tool` role. The internal tool-call row only preserves the provider request and links it to that result message. Read the link from the result with `parent_tool_call`, or `tool_call_id` for its id alone.
 
 ## Batches
 

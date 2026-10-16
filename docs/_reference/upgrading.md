@@ -152,6 +152,8 @@ Applications need no change. A provider gem or a custom protocol that overrides 
 rename_column :chats, :code_execution, :runs_code
 ```
 
+`acts_as_message` records gain `tool_call_id`, the id of the tool call a tool result answers, as on a plain `Message`. Rename a `tool_call_id` column of your own on the messages table the same way.
+
 ## Provider Gems Rename Their Protocol Overrides
 
 Applications need no change. A provider gem or a custom protocol that overrides protocol methods renames its overrides, because RubyLLM no longer calls the old names. In 2.2 every method that builds part of a request starts with `render_`, every method that reads part of a response starts with `parse_`, and the two capability predicates drop `supports_`:
