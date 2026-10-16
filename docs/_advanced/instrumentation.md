@@ -92,7 +92,7 @@ You can trace model calls, tool execution, and workflows with OpenTelemetry. Con
 RubyLLM::OpenTelemetry.enable
 ```
 
-See the [OpenTelemetry guide]({% link _advanced/opentelemetry.md %}) for setup, span coverage, context propagation, and exported data. Existing subscribers continue to receive their events and payloads.
+See [OpenTelemetry]({% link _advanced/opentelemetry.md %}) for setup, span coverage, context propagation, and exported data. Existing subscribers continue to receive their events and payloads.
 
 ## Workflows and Steps
 

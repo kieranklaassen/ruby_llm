@@ -190,7 +190,7 @@ Some services use an existing connector or require additional settings:
 | Bedrock Mantle | Use `connector_id:` with an accessible Lambda or AgentCore Gateway ARN; Gateway requires `require_approval: "never"` |
 | OpenRouter Responses | Explicit `require_approval: "never"`; approval requests are unavailable |
 
-Vertex AI connects remote MCP through a hosted Deep Research agent. Use the [Hosted Research API]({% link _advanced/hosted-research.md %}) for its single-turn report and job lifecycle.
+Vertex AI connects remote MCP through a hosted Deep Research agent. Use [Hosted Research]({% link _advanced/hosted-research.md %}) for its single-turn report and job lifecycle.
 
 ### Self-Hosted Tool Servers
 

@@ -160,7 +160,7 @@ response.cost.total
 
 The accounting follows provider attempts, so a successful answer can include the cost of earlier failed attempts. Unknown costs stay unknown. In Rails, the usage ledger keeps those attempts separately from messages. See [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}).
 
-[Instrumentation]({% link _advanced/instrumentation.md %}) lets you observe calls across chats, tools, and individual operations. `RubyLLM.workflow` groups events from ordinary Ruby code into a named workflow.
+[Instrumentation and Observability]({% link _advanced/instrumentation.md %}) lets you observe calls across chats, tools, and individual operations. `RubyLLM.workflow` groups events from ordinary Ruby code into a named workflow.
 
 [OpenTelemetry]({% link _advanced/opentelemetry.md %}) sends those calls to your tracing backend as spans. [Evaluations]({% link _advanced/evaluations.md %}) run your agents against a dataset of cases and grade each answer, from Rake, RSpec, or Minitest.
 

@@ -277,4 +277,4 @@ Unknown costs remain `nil`. The provider's catalog does not necessarily include 
 
 Pass `model:`, `provider:`, `context:`, `provider_options:`, or instrumentation `metadata:` to `judge`. You can also declare `provider_options` on a Judge class as a Hash, proc, or block. Reserved input, question, and model fields must use the public arguments. `RubyLLM.context` exposes the same `judge` entry point for isolated credentials and settings.
 
-Judgments use the shared timeouts, retries, and error classes. They emit `judgment.ruby_llm` and per-attempt `usage.ruby_llm` events. See [Instrumentation]({% link _advanced/instrumentation.md %}). Call judges from ordinary Rails services or jobs; no chat record is required.
+Judgments use the shared timeouts, retries, and error classes. They emit `judgment.ruby_llm` and per-attempt `usage.ruby_llm` events. See [Instrumentation and Observability]({% link _advanced/instrumentation.md %}). Call judges from ordinary Rails services or jobs; no chat record is required.

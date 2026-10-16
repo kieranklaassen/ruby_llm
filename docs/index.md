@@ -297,7 +297,7 @@ end
 
 current_account.ruby_llm_usages.sum(:total_cost)
 ```
-{: .home-code-card data-title="Usage and costs by customer" data-href="{% link _core_features/cost-and-usage-tracking.md %}#one-shot-operations" data-doc-title="Cost and Usage Tracking" }
+{: .home-code-card data-title="Usage and costs by customer" data-href="{% link _core_features/cost-and-usage-tracking.md %}#one-shot-operations" data-doc-title="Tokens and Costs" }
 
 ```ruby
 OpenTelemetry::SDK.configure
@@ -331,7 +331,7 @@ embeddings = RubyLLM.embed(documents)
 ranked = RubyLLM.rerank("Ruby language", documents,
                         model: "{{ site.models.rerank_cohere }}")
 ```
-{: .home-code-card data-title="Embed and rank your documents" data-href="{% link _advanced/rag.md %}" data-doc-title="RAG" }
+{: .home-code-card data-title="Embed and rank your documents" data-href="{% link _advanced/rag.md %}" data-doc-title="Retrieval-Augmented Generation (RAG)" }
 
 ```ruby
 response = RubyLLM.chat
@@ -379,13 +379,13 @@ puts document.markdown
 transcript = RubyLLM.transcribe "meeting.wav"
 RubyLLM.speak(transcript.text).save "transcript.mp3"
 ```
-{: .home-code-card data-title="Transcribe audio and generate speech" data-href="{% link _core_features/text-to-speech.md %}" data-doc-title="Text to speech" }
+{: .home-code-card data-title="Transcribe audio and generate speech" data-href="{% link _core_features/text-to-speech.md %}" data-doc-title="Text to Speech" }
 
 ```ruby
 RubyLLM.paint "a watercolor sunset over mountains"
 RubyLLM.animate "a paper boat in a rainy gutter"
 ```
-{: .home-code-card data-title="Generate images and video" data-href="{% link _core_features/video-generation.md %}" data-doc-title="Video generation" }
+{: .home-code-card data-title="Generate images and video" data-href="{% link _core_features/video-generation.md %}" data-doc-title="Video Generation" }
 
 ```ruby
 RubyLLM.moderate(comment.body).flagged?
@@ -447,7 +447,7 @@ chat = Chat.create! model: "{{ site.models.anthropic_opus }}"
 chat.ask "What's in this file?", with: "report.pdf"
 chat.messages.last.content
 ```
-{: .home-code-card data-title="Save chats with Active Record" data-href="{% link _advanced/rails-persistence.md %}#two-application-models" data-doc-title="Rails persistence" }
+{: .home-code-card data-title="Save chats with Active Record" data-href="{% link _advanced/rails-persistence.md %}#two-application-models" data-doc-title="Persistence with acts_as" }
 
 ```text
 app/
@@ -461,7 +461,7 @@ app/
 ├── evals/      support_evaluation.rb
 └── judges/     urgency_judge.rb
 ```
-{: .home-code-card data-title="A place for everything in app/" data-href="{% link _advanced/rails-generators.md %}#conventional-directory-structure" data-doc-title="Conventional directory structure" }
+{: .home-code-card data-title="A place for everything in app/" data-href="{% link _advanced/rails-generators.md %}#conventional-directory-structure" data-doc-title="Conventional Directory Structure" }
 
   </div>
 

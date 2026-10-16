@@ -301,4 +301,4 @@ See [Error Handling]({% link _advanced/error-handling.md %}) for specific except
 
 * [Image Generation]({% link _core_features/image-generation.md %}) - Generate the still images you can animate.
 * [Attachments]({% link _core_features/attachments.md %}) - Everything `with:` accepts across RubyLLM.
-* [Instrumentation]({% link _advanced/instrumentation.md %}) - Subscribe to the `video.ruby_llm` and `video_job.ruby_llm` events.
+* [Instrumentation and Observability]({% link _advanced/instrumentation.md %}) - Subscribe to the `video.ruby_llm` and `video_job.ruby_llm` events.

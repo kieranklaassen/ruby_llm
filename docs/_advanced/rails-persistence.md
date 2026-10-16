@@ -136,7 +136,7 @@ If your message table has a `finish_reason` column, the record also exposes `sto
 response.reload.max_tokens? # => true if a token limit stopped the response
 ```
 
-## Cost and Usage Tracking
+## Tokens and Costs
 
 Usage belongs to provider work, not to the transcript. RubyLLM therefore persists one normalized entry for every physical attempt, including automatic retries and cancelled streams that never produced a message.
 

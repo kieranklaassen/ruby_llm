@@ -26,7 +26,7 @@ Sometimes you need to interact with models or endpoints not covered by the stand
 * Brand-new model releases.
 * Custom fine-tunes or deployments with unique names.
 
-Azure has a first-class provider: configure `azure_api_base` and use `provider: :azure` instead. See the [Provider Setup and Custom Endpoints Guide]({% link _getting_started/configuration-providers.md %}).
+Azure has a first-class provider: configure `azure_api_base` and use `provider: :azure` instead. See [Provider Setup and Custom Endpoints]({% link _getting_started/configuration-providers.md %}).
 
 RubyLLM offers two mechanisms for these cases.
 
@@ -44,7 +44,7 @@ end
 
 * This setting **only** affects requests made with `provider: :openai`.
 * It directs those requests to your specified URL instead of `https://api.openai.com/v1`.
-* See the [Provider Setup and Custom Endpoints Guide]({% link _getting_started/configuration-providers.md %}) for the full `api_base` setup details.
+* See [Provider Setup and Custom Endpoints]({% link _getting_started/configuration-providers.md %}) for the full `api_base` setup details.
 
 ### Assuming Model Existence (`assume_model_exists`)
 

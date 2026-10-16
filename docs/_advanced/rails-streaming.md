@@ -266,5 +266,5 @@ The async Ruby stack (Falcon + async-cable) may improve behavior but doesn't gua
 
 * [Generators and App Conventions]({% link _advanced/rails-generators.md %}) - generate a ready-made streaming chat UI with one command.
 * [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - the persistence flow that makes streaming targets possible.
-* [Streaming]({% link _core_features/streaming.md %}) - the underlying streaming API and chunk format.
+* [Stream Responses]({% link _core_features/streaming.md %}) - the underlying streaming API and chunk format.
 * [Scale with Async]({% link _advanced/async.md %}) - run concurrent streams without blocking threads.

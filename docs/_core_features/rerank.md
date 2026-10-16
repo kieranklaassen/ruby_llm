@@ -139,7 +139,7 @@ end
 
 The vector query retrieves fifty candidates; the reranker selects five. This example uses the `neighbor` gem with a configured `embedding` vector column.
 
-See the [RAG guide]({% link _advanced/rag.md %}) for the retrieval-augmented generation pipeline this feeds.
+See [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) for the retrieval-augmented generation pipeline this feeds.
 
 ## Next Steps
 

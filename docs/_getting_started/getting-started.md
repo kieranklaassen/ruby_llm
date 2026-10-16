@@ -145,7 +145,7 @@ response = RubyLLM.chat.with_tools(CurrentTime).ask "What day is it?"
 puts response.content
 ```
 
-RubyLLM runs the tool calls and returns their results to the model. See [Tools]({% link _core_features/tools.md %}) for parameters and [Tool Execution]({% link _core_features/tool-execution.md %}) for human approvals.
+RubyLLM runs the tool calls and returns their results to the model. See [Tools]({% link _core_features/tools.md %}) for parameters and [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) for human approvals.
 
 ## Defining an Agent
 
