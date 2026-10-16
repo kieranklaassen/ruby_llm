@@ -26,9 +26,9 @@ The model only knows what arguments a tool accepts from the schema you give it. 
 
 RubyLLM ships with three complementary approaches:
 
-*   **Signature inference** for simple flat arguments.
-*   The **`parameter` helper** for quick, flat argument lists.
-*   The **`parameters` DSL** for expressive, structured inputs.
+* **Signature inference** for simple flat arguments.
+* The **`parameter` helper** for quick, flat argument lists.
+* The **`parameters` DSL** for expressive, structured inputs.
 
 Start with the method signature. Add `parameter` when a flat argument needs a description, type, or optionality that is not obvious from Ruby alone. Use the `parameters` DSL whenever you need nested objects, arrays, enums, or union types.
 
@@ -252,6 +252,6 @@ Strict mode requires every property in `required`; make optional parameters null
 
 ## Next Steps
 
-*   [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - Steer tool choice, call counts, concurrency, and callbacks.
-*   [Tools]({% link _core_features/tools.md %}) - The execution flow, error handling, and security overview.
-*   [Attachments]({% link _core_features/attachments.md %}) - How attachments returned from tools are consumed.
+* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - Steer tool choice, call counts, concurrency, and callbacks.
+* [Tools]({% link _core_features/tools.md %}) - The execution flow, error handling, and security overview.
+* [Attachments]({% link _core_features/attachments.md %}) - How attachments returned from tools are consumed.

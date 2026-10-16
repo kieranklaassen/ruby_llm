@@ -15,10 +15,10 @@ redirect_from:
 
 After reading this guide, you will know:
 
-*   Why large tool sets need tool search.
-*   How to defer the tools of an MCP server, a chat, an agent, or a tool class.
-*   How to see which tools are deferred and which ones the model found.
-*   Which providers search for tools, and what happens on the others.
+* Why large tool sets need tool search.
+* How to defer the tools of an MCP server, a chat, an agent, or a tool class.
+* How to see which tools are deferred and which ones the model found.
+* Which providers search for tools, and what happens on the others.
 
 ## Why Defer Tools
 
@@ -134,8 +134,8 @@ When a chat switches to another model of the same provider, the tools the earlie
 
 ## Next Steps
 
-*   [Tools]({% link _core_features/tools.md %})
-*   [Model Context Protocol]({% link _core_features/mcp.md %})
-*   [Provider Tools]({% link _core_features/provider-tools.md %})
-*   [Anthropic tool search](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool)
-*   [OpenAI tool search](https://developers.openai.com/api/docs/guides/tools-tool-search)
+* [Tools]({% link _core_features/tools.md %})
+* [Model Context Protocol]({% link _core_features/mcp.md %})
+* [Provider Tools]({% link _core_features/provider-tools.md %})
+* [Anthropic tool search](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool)
+* [OpenAI tool search](https://developers.openai.com/api/docs/guides/tools-tool-search)

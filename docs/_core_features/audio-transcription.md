@@ -15,12 +15,12 @@ redirect_from:
 
 After reading this guide, you will know:
 
-*   How to transcribe audio files to text.
-*   How to identify different speakers with diarization.
-*   How to improve accuracy with language hints and prompts.
-*   How to access segments and timestamps.
-*   How to stream a transcript as it is produced.
-*   How to handle a transcription the provider blocks.
+* How to transcribe audio files to text.
+* How to identify different speakers with diarization.
+* How to improve accuracy with language hints and prompts.
+* How to access segments and timestamps.
+* How to stream a transcript as it is produced.
+* How to handle a transcription the provider blocks.
 
 ## Basic Transcription
 

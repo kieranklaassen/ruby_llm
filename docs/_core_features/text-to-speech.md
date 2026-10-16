@@ -15,11 +15,11 @@ redirect_from:
 
 After reading this guide, you will know:
 
-*   How to generate speech from text.
-*   How to save generated audio files.
-*   How to stream audio as it is generated.
-*   How to choose models, voices, and formats.
-*   How to access raw audio bytes.
+* How to generate speech from text.
+* How to save generated audio files.
+* How to stream audio as it is generated.
+* How to choose models, voices, and formats.
+* How to access raw audio bytes.
 
 ## Basic Speech Generation
 
@@ -190,6 +190,6 @@ For retries and provider errors, see [Error Handling]({% link _advanced/error-ha
 
 ## Next Steps
 
-*   [Audio Transcription]({% link _core_features/audio-transcription.md %}): Convert speech back to text.
-*   [Model Resolution]({% link _reference/model-resolution.md %}): Learn how `model:` and `provider:` are resolved.
-*   [Instrumentation and Observability]({% link _advanced/instrumentation.md %}): Track speech generation events in production.
+* [Audio Transcription]({% link _core_features/audio-transcription.md %}): Convert speech back to text.
+* [Model Resolution]({% link _reference/model-resolution.md %}): Learn how `model:` and `provider:` are resolved.
+* [Instrumentation and Observability]({% link _advanced/instrumentation.md %}): Track speech generation events in production.
