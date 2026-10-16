@@ -3,7 +3,7 @@ layout: default
 title: Stream Responses
 parent: "Chat"
 nav_order: 2
-description: Learn how to display AI responses in real-time as they're generated.
+description: Display AI responses as the model generates them.
 redirect_from:
   - /guides/streaming
 ---
