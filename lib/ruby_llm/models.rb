@@ -185,7 +185,7 @@ module RubyLLM
         result
       end
 
-      def resolve(model_id, provider: nil, assume_model_exists: false, config: nil,
+      def resolve(model_id, provider: nil, assume_model_exists: false, config: nil, # :nodoc:
                   operation: nil, default_model: nil) # rubocop:disable Metrics/PerceivedComplexity
         config ||= RubyLLM.config
         provider_class = provider ? Provider.providers[provider.to_sym] : nil

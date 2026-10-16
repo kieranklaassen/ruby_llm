@@ -37,7 +37,7 @@ module RubyLLM
 
     private
 
-    def inspect_attributes
+    def inspect_attributes # :nodoc:
       { value:, total:, message: }
     end
   end

@@ -143,7 +143,7 @@ module RubyLLM
         @mcp or raise ConfigurationError, "Connect the MCP that runs task #{id} with with_mcp to reach it"
       end
 
-      def inspect_attributes
+      def inspect_attributes # :nodoc:
         { id:, status:, status_message: }
       end
     end

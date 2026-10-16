@@ -122,7 +122,7 @@ module RubyLLM
                      'required' => Array(schema['required']) - hidden)
       end
 
-      def inspect_attributes
+      def inspect_attributes # :nodoc:
         { name:, from: (server_name unless server_name == name), read_only: read_only? || nil }
       end
     end

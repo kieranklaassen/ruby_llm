@@ -63,7 +63,7 @@ module RubyLLM
 
       private
 
-      def inspect_attributes
+      def inspect_attributes # :nodoc:
         { name:, arguments: arguments.map(&:name), messages: messages.size.nonzero? }
       end
     end

@@ -68,7 +68,7 @@ module RubyLLM
 
       private
 
-      def inspect_attributes
+      def inspect_attributes # :nodoc:
         { text:, structured:, attachments: attachments.size.nonzero?, error: error? || nil, ui_uri: }
       end
     end

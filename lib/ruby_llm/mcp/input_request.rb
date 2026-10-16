@@ -110,7 +110,7 @@ module RubyLLM
         options unless options.empty?
       end
 
-      def inspect_attributes
+      def inspect_attributes # :nodoc:
         { message:, url:, fields: fields.map(&:name) }
       end
     end

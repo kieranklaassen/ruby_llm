@@ -76,7 +76,7 @@ module RubyLLM
 
       private
 
-      def inspect_attributes
+      def inspect_attributes # :nodoc:
         { uri:, name:, mime_type: }
       end
     end
