@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative '../support/websocket_cassette'
+require_relative 'websocket_cassette'
 
 RSpec.describe WebsocketCassette do
   include described_class
