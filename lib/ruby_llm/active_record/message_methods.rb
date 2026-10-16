@@ -123,7 +123,7 @@ module RubyLLM
 
       # Returns the token usage across every attempt that produced the message.
       def tokens
-        RubyLLM::Tokens.aggregate(ruby_llm_usages.map(&:tokens))
+        RubyLLM::Tokens.aggregate(ruby_llm_usage_records.map(&:tokens))
       end
 
       # Returns the cost across every attempt that produced the message, as a
