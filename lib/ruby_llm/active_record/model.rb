@@ -25,7 +25,7 @@ module RubyLLM
 
           all.map(&:to_llm)
         rescue StandardError => e
-          RubyLLM.logger.debug { "Failed to load models from database: #{e.message}, falling back to JSON" }
+          RubyLLM.logger.debug { "RubyLLM could not load models from the database, falling back to JSON: #{e.message}" }
           []
         end
 

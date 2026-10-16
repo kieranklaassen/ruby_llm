@@ -728,7 +728,7 @@ RSpec.describe RubyLLM::ActiveRecord::ChatMethods do
 
       expect { chat.complete }.to raise_error(RubyLLM::ServerError)
       expect(Message.find_by(id: blank.id)).to be_nil
-      expect(RubyLLM.logger).to have_received(:warn).with(/API call failed/)
+      expect(RubyLLM.logger).to have_received(:warn).with(/RubyLLM could not complete message \d+: API call failed/)
     end
 
     it 'destroys the blank assistant message when the chat is cancelled' do
@@ -740,7 +740,7 @@ RSpec.describe RubyLLM::ActiveRecord::ChatMethods do
 
       expect { chat.complete }.to raise_error(RubyLLM::CancelledError)
       expect(Message.find_by(id: blank.id)).to be_nil
-      expect(RubyLLM.logger).to have_received(:warn).with(/chat cancelled/)
+      expect(RubyLLM.logger).to have_received(:warn).with(/RubyLLM could not complete message \d+: chat cancelled/)
     end
   end
 

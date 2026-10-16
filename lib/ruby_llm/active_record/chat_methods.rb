@@ -914,7 +914,7 @@ module RubyLLM
       end
 
       def cleanup_failed_messages(reason:)
-        RubyLLM.logger.warn "RubyLLM: #{reason}, destroying message: #{@message.id}"
+        RubyLLM.logger.warn "RubyLLM could not complete message #{@message.id}: #{reason}, destroying it"
         @message.destroy
       end
 

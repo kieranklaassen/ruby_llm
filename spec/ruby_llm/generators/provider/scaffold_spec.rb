@@ -217,7 +217,7 @@ RSpec.describe RubyLLM::Generators::Provider::Scaffold do
     it 'rejects names that could escape the destination' do
       expect do
         described_class.new('../Acme', mode: :gem, destination: dir)
-      end.to raise_error(ArgumentError, /provider name must start with a letter/)
+      end.to raise_error(ArgumentError, /Provider name must start with a letter/)
     end
   end
 
@@ -281,20 +281,20 @@ RSpec.describe RubyLLM::Generators::Provider::Scaffold do
   describe 'option handling' do
     it 'rejects a mode it does not support' do
       expect { described_class.new('Acme', mode: :plugin, destination: dir) }.to raise_error(
-        ArgumentError, /unsupported mode: :plugin\. Expected one of: core, gem/
+        ArgumentError, /Unsupported mode: :plugin\. Expected one of: core, gem/
       )
     end
 
     it 'rejects a dialect it does not support' do
       expect { described_class.new('Acme', mode: :gem, dialect: :grpc, destination: dir) }.to raise_error(
-        ArgumentError, /unsupported dialect: :grpc/
+        ArgumentError, /Unsupported dialect: :grpc/
       )
     end
 
     it 'rejects gem names that could escape the generated directory' do
       expect do
         described_class.new('Acme', mode: :gem, gem_name: '../ruby_llm-providers-acme')
-      end.to raise_error(ArgumentError, /gem name must contain only/)
+      end.to raise_error(ArgumentError, /Gem name must contain only/)
     end
 
     it 'keeps a name that is already a class name' do

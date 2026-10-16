@@ -286,21 +286,21 @@ module RubyLLM
           normalized = value.to_s.tr('-', '_')
           return normalized if allowed.include?(normalized)
 
-          raise ArgumentError, "unsupported #{name}: #{value.inspect}. Expected one of: #{allowed.join(', ')}"
+          raise ArgumentError, "Unsupported #{name}: #{value.inspect}. Expected one of: #{allowed.join(', ')}"
         end
 
         def normalize_gem_name(value)
           value = value.to_s
           return value if value.match?(/\A[A-Za-z0-9][A-Za-z0-9._-]*\z/)
 
-          raise ArgumentError, 'gem name must contain only letters, numbers, ., - or _'
+          raise ArgumentError, 'Gem name must contain only letters, numbers, ., - or _'
         end
 
         def normalize_provider_name(value)
           value = value.to_s.strip
           return value if value.match?(/\A[A-Za-z][A-Za-z0-9_-]*\z/)
 
-          raise ArgumentError, 'provider name must start with a letter and contain only letters, numbers, - or _'
+          raise ArgumentError, 'Provider name must start with a letter and contain only letters, numbers, - or _'
         end
 
         def classify(value)
