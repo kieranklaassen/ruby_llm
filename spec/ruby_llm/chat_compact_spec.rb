@@ -107,7 +107,7 @@ RSpec.describe RubyLLM::Chat do
     context = RubyLLM.context { |config| config.deepseek_api_key = 'test' }
     chat = context.chat(model: model_for(:deepseek), provider: :deepseek, protocol: :responses)
 
-    expect { chat.compact }.to raise_error(RubyLLM::Error, /doesn't support manual compaction/)
+    expect { chat.compact }.to raise_error(RubyLLM::Error, /does not support manual compaction/)
   end
 
   it 'rejects malformed compaction responses without adding a message' do

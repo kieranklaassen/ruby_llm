@@ -73,7 +73,7 @@ RSpec.describe RubyLLM::CachedContent, :live do
     it 'raises a clear error for providers without explicit caching' do
       expect do
         RubyLLM.cache('Some text', model: model_for(:anthropic))
-      end.to raise_error(RubyLLM::Error, "Anthropic doesn't support explicit content caching")
+      end.to raise_error(RubyLLM::Error, 'Anthropic does not support explicit content caching')
     end
   end
 

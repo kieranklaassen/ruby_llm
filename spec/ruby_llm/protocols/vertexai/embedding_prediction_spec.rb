@@ -133,7 +133,7 @@ RSpec.describe RubyLLM::Protocols::VertexAI::EmbeddingPrediction do
     request = descriptor('Ruby')
 
     expect { protocol.create_batch([request.merge(model: model_for(:vertexai))]) }
-      .to raise_error(RubyLLM::Error, /not supported/)
+      .to raise_error(RubyLLM::Error, /does not support/)
     expect { protocol.create_batch([request.merge(text: [])]) }.to raise_error(ArgumentError, /nonempty/)
     expect do
       protocol.create_batch([request.merge(text: %w[Ruby Rails])])

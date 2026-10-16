@@ -82,15 +82,15 @@ RSpec.describe RubyLLM::Protocol do
 
     it 'names the provider and the operation instead of leaking NotImplementedError' do
       expect { protocol.render([], tools: {}, temperature: nil) }
-        .to raise_error(RubyLLM::Error, "OpenAI doesn't support chat")
+        .to raise_error(RubyLLM::Error, 'OpenAI does not support chat')
       expect { protocol.complete([], tools: {}, temperature: nil) }
-        .to raise_error(RubyLLM::Error, "OpenAI doesn't support chat")
+        .to raise_error(RubyLLM::Error, 'OpenAI does not support chat')
       expect { protocol.embed('hi', model: 'x', dimensions: nil) }
-        .to raise_error(RubyLLM::Error, "OpenAI doesn't support embeddings")
+        .to raise_error(RubyLLM::Error, 'OpenAI does not support embeddings')
       expect { protocol.moderate('hi', model: 'x') }
-        .to raise_error(RubyLLM::Error, "OpenAI doesn't support moderation")
+        .to raise_error(RubyLLM::Error, 'OpenAI does not support moderation')
       expect { protocol.paint('a ruby', model: 'x', size: nil) }
-        .to raise_error(RubyLLM::Error, "OpenAI doesn't support image generation")
+        .to raise_error(RubyLLM::Error, 'OpenAI does not support image generation')
     end
   end
 

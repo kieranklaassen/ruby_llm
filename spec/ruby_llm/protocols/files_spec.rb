@@ -402,7 +402,7 @@ RSpec.describe RubyLLM::Protocols::Files do
 
     it 'refuses to list files for providers without listing' do
       expect { protocol.list_uris('gs://bucket') }.to raise_error(
-        RubyLLM::Error, "OpenAI doesn't support file listing"
+        RubyLLM::Error, 'OpenAI does not support file listing'
       )
     end
 

@@ -288,7 +288,7 @@ RSpec.describe RubyLLM::Judge do
   it 'rejects unsupported providers through the provider contract' do
     expect do
       judge_class.judge('Help', model: model_for(:anthropic), provider: :anthropic)
-    end.to raise_error(RubyLLM::Error, /doesn't support judgments/)
+    end.to raise_error(RubyLLM::Error, /does not support judgments/)
   end
 
   it 'lets OpenAI reject chat models through Decisions' do

@@ -214,13 +214,13 @@ RSpec.describe RubyLLM::Protocols::Bedrock::AsyncVideos do
 
   it 'rejects unsupported models, attachments, and extensions before HTTP' do
     expect { context.animate_later('A boat', model: model_for(:bedrock), provider: :bedrock) }
-      .to raise_error(RubyLLM::Error, /video generation is not supported/)
+      .to raise_error(RubyLLM::Error, /does not support video generation/)
     expect { context.animate_later('A boat', model:, provider: :bedrock, with: [image, image, image]) }
       .to raise_error(ArgumentError, /at most two reference images/)
     expect { context.animate_later('A boat', model:, provider: :bedrock, with: 'https://media.test/boat.mp4') }
       .to raise_error(RubyLLM::UnsupportedAttachmentError)
     expect { context.animate_later('Continue', model:, provider: :bedrock, extend: 'https://media.test/boat.mp4') }
-      .to raise_error(RubyLLM::Error, /doesn't support video extension/)
+      .to raise_error(RubyLLM::Error, /does not support video extension/)
     file = RubyLLM::UploadedFile.new(id: 's3://bucket/boat.png', mime_type: 'image/png')
     expect { context.animate_later('A boat', model:, provider: :bedrock, with: file) }
       .to raise_error(ArgumentError, /not uploaded file ids/)

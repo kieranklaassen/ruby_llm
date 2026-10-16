@@ -148,7 +148,7 @@ RSpec.describe RubyLLM::Speech do
   it 'rejects a block for a speech protocol without streaming support' do
     expect do
       RubyLLM.speak('Hello Ruby.', model: model_for(:gemini, :speech), provider: :gemini) { |_chunk| nil }
-    end.to raise_error(RubyLLM::Error, /doesn't support streaming speech/)
+    end.to raise_error(RubyLLM::Error, /does not support streaming speech/)
   end
 
   it 'uses the ElevenLabs streaming endpoint with the selected voice and output format' do

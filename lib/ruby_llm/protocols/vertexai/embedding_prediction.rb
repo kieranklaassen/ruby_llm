@@ -20,7 +20,7 @@ module RubyLLM
           model = requests.first.fetch(:model)
           unless MODELS.include?(model)
             raise Error,
-                  "Vertex AI embedding batches are not supported for #{model.inspect}"
+                  "Vertex AI does not support embedding batches for #{model.inspect}"
           end
 
           requests.each { |request| validate_embedding_request(request) }

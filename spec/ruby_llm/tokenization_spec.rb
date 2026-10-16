@@ -59,7 +59,7 @@ RSpec.describe RubyLLM::Tokenization do
     context = RubyLLM.context { |config| config.openai_api_key = 'test' }
 
     expect { context.tokenize('Ruby', model: model_for(:openai), provider: :openai) }
-      .to raise_error(RubyLLM::Error, /doesn't support text tokenization/)
+      .to raise_error(RubyLLM::Error, /does not support text tokenization/)
   end
 
   %i[xai cohere].each do |provider|

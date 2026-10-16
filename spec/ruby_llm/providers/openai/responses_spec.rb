@@ -70,7 +70,7 @@ RSpec.describe RubyLLM::Providers::OpenAI::Responses do
       allow(connection).to receive(:post)
 
       expect { other_protocol.count_tokens([], tools: {}) }
-        .to raise_error(RubyLLM::Error, 'Other provider doesn\'t support token counting')
+        .to raise_error(RubyLLM::Error, 'Other provider does not support token counting')
       expect(connection).not_to have_received(:post)
     end
   end

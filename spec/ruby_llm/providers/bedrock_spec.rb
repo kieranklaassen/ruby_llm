@@ -184,7 +184,7 @@ RSpec.describe RubyLLM::Providers::Bedrock do
       model = instance_double(RubyLLM::Model, id: 'vendor.unknown-embed')
 
       expect { provider.protocol_for(model, operation: :embed) }
-        .to raise_error(RubyLLM::Error, /Bedrock embeddings are not supported/)
+        .to raise_error(RubyLLM::Error, /Bedrock does not support embeddings/)
     end
 
     it 'keeps chat routing on Converse for versioned ids' do

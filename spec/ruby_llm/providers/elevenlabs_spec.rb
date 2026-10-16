@@ -41,13 +41,13 @@ RSpec.describe RubyLLM::Providers::ElevenLabs do
     it 'refuses to chat' do
       chat = RubyLLM.chat(model: 'eleven_v3', provider: :elevenlabs)
 
-      expect { chat.ask('Hello') }.to raise_error(RubyLLM::Error, "ElevenLabs doesn't support chat")
+      expect { chat.ask('Hello') }.to raise_error(RubyLLM::Error, 'ElevenLabs does not support chat')
     end
 
     it 'refuses to embed' do
       expect do
         RubyLLM.embed('Hello', model: 'eleven_v3', provider: :elevenlabs)
-      end.to raise_error(RubyLLM::Error, "ElevenLabs doesn't support embeddings")
+      end.to raise_error(RubyLLM::Error, 'ElevenLabs does not support embeddings')
     end
 
     it 'routes image generation through the Image and Video API' do

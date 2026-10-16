@@ -104,7 +104,7 @@ RSpec.describe RubyLLM::Chat, :live do
         chat = RubyLLM.chat(model: model_for(:deepseek), provider: :deepseek)
 
         expect { chat.count_tokens('Hello') }
-          .to raise_error(RubyLLM::Error, /doesn't support token counting/)
+          .to raise_error(RubyLLM::Error, /does not support token counting/)
       end
     end
   end

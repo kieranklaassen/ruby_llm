@@ -69,7 +69,7 @@ RSpec.describe RubyLLM::OCR, :live do
     it 'raises a clear error on providers without OCR support' do
       expect do
         RubyLLM.ocr(pdf_path, model: model_for(:openai), provider: :openai)
-      end.to raise_error(RubyLLM::Error, /doesn't support OCR/)
+      end.to raise_error(RubyLLM::Error, /does not support OCR/)
     end
 
     it 'validates model existence' do

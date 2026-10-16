@@ -36,7 +36,7 @@ RSpec.describe RubyLLM::Protocols::InvokeModel::StabilityImages do
   it 'rejects image generation on unsupported models before invoking them' do
     chat_model = RubyLLM.models.find(model_for(:bedrock), provider: :bedrock)
 
-    expect { provider.protocol_for(chat_model, operation: :paint) }.to raise_error(RubyLLM::Error, /not supported/)
+    expect { provider.protocol_for(chat_model, operation: :paint) }.to raise_error(RubyLLM::Error, /does not support/)
   end
 
   it 'renders prompt, aspect ratio, and provider generation options' do

@@ -22,7 +22,7 @@ module RubyLLM
         end
 
         def count_tokens(*, **)
-          raise Error, "#{@provider.name} doesn't support token counting for Claude models"
+          raise Error, "#{@provider.name} does not support token counting for Claude models"
         end
 
         def provider_file_references?

@@ -36,7 +36,7 @@ RSpec.describe RubyLLM::Rerank, :live do
     it 'raises clearly for providers without a rerank endpoint' do
       expect do
         RubyLLM.rerank('query', ['doc'], model: model_for(:anthropic), provider: :anthropic)
-      end.to raise_error(RubyLLM::Error, /doesn't support reranking/)
+      end.to raise_error(RubyLLM::Error, /does not support reranking/)
     end
   end
 

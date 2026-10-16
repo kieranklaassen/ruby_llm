@@ -29,6 +29,6 @@ RSpec.describe RubyLLM::Video do
     expect do
       RubyLLM.animate_later('Continue', model: model_for(:anthropic), provider: :anthropic,
                                         extend: 'https://example.com/clip.mp4')
-    end.to raise_error(RubyLLM::Error, /Anthropic doesn't support video extension/)
+    end.to raise_error(RubyLLM::Error, /Anthropic does not support video extension/)
   end
 end
