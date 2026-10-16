@@ -65,11 +65,7 @@ The generator also removes the broadcasting code and the `has_many_attached :att
 
 Run the migration before deploying 2.2.
 
-If you already ran an unreleased 2.2 migration that created `provider_id` on `ruby_llm_tool_calls`, rename that column in a new migration before updating:
-
-```ruby
-rename_column :ruby_llm_tool_calls, :provider_id, :provider_call_id
-```
+If you already ran an unreleased 2.2 migration that created `provider_id` on `ruby_llm_tool_calls`, the upgrade migration renames that column to `provider_call_id`.
 
 ## Tool Call IDs Belong to RubyLLM
 
