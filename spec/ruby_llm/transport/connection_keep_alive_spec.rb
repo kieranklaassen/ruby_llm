@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe RubyLLM::Transport::Connection do
-  describe 'with a keep-alive adapter' do
+  context 'with a keep-alive adapter' do
     let(:server) { KeepAlive::Server.new }
     let(:questions) { { keep_alive_expected: { type: :probability, instructions: 'Is the socket reused?' } } }
 

@@ -241,7 +241,7 @@ RSpec.describe RubyLLM::Protocol do
     expect(provider).not_to have_received(:upload_file)
   end
 
-  describe 'with uploads stored for the attachment' do
+  context 'with uploads stored for the attachment' do
     let(:provider) { RubyLLM::Providers::Gemini.new(RubyLLM.config) }
     let(:protocol) { RubyLLM::Protocols::Gemini.new(provider, model) }
     let(:store) do
