@@ -183,4 +183,4 @@ chat.ask("Today's request: #{summary}")
 
 A reloaded chat renders the same request bytes as the turn that wrote it, so the next turn reuses the cached prefix. Tool call arguments keep the key order PostgreSQL `jsonb` and MySQL `json` columns store.
 
-Apps upgrading from 1.16 get `cache_until_here` from the [2.0 upgrade](https://github.com/crmne/ruby_llm/blob/v2.0.0/docs/_reference/upgrading.md), and apps on 2.0 get `cache_ttl` from the [2.1 upgrade]({% link _reference/upgrading.md %}#upgrade-the-rails-schema). New apps get both columns from the install generator.
+Apps upgrading from 1.16 get `cache_until_here` from the [2.0 upgrade](https://github.com/crmne/ruby_llm/blob/v2.0.0/docs/_reference/upgrading.md), and apps on 2.0 get `cache_ttl` from the [2.1 upgrade](https://github.com/crmne/ruby_llm/blob/v2.1.1/docs/_reference/upgrading.md). New apps get both columns from the install generator.

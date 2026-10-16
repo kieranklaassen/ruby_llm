@@ -426,7 +426,7 @@ end
 
 RubyLLM accepts form and URL requests by default. `input_requests :form` or `input_requests :url` keeps one kind, and `input_requests false` accepts none, so servers finish the call without asking or answer with an error that raises `RubyLLM::MCP::Error`. A server that asks for a kind you left out gets a decline. Inline servers take the same setting: `RubyLLM.mcp(url: server.endpoint, input_requests: false)`.
 
-In Rails, the requests persist on the tool call, so a job can pause, a controller can record the user's answer, and another job can resume the call after a deploy or a restart. New applications get the `mcp_state` column from `ruby_llm:install`; applications that installed RubyLLM 2.0 add it with `bin/rails generate ruby_llm:upgrade`.
+In Rails, the requests persist on the tool call, so a job can pause, a controller can record the user's answer, and another job can resume the call after a deploy or a restart. New applications get the `mcp_state` column from `ruby_llm:install`; applications that installed RubyLLM 2.0 add it with the [2.1 upgrade](https://github.com/crmne/ruby_llm/blob/v2.1.1/docs/_reference/upgrading.md).
 
 Servers never ask for passwords or tokens through forms; those go through URL requests, so they never pass through your application.
 
@@ -626,7 +626,7 @@ class Weather::ViewsController < ApplicationController
 end
 ```
 
-Your page loads `html` into the sandbox, then sends the UI `input` and `result` as the spec's tool input and tool result notifications. `mcp_result` is `nil` for tools without a UI, whose results are only what the model saw, and for failed calls, whose content is `{ "error": ... }` as for any tool. New applications get the `mcp_result` column from `ruby_llm:install`; applications that installed RubyLLM 2.0 add it with `bin/rails generate ruby_llm:upgrade`.
+Your page loads `html` into the sandbox, then sends the UI `input` and `result` as the spec's tool input and tool result notifications. `mcp_result` is `nil` for tools without a UI, whose results are only what the model saw, and for failed calls, whose content is `{ "error": ... }` as for any tool. New applications get the `mcp_result` column from `ruby_llm:install`; applications that installed RubyLLM 2.0 add it with the [2.1 upgrade](https://github.com/crmne/ruby_llm/blob/v2.1.1/docs/_reference/upgrading.md).
 
 Some tools exist only for their UI, such as the one behind a refresh button. Their `visibility` leaves out `:model`: `tools` lists them, and you can call them, but chats never offer them to the model, even when you pass them to `with_tools`.
 
@@ -818,12 +818,10 @@ Some servers only accept tokens bound to a key, so a token that leaks is useless
 
 ### Storing Credentials
 
-In Rails, credentials live in the `ruby_llm_mcp_credentials` table, encrypted with [Active Record encryption](https://guides.rubyonrails.org/active_record_encryption.html). New applications get the table from `ruby_llm:install`; applications that installed RubyLLM 2.0 add it with the upgrade generator:
+In Rails, credentials live in the `ruby_llm_mcp_credentials` table, encrypted with [Active Record encryption](https://guides.rubyonrails.org/active_record_encryption.html). New applications get the table from `ruby_llm:install`; applications that installed RubyLLM 2.0 add it with the [2.1 upgrade](https://github.com/crmne/ruby_llm/blob/v2.1.1/docs/_reference/upgrading.md). If your app has no encryption keys yet, create them:
 
 ```bash
-bin/rails generate ruby_llm:upgrade
-bin/rails db:encryption:init   # if your app has no encryption keys yet
-bin/rails db:migrate
+bin/rails db:encryption:init
 ```
 
 Plain Ruby keeps credentials in memory. Set `config.mcp_credential_store` to an object with `read(key)`, `write(key, data, owner:)`, and `delete(key)` to keep them elsewhere.
