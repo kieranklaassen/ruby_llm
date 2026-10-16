@@ -3,7 +3,7 @@ layout: default
 title: Tools
 nav_order: 2
 has_children: true
-description: Let AI call your Ruby code. Connect to databases, APIs, or any external system with function calling.
+description: Let AI call your Ruby code to reach databases, APIs, and any external system.
 redirect_from:
   - /guides/tools
 ---

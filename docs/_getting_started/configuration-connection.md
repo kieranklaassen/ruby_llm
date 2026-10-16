@@ -3,7 +3,7 @@ layout: default
 title: Connection, Logging and Contexts
 parent: Configuration
 nav_order: 2
-description: Timeouts, retries, proxies, connection reuse, logging, the model registry file, and isolated multi-tenant contexts.
+description: Tune timeouts, retries, proxies, connection reuse, logging, and the model registry file, and isolate tenants with contexts.
 ---
 
 # {{ page.title }}

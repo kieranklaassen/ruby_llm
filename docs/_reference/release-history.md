@@ -3,7 +3,7 @@ layout: default
 title: Release History
 nav_order: 7
 has_children: true
-description: Every RubyLLM release, newest first, with what each one brought and where to read about it.
+description: Browse every RubyLLM release, newest first, with what each one brought and where to read about it.
 ---
 
 # {{ page.title }}

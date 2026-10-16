@@ -3,7 +3,7 @@ layout: default
 title: Advanced Rails Configuration
 parent: "Rails Integration"
 nav_order: 4
-description: Route models through different providers, use per-tenant contexts, persist cache boundaries, adjust provider payloads per request, and run fiber-safe.
+description: Route models through other providers, isolate tenants with contexts, persist cache boundaries, and run fiber-safe.
 ---
 
 # {{ page.title }}
