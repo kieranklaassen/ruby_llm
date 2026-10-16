@@ -67,6 +67,7 @@ overcommit --install   # required: installs the git hooks that gate every commit
 | `bundle exec rspec --tag ~live` | Fast unit run. No API keys, no cassettes needed. |
 | `bundle exec rspec spec/ruby_llm/chat_spec.rb:42` | One example. |
 | `bundle exec rake test` | Full suite through rspec-queue, like CI. |
+| `bin/test` | The same suite with Ruby warnings on. Arguments go to `rspec`, as in `bin/test spec/ruby_llm/chat_spec.rb`. |
 | `bundle exec rspec --tag generator` | The slow Rails generator specs, excluded from the commit hook. |
 | `overcommit --run` | Everything the pre-commit hook runs: RuboCop, Flay, archspec, RSpec. |
 | `bundle exec rubocop` | Lint (auto-corrects on commit). |
