@@ -14,15 +14,15 @@ redirect_from:
 
 After reading this guide, you will know:
 
-*   RubyLLM's error hierarchy.
-*   How to rescue specific types of errors.
-*   How to access details from the original API response.
-*   How to see the shape of a request a provider rejected.
-*   How errors are handled during streaming.
-*   How to fall back to another model when a provider has a transient failure.
-*   Best practices for handling errors within Tools.
-*   RubyLLM's automatic retry behavior.
-*   How to enable debug logging.
+* RubyLLM's error hierarchy.
+* How to rescue specific types of errors.
+* How to access details from the original API response.
+* How to see the shape of a request a provider rejected.
+* How errors are handled during streaming.
+* How to fall back to another model when a provider has a transient failure.
+* Best practices for handling errors within Tools.
+* RubyLLM's automatic retry behavior.
+* How to enable debug logging.
 
 ## RubyLLM Error Hierarchy
 
@@ -305,10 +305,10 @@ Retries are driven by error classification (exception types), not raw HTTP statu
 
 Retries are attempted for:
 
-*   Network timeouts (`Timeout::Error`, `Faraday::TimeoutError`, `Errno::ETIMEDOUT`)
-*   Connection failures (`Faraday::ConnectionFailed`, `Faraday::SSLError`)
-*   Rate limit errors (`RubyLLM::RateLimitError`, often HTTP 429)
-*   Server-side errors (`RubyLLM::ServerError`, `RubyLLM::ServiceUnavailableError`, `RubyLLM::OverloadedError` / HTTP 500, 502, 503, 504, 529)
+* Network timeouts (`Timeout::Error`, `Faraday::TimeoutError`, `Errno::ETIMEDOUT`)
+* Connection failures (`Faraday::ConnectionFailed`, `Faraday::SSLError`)
+* Rate limit errors (`RubyLLM::RateLimitError`, often HTTP 429)
+* Server-side errors (`RubyLLM::ServerError`, `RubyLLM::ServiceUnavailableError`, `RubyLLM::OverloadedError` / HTTP 500, 502, 503, 504, 529)
 
 `RubyLLM::ContextLengthExceededError` is not retried.
 
@@ -339,6 +339,6 @@ Debug logs show request and response headers and bodies, with API keys filtered.
 
 ## Next Steps
 
-*   [Using Tools]({% link _core_features/tools.md %})
-*   [Streaming Responses]({% link _core_features/streaming.md %})
-*   [Rails Integration]({% link _advanced/rails.md %})
+* [Using Tools]({% link _core_features/tools.md %})
+* [Streaming Responses]({% link _core_features/streaming.md %})
+* [Rails Integration]({% link _advanced/rails.md %})

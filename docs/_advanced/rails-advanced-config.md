@@ -13,12 +13,12 @@ description: Route models through different providers, use per-tenant contexts, 
 
 After reading this guide, you will know:
 
-*   How to keep chats and RubyLLM's supporting tables on a secondary database.
-*   How to route a model through a different provider per chat.
-*   How to use per-tenant API keys with custom contexts.
-*   How to create chats for models that aren't in the registry.
-*   How to persist cache boundaries and adjust provider payloads per request.
-*   How to run ActiveRecord safely inside fiber-based async workloads.
+* How to keep chats and RubyLLM's supporting tables on a secondary database.
+* How to route a model through a different provider per chat.
+* How to use per-tenant API keys with custom contexts.
+* How to create chats for models that aren't in the registry.
+* How to persist cache boundaries and adjust provider payloads per request.
+* How to run ActiveRecord safely inside fiber-based async workloads.
 
 Persisted chats use the same configuration methods as plain Ruby. Use them to select a provider, isolate tenant credentials, or set cache boundaries on a conversation.
 
@@ -206,7 +206,7 @@ Rails apps automatically emit RubyLLM events through `ActiveSupport::Notificatio
 
 ## Next Steps
 
-*   [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - the models these configurations apply to.
-*   [Scale with Async]({% link _advanced/async.md %}) - run concurrent, fiber-based workloads at scale.
-*   [Instrumentation and Observability]({% link _advanced/instrumentation.md %}) - monitor and trace RubyLLM in production.
-*   [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) - the full token and cost reference.
+* [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - the models these configurations apply to.
+* [Scale with Async]({% link _advanced/async.md %}) - run concurrent, fiber-based workloads at scale.
+* [Instrumentation and Observability]({% link _advanced/instrumentation.md %}) - monitor and trace RubyLLM in production.
+* [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) - the full token and cost reference.

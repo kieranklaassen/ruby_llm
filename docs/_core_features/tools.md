@@ -179,9 +179,9 @@ See the [Error Handling Guide]({% link _advanced/error-handling.md %}#handling-e
 > Treat any arguments passed to your `execute` method as potentially untrusted user input, as the AI model generates them based on the conversation.
 {: .warning }
 
-*   **NEVER** use methods like `eval`, `system`, `send`, or direct SQL interpolation with raw arguments from the AI.
-*   **Validate and Sanitize:** Always validate parameter types, ranges, formats, and allowed values. Sanitize strings to prevent injection attacks if they are used in database queries or system commands (though ideally, avoid direct system commands).
-*   **Principle of Least Privilege:** Ensure the code within `execute` only has access to the resources it absolutely needs.
+* **NEVER** use methods like `eval`, `system`, `send`, or direct SQL interpolation with raw arguments from the AI.
+* **Validate and Sanitize:** Always validate parameter types, ranges, formats, and allowed values. Sanitize strings to prevent injection attacks if they are used in database queries or system commands (though ideally, avoid direct system commands).
+* **Principle of Least Privilege:** Ensure the code within `execute` only has access to the resources it absolutely needs.
 
 ## Model Context Protocol (MCP) Support
 
@@ -200,9 +200,9 @@ See the [Error Handling Guide]({% link _advanced/error-handling.md %}#debugging)
 
 ## Next Steps
 
-*   [Tool Parameters]({% link _core_features/tool-parameters.md %}) - Declare flat arguments, structured schemas, and provider-specific metadata.
-*   [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - Steer tool choice, call counts, approval, concurrency, and callbacks.
-*   [Tool Search]({% link _core_features/tool-search.md %}) - Keep large tool sets out of the model's context until it searches for them.
-*   [Code Execution]({% link _core_features/code-execution.md %}) - Let the model run Ruby, Python, JavaScript, and shell code in a sandbox.
-*   [Chatting with AI Models]({% link _core_features/chat.md %}) - The conversational core that tools plug into.
-*   [Error Handling]({% link _advanced/error-handling.md %}) - Recover from failures across the whole stack.
+* [Tool Parameters]({% link _core_features/tool-parameters.md %}) - Declare flat arguments, structured schemas, and provider-specific metadata.
+* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - Steer tool choice, call counts, approval, concurrency, and callbacks.
+* [Tool Search]({% link _core_features/tool-search.md %}) - Keep large tool sets out of the model's context until it searches for them.
+* [Code Execution]({% link _core_features/code-execution.md %}) - Let the model run Ruby, Python, JavaScript, and shell code in a sandbox.
+* [Chatting with AI Models]({% link _core_features/chat.md %}) - The conversational core that tools plug into.
+* [Error Handling]({% link _advanced/error-handling.md %}) - Recover from failures across the whole stack.

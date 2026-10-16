@@ -13,10 +13,10 @@ description: Broadcast AI responses token by token to the browser with Turbo Str
 
 After reading this guide, you will know:
 
-*   How to show user messages instantly while the AI responds in the background.
-*   How to stream assistant responses to the browser with Turbo Streams.
-*   How to wire a background job to `complete` and broadcast each chunk.
-*   How to handle out-of-order message delivery from Action Cable.
+* How to show user messages instantly while the AI responds in the background.
+* How to stream assistant responses to the browser with Turbo Streams.
+* How to wire a background job to `complete` and broadcast each chunk.
+* How to handle out-of-order message delivery from Action Cable.
 
 The default persistence flow is built for real-time UIs. Because RubyLLM creates the assistant message before streaming starts, you get a stable DOM target to append tokens into. This guide assembles a controller, a model, a background job, and views into a complete streaming chat, then covers the ordering quirks of Action Cable.
 
@@ -260,7 +260,7 @@ The async Ruby stack (Falcon + async-cable) may improve behavior but doesn't gua
 
 ## Next Steps
 
-*   [Generators and App Conventions]({% link _advanced/rails-generators.md %}) - generate a ready-made streaming chat UI with one command.
-*   [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - the persistence flow that makes streaming targets possible.
-*   [Streaming]({% link _core_features/streaming.md %}) - the underlying streaming API and chunk format.
-*   [Scale with Async]({% link _advanced/async.md %}) - run concurrent streams without blocking threads.
+* [Generators and App Conventions]({% link _advanced/rails-generators.md %}) - generate a ready-made streaming chat UI with one command.
+* [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - the persistence flow that makes streaming targets possible.
+* [Streaming]({% link _core_features/streaming.md %}) - the underlying streaming API and chunk format.
+* [Scale with Async]({% link _advanced/async.md %}) - run concurrent streams without blocking threads.

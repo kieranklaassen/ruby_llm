@@ -13,11 +13,11 @@ description: Scaffold chats, a chat UI, agents, tools, and schemas with RubyLLM'
 
 After reading this guide, you will know:
 
-*   What the `ruby_llm:install` and `ruby_llm:chat_ui` generators create for you.
-*   How RubyLLM's conventional app directory structure is organized.
-*   How to generate agents, tools, schemas, MCP servers, skills, sandboxes, evaluations, and judges.
-*   How the generated chat UI renders messages, tool calls, tool results, approvals, and attachments.
-*   How to customize model names and set up ActiveStorage.
+* What the `ruby_llm:install` and `ruby_llm:chat_ui` generators create for you.
+* How RubyLLM's conventional app directory structure is organized.
+* How to generate agents, tools, schemas, MCP servers, skills, sandboxes, evaluations, and judges.
+* How the generated chat UI renders messages, tool calls, tool results, approvals, and attachments.
+* How to customize model names and set up ActiveStorage.
 
 RubyLLM's generators write models, migrations, controllers, jobs, and views into your application. Start with persistence, then add the chat UI or generate individual agents, tools, and schemas as you need them.
 
@@ -259,7 +259,7 @@ The ActiveStorage attachments you pass to `with:` from your own models can use a
 
 ## Next Steps
 
-*   [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - what the generated models do once they `acts_as_chat`.
-*   [Streaming with Hotwire/Turbo]({% link _advanced/rails-streaming.md %}) - the streaming flow behind the generated chat UI.
-*   [Agents]({% link _advanced/agents.md %}) - build on the generated agent and prompt conventions.
-*   [Advanced Rails Configuration]({% link _advanced/rails-advanced-config.md %}) - provider overrides and custom contexts for the generated app.
+* [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - what the generated models do once they `acts_as_chat`.
+* [Streaming with Hotwire/Turbo]({% link _advanced/rails-streaming.md %}) - the streaming flow behind the generated chat UI.
+* [Agents]({% link _advanced/agents.md %}) - build on the generated agent and prompt conventions.
+* [Advanced Rails Configuration]({% link _advanced/rails-advanced-config.md %}) - provider overrides and custom contexts for the generated app.

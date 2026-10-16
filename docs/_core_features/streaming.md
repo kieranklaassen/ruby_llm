@@ -15,12 +15,12 @@ redirect_from:
 
 After reading this guide, you will know:
 
-*   How to initiate a streaming chat request.
-*   How to process the streamed `Chunk` objects.
-*   How the final accumulated message is handled.
-*   How to integrate streaming with web frameworks like Rails and Sinatra.
-*   How streaming interacts with Tools.
-*   Performance considerations for streaming.
+* How to initiate a streaming chat request.
+* How to process the streamed `Chunk` objects.
+* How the final accumulated message is handled.
+* How to integrate streaming with web frameworks like Rails and Sinatra.
+* How streaming interacts with Tools.
+* Performance considerations for streaming.
 
 ## Basic Streaming
 
@@ -44,15 +44,15 @@ Each object yielded to the block is an instance of `RubyLLM::Chunk`, which inher
 
 Key attributes of a `Chunk`:
 
-*   `chunk.content`: The text fragment received in this chunk (can be `nil` or empty for some chunks, especially those containing only metadata or tool calls).
-*   `chunk.role`: Always `:assistant` for streamed response chunks.
-*   `chunk.model`: The model generating the response (usually present).
-*   `chunk.tool_calls`: A hash containing partial or complete tool call information if the model is invoking a [Tool]({% link _core_features/tools.md %}). The arguments might be streamed incrementally.
-*   `chunk.tokens.input`: Standard input tokens for the request (often `nil` until the final chunk). Cache reads and writes are exposed separately as `chunk.tokens.cache_read` and `chunk.tokens.cache_write` when providers report them.
-*   `chunk.tokens.output`: Cumulative billable output tokens *up to this chunk* (behavior varies by provider, often only accurate in the final chunk). Includes thinking/reasoning tokens when the provider bills them as output.
-*   `chunk.thinking`: Optional thinking output when providers stream it.
-*   `chunk.index`: The chunk's position within its response, starting at 0. Each response in a loop with tool calls starts again at 0, so you can put chunks back in order after they travel over a channel that may reorder them.
-*   `chunk.finish_reason`: Provider-reported reason the model stopped, usually only present on the final chunk. Chunks also support finish-reason predicates such as `chunk.max_tokens?`, `chunk.content_filtered?`, `chunk.tool_call_stop?`, and `chunk.stopped?`.
+* `chunk.content`: The text fragment received in this chunk (can be `nil` or empty for some chunks, especially those containing only metadata or tool calls).
+* `chunk.role`: Always `:assistant` for streamed response chunks.
+* `chunk.model`: The model generating the response (usually present).
+* `chunk.tool_calls`: A hash containing partial or complete tool call information if the model is invoking a [Tool]({% link _core_features/tools.md %}). The arguments might be streamed incrementally.
+* `chunk.tokens.input`: Standard input tokens for the request (often `nil` until the final chunk). Cache reads and writes are exposed separately as `chunk.tokens.cache_read` and `chunk.tokens.cache_write` when providers report them.
+* `chunk.tokens.output`: Cumulative billable output tokens *up to this chunk* (behavior varies by provider, often only accurate in the final chunk). Includes thinking/reasoning tokens when the provider bills them as output.
+* `chunk.thinking`: Optional thinking output when providers stream it.
+* `chunk.index`: The chunk's position within its response, starting at 0. Each response in a loop with tool calls starts again at 0, so you can put chunks back in order after they travel over a channel that may reorder them.
+* `chunk.finish_reason`: Provider-reported reason the model stopped, usually only present on the final chunk. Chunks also support finish-reason predicates such as `chunk.max_tokens?`, `chunk.content_filtered?`, `chunk.tool_call_stop?`, and `chunk.stopped?`.
 
 > Do not rely on token counts being present or accurate in every chunk. They are typically finalized only in the last chunk or the final returned message.
 {: .warning }
@@ -188,6 +188,6 @@ end
 
 ## Next Steps
 
-*   [Using Tools]({% link _core_features/tools.md %})
-*   [Rails Integration]({% link _advanced/rails.md %})
-*   [Error Handling]({% link _advanced/error-handling.md %})
+* [Using Tools]({% link _core_features/tools.md %})
+* [Rails Integration]({% link _advanced/rails.md %})
+* [Error Handling]({% link _advanced/error-handling.md %})

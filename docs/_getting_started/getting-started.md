@@ -15,13 +15,13 @@ redirect_from:
 
 After reading this guide, you will know:
 
-*   How to install RubyLLM.
-*   How to configure the providers you want to use.
-*   How to chat, stream responses, and ask about files.
-*   How to define tools, agents, and structured output.
-*   How to generate images, video, and speech, and transcribe audio.
-*   How to extract document text, moderate content, and search with embeddings and reranking.
-*   How to track costs and save conversations in Rails.
+* How to install RubyLLM.
+* How to configure the providers you want to use.
+* How to chat, stream responses, and ask about files.
+* How to define tools, agents, and structured output.
+* How to generate images, video, and speech, and transcribe audio.
+* How to extract document text, moderate content, and search with embeddings and reranking.
+* How to track costs and save conversations in Rails.
 
 Each example shows one feature. Try the ones your application needs, then follow its guide for more options.
 
@@ -313,11 +313,11 @@ Then visit `http://localhost:3000/chats` to start chatting. See the [Rails Integ
 
 Continue with the guide for the feature you want to build:
 
-*   [Chatting with AI Models]({% link _core_features/chat.md %})
-*   [Models]({% link _reference/available-models.md %}) for comparing capabilities and pricing
-*   [Agents]({% link _advanced/agents.md %}) and [Agentic Workflows]({% link _advanced/agentic-workflows.md %})
-*   [Batches]({% link _advanced/batches.md %}) and [Prompt Caching]({% link _core_features/prompt-caching.md %})
-*   [Rails Integration]({% link _advanced/rails.md %})
-*   [AI Coding Assistants]({% link _getting_started/ai-coding-assistants.md %})
-*   [Configuration]({% link _getting_started/configuration.md %})
-*   [Error Handling]({% link _advanced/error-handling.md %})
+* [Chatting with AI Models]({% link _core_features/chat.md %})
+* [Models]({% link _reference/available-models.md %}) for comparing capabilities and pricing
+* [Agents]({% link _advanced/agents.md %}) and [Agentic Workflows]({% link _advanced/agentic-workflows.md %})
+* [Batches]({% link _advanced/batches.md %}) and [Prompt Caching]({% link _core_features/prompt-caching.md %})
+* [Rails Integration]({% link _advanced/rails.md %})
+* [AI Coding Assistants]({% link _getting_started/ai-coding-assistants.md %})
+* [Configuration]({% link _getting_started/configuration.md %})
+* [Error Handling]({% link _advanced/error-handling.md %})

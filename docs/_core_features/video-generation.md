@@ -12,14 +12,14 @@ description: Generate, edit, and extend videos from prompts, images, and audio.
 
 After reading this guide, you will know:
 
-*   How to generate a video from a text prompt.
-*   How to start a video job and collect the result later.
-*   How to animate a still image into a video.
-*   How to edit a video or extend a generated clip.
-*   How to select video models and pass provider-specific options.
-*   How to control polling and timeouts.
-*   How to access and save generated video data.
-*   How to handle errors during video generation.
+* How to generate a video from a text prompt.
+* How to start a video job and collect the result later.
+* How to animate a still image into a video.
+* How to edit a video or extend a generated clip.
+* How to select video models and pass provider-specific options.
+* How to control polling and timeouts.
+* How to access and save generated video data.
+* How to handle errors during video generation.
 
 ## Basic Video Generation
 
@@ -244,12 +244,12 @@ job.wait(timeout: 900, interval: 10)
 
 `RubyLLM::Video` mirrors `RubyLLM::Image`:
 
-*   `video.url`: the hosted video URL, for providers that return one. `nil` otherwise.
-*   `video.data`: the raw video bytes, returned inline or downloaded with your provider's credentials. `nil` for hosted URLs.
-*   `video.mime_type`: the MIME type, such as `"video/mp4"`.
-*   `video.duration`: the clip length in seconds, when the provider reports it.
-*   `video.model`: the id of the model that rendered the clip.
-*   `video.raw`: the provider's raw job response, for provider-specific fields.
+* `video.url`: the hosted video URL, for providers that return one. `nil` otherwise.
+* `video.data`: the raw video bytes, returned inline or downloaded with your provider's credentials. `nil` for hosted URLs.
+* `video.mime_type`: the MIME type, such as `"video/mp4"`.
+* `video.duration`: the clip length in seconds, when the provider reports it.
+* `video.model`: the id of the model that rendered the clip.
+* `video.raw`: the provider's raw job response, for provider-specific fields.
 
 Save hosted videos before their URLs expire. `save` and `to_blob` work with either URLs or inline data:
 
@@ -299,6 +299,6 @@ See [Error Handling]({% link _advanced/error-handling.md %}) for specific except
 
 ## Next Steps
 
-*   [Image Generation]({% link _core_features/image-generation.md %}) - Generate the still images you can animate.
-*   [Attachments]({% link _core_features/attachments.md %}) - Everything `with:` accepts across RubyLLM.
-*   [Instrumentation]({% link _advanced/instrumentation.md %}) - Subscribe to the `video.ruby_llm` and `video_job.ruby_llm` events.
+* [Image Generation]({% link _core_features/image-generation.md %}) - Generate the still images you can animate.
+* [Attachments]({% link _core_features/attachments.md %}) - Everything `with:` accepts across RubyLLM.
+* [Instrumentation]({% link _advanced/instrumentation.md %}) - Subscribe to the `video.ruby_llm` and `video_job.ruby_llm` events.
