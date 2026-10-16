@@ -50,6 +50,15 @@ RSpec.describe RubyLLM::Providers::XAI::Videos do
     end
   end
 
+  describe '#validate_animate_inputs' do
+    it 'rejects more than one reference as a caller mistake' do
+      images = RubyLLM::Attachment.wrap([image_path, image_path])
+
+      expect { protocol.send(:validate_animate_inputs, with: images) }
+        .to raise_error(ArgumentError, 'xAI video generation takes a single reference image or video')
+    end
+  end
+
   describe '#parse_video_job' do
     it 'keeps the requested duration and resolution on the job' do
       context = RubyLLM.context { |config| config.xai_api_key = 'test' }

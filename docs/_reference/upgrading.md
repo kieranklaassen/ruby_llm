@@ -341,6 +341,20 @@ end
 
 `RubyLLM::Error` stays the class for what the provider reports, including a provider that has no batch API.
 
+## Rescue `ArgumentError` for Too Many Video References
+
+`RubyLLM.animate` with more reference files than the provider takes now raises `ArgumentError` on Gemini, xAI, and OpenRouter, like `extend:` with more than one video. In 2.1 it raised `RubyLLM::Error`. The messages are unchanged:
+
+```ruby
+# 2.1
+rescue RubyLLM::Error => e
+  e.message # => "Veo takes a single reference image"
+
+# 2.2
+rescue ArgumentError => e
+  e.message # => "Veo takes a single reference image"
+```
+
 ## Deploy Without Mixing Versions
 
 Workers on 2.1 do not claim chats, so they can still overlap with workers on 2.2 while a deploy rolls out. Run the schema upgrade first, then let the new version replace every worker before you rely on claims. Chats that run once all workers are on 2.2 are covered.

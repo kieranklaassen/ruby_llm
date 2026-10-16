@@ -67,6 +67,15 @@ RSpec.describe RubyLLM::Protocols::Gemini::Videos do
     end
   end
 
+  describe '#validate_animate_inputs' do
+    it 'rejects more than one reference image as a caller mistake' do
+      images = RubyLLM::Attachment.wrap([image_path, image_path])
+
+      expect { protocol.send(:validate_animate_inputs, with: images) }
+        .to raise_error(ArgumentError, 'Veo takes a single reference image')
+    end
+  end
+
   describe '#render_video_extension_payload' do
     it 'rejects local videos without a generated Veo URI' do
       source = RubyLLM::Video.new(data: 'mp4 bytes', mime_type: 'video/mp4')

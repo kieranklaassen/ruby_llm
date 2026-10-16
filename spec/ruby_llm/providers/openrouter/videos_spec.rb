@@ -43,6 +43,15 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Videos do
     end
   end
 
+  describe '#validate_animate_inputs' do
+    it 'rejects more than two frame images as a caller mistake' do
+      images = RubyLLM::Attachment.wrap(%w[first middle last].map { |name| "https://example.com/#{name}.jpg" })
+
+      expect { protocol.send(:validate_animate_inputs, with: images) }
+        .to raise_error(ArgumentError, 'OpenRouter video generation takes at most first and last frame images')
+    end
+  end
+
   describe '#parse_video_request' do
     it 'reads the requested duration and resolution, or the size in pixels' do
       payload = protocol.render_video_payload('a wave', model: 'x-ai/grok-imagine-video',

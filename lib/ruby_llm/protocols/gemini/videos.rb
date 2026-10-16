@@ -85,7 +85,7 @@ module RubyLLM
         end
 
         def validate_animate_inputs(with:)
-          raise Error, 'Veo takes a single reference image' if with.size > 1
+          raise ArgumentError, 'Veo takes a single reference image' if with.size > 1
 
           with.each do |attachment|
             raise UnsupportedAttachmentError, attachment.mime_type unless attachment.image?
