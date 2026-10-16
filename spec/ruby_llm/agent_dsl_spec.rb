@@ -113,6 +113,32 @@ RSpec.describe RubyLLM::Agent do
       expect { Class.new(described_class) { thinking effort: nil } }.to raise_error(ArgumentError)
     end
 
+    it 'names the accepted values the same way on every feature declaration' do
+      expect { Class.new(described_class) { thinking :on } }
+        .to raise_error(ArgumentError, 'thinking accepts true, false, or thinking options')
+      expect { Class.new(described_class) { caching :on } }
+        .to raise_error(ArgumentError, 'caching accepts true, false, or caching options')
+      expect { Class.new(described_class) { compaction :on } }
+        .to raise_error(ArgumentError, 'compaction accepts true, false, or compaction options')
+    end
+
+    it 'declares compaction with true and options, or an options Hash' do
+      with_true = Class.new(described_class) { compaction true, at: 50_000 }
+      with_hash = Class.new(described_class) { compaction({ 'at' => 50_000 }) }
+
+      expect(with_true.chat.compaction).to eq(at: 50_000)
+      expect(with_hash.chat.compaction).to eq(at: 50_000)
+    end
+
+    it 'rejects unknown thinking and compaction options when declared' do
+      expect { Class.new(described_class) { thinking depth: 1 } }
+        .to raise_error(ArgumentError, 'thinking accepts :effort, :budget, :display, got :depth')
+      expect { Class.new(described_class) { compaction keep: 1 } }
+        .to raise_error(ArgumentError, 'compaction accepts :at, :instructions, :pause_after, got :keep')
+      expect { Class.new(described_class) { compaction false, at: 1 } }
+        .to raise_error(ArgumentError, 'compaction false does not accept options')
+    end
+
     it 'does not carry verb aliases' do
       agent = Class.new(described_class)
 

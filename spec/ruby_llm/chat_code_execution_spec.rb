@@ -79,9 +79,10 @@ RSpec.describe RubyLLM::Chat do
     end
 
     it 'rejects nil, unknown options, unknown languages, and options with false' do
-      expect { chat.with_code_execution(nil) }.to raise_error(ArgumentError, /accepts false or code execution/)
-      expect { chat.with_code_execution(memory: 1) }.to raise_error(ArgumentError, /got memory/)
-      expect { chat.with_code_execution(timeout: 5) }.to raise_error(ArgumentError, /got timeout/)
+      expect { chat.with_code_execution(nil) }
+        .to raise_error(ArgumentError, /accepts true, false, or code execution options/)
+      expect { chat.with_code_execution(memory: 1) }.to raise_error(ArgumentError, /got :memory/)
+      expect { chat.with_code_execution(timeout: 5) }.to raise_error(ArgumentError, /got :timeout/)
       expect { chat.with_code_execution(languages: [:cobol]) }.to raise_error(ArgumentError, /got cobol/)
       expect { chat.with_code_execution(languages: []) }.to raise_error(ArgumentError, /at least one language/)
       expect { chat.with_code_execution(gems: nil) }.to raise_error(ArgumentError, /cannot be nil/)

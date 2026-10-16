@@ -61,7 +61,7 @@ module RubyLLM
       def options(enabled, options) # :nodoc:
         return options(true, enabled.transform_keys(&:to_sym).merge(options)) if enabled.is_a?(Hash)
         unless [true, false].include?(enabled)
-          raise ArgumentError, 'code execution accepts false or code execution options'
+          raise ArgumentError, 'code execution accepts true, false, or code execution options'
         end
         raise ArgumentError, 'disabled code execution does not accept options' if !enabled && options.any?
         return false unless enabled
@@ -141,12 +141,19 @@ module RubyLLM
 
       def validate_options(options)
         unknown = options.keys - OPTIONS
-        raise ArgumentError, "code execution accepts #{OPTIONS.join(', ')}, got #{unknown.join(', ')}" if unknown.any?
+        if unknown.any?
+          raise ArgumentError,
+                "code execution accepts #{option_keys(OPTIONS)}, got #{option_keys(unknown)}"
+        end
         raise ArgumentError, 'code execution options cannot be nil' if options.value?(nil)
 
         validate_packages(options)
         escalations(options[:escalate_to]) if options.key?(:escalate_to)
         validate_mounts(options[:mounts]) if options.key?(:mounts)
+      end
+
+      def option_keys(keys)
+        keys.map { |key| ":#{key}" }.join(', ')
       end
 
       def validate_packages(options)

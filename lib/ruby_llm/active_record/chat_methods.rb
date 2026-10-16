@@ -335,7 +335,7 @@ module RubyLLM
 
       ##
       # :method: with_caching
-      # :call-seq: with_caching(options = {})
+      # :call-seq: with_caching(enabled = true, **options)
       #
       # Applies Chat#with_caching and returns this record.
 
@@ -347,7 +347,7 @@ module RubyLLM
 
       ##
       # :method: with_compaction
-      # :call-seq: with_compaction(options = {})
+      # :call-seq: with_compaction(enabled = true, **options)
       #
       # Applies Chat#with_compaction and returns this record.
 

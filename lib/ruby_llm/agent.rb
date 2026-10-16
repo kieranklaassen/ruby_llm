@@ -269,25 +269,26 @@ module RubyLLM
       def thinking(enabled = true, **options) # rubocop:disable Style/OptionalBooleanParameter
         return thinking(**enabled.transform_keys(&:to_sym), **options) if enabled.is_a?(Hash)
 
-        validate_thinking_options(enabled, options)
+        validate_switch_options(:thinking, enabled, options, THINKING_OPTIONS)
+        raise ArgumentError, 'thinking options cannot be nil; use thinking false to disable' if options.value?(nil)
+
         @thinking = enabled ? options : false
       end
 
       # Enables context compaction for chats this agent builds, applied via
       # Chat#with_compaction. With no options, the provider's own defaults
-      # apply. Pass +false+ to disable it.
+      # apply. Accepts keywords or an options Hash. Pass +false+ to disable
+      # it. Passing +nil+ raises ArgumentError.
       #
       #   compaction
       #   compaction false
       #   compaction at: 50_000
       #
-      def compaction(options = {})
-        options = {} if options == true
-        unless options == false || options.is_a?(Hash)
-          raise ArgumentError, 'compaction accepts true, false, or compaction options'
-        end
+      def compaction(enabled = true, **options) # rubocop:disable Style/OptionalBooleanParameter
+        return compaction(**enabled.transform_keys(&:to_sym), **options) if enabled.is_a?(Hash)
 
-        @compaction = options
+        validate_switch_options(:compaction, enabled, options, Chat::COMPACTION_OPTIONS)
+        @compaction = enabled ? options : false
       end
 
       # Lets chats this agent builds run code in the configured sandbox,
@@ -365,7 +366,7 @@ module RubyLLM
       def caching(enabled = true, **options, &block) # rubocop:disable Metrics/PerceivedComplexity, Style/OptionalBooleanParameter
         return caching(**enabled.transform_keys(&:to_sym), **options, &block) if enabled.is_a?(Hash)
 
-        raise ArgumentError, 'caching accepts false or caching options' unless [true, false].include?(enabled)
+        raise ArgumentError, 'caching accepts true, false, or caching options' unless [true, false].include?(enabled)
         raise ArgumentError, 'caching accepts options or a block, not both' if options.any? && block
         raise ArgumentError, 'caching false does not accept options or a block' if !enabled && (options.any? || block)
 
@@ -696,15 +697,18 @@ module RubyLLM
         raise ArgumentError, 'context Proc must accept zero arguments'
       end
 
-      def validate_thinking_options(enabled, options)
-        raise ArgumentError, 'thinking accepts false or thinking options' unless [true, false].include?(enabled)
-        raise ArgumentError, 'thinking false does not accept options' if !enabled && options.any?
-        raise ArgumentError, 'thinking options cannot be nil; use thinking false to disable' if options.value?(nil)
+      def validate_switch_options(name, enabled, options, supported)
+        raise ArgumentError, "#{name} accepts true, false, or #{name} options" unless [true, false].include?(enabled)
+        raise ArgumentError, "#{name} false does not accept options" if !enabled && options.any?
 
-        unsupported = options.keys - THINKING_OPTIONS
+        unsupported = options.keys - supported
         return if unsupported.empty?
 
-        raise ArgumentError, "thinking accepts #{THINKING_OPTIONS.join(', ')}, got #{unsupported.join(', ')}"
+        raise ArgumentError, "#{name} accepts #{option_keys(supported)}, got #{option_keys(unsupported)}"
+      end
+
+      def option_keys(keys)
+        keys.map { |key| ":#{key}" }.join(', ')
       end
 
       def rescue_handler_key(exception_class)
@@ -1078,13 +1082,13 @@ module RubyLLM
 
     ##
     # :method: with_compaction
-    # :call-seq: with_compaction(options = {})
+    # :call-seq: with_compaction(enabled = true, **options)
     #
     # Delegates to Chat#with_compaction. See that method for arguments and return values.
 
     ##
     # :method: with_caching
-    # :call-seq: with_caching(options = {})
+    # :call-seq: with_caching(enabled = true, **options)
     #
     # Delegates to Chat#with_caching. See that method for arguments and return values.
 

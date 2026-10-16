@@ -69,6 +69,8 @@ Naming/MethodParameterName:
 
 Style/OptionalBooleanParameter:
   AllowedMethods:
+    - with_caching
+    - with_compaction
     - with_citations
     - with_code_execution
     - with_thinking

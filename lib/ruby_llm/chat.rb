@@ -701,7 +701,9 @@ module RubyLLM
     def with_thinking(enabled = true, **options) # rubocop:disable Metrics/PerceivedComplexity
       return with_thinking(**enabled.transform_keys(&:to_sym), **options) if enabled.is_a?(Hash)
 
-      raise ArgumentError, 'with_thinking accepts false or thinking options' unless [true, false].include?(enabled)
+      unless [true, false].include?(enabled)
+        raise ArgumentError, 'with_thinking accepts true, false, or thinking options'
+      end
       raise ArgumentError, 'with_thinking(false) does not accept options' if !enabled && options.any?
       raise ArgumentError, 'thinking options cannot be nil; pass false to disable' if options.value?(nil)
       if (unsupported = options.keys - THINKING_OPTIONS).any?
@@ -761,13 +763,13 @@ module RubyLLM
     #   chat.with_caching(id: cache)
     #   chat.with_caching(false)
     #
-    def with_caching(options = {})
-      options = {} if options == true
-      unless options == false || options.is_a?(Hash)
-        raise ArgumentError, 'with_caching accepts true, false, or caching options'
-      end
+    def with_caching(enabled = true, **options)
+      return with_caching(**enabled.transform_keys(&:to_sym), **options) if enabled.is_a?(Hash)
 
-      @caching = options == false ? false : options.transform_keys(&:to_sym).freeze
+      raise ArgumentError, 'with_caching accepts true, false, or caching options' unless [true, false].include?(enabled)
+      raise ArgumentError, 'with_caching(false) does not accept options' if !enabled && options.any?
+
+      @caching = enabled ? options.freeze : false
       self
     end
 
@@ -795,13 +797,15 @@ module RubyLLM
     # and OpenAI summarize the compacted span into an opaque block that
     # replaces it; OpenRouter drops messages from the middle of the
     # conversation instead, and has no threshold of its own.
-    def with_compaction(options = {})
-      options = {} if options == true
-      unless options == false || options.is_a?(Hash)
+    def with_compaction(enabled = true, **options)
+      return with_compaction(**enabled.transform_keys(&:to_sym), **options) if enabled.is_a?(Hash)
+
+      unless [true, false].include?(enabled)
         raise ArgumentError, 'with_compaction accepts true, false, or compaction options'
       end
+      raise ArgumentError, 'with_compaction(false) does not accept options' if !enabled && options.any?
 
-      @compaction = options == false ? false : normalize_compaction(options)
+      @compaction = enabled ? normalize_compaction(options) : false
       self
     end
 
