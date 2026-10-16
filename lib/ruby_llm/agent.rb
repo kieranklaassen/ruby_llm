@@ -270,7 +270,7 @@ module RubyLLM
         return thinking(**enabled.transform_keys(&:to_sym), **options) if enabled.is_a?(Hash)
 
         validate_switch_options(:thinking, enabled, options, THINKING_OPTIONS)
-        raise ArgumentError, 'thinking options cannot be nil; use thinking false to disable' if options.value?(nil)
+        raise ArgumentError, 'thinking options cannot be nil; pass false to disable' if options.value?(nil)
 
         @thinking = enabled ? options : false
       end
@@ -697,7 +697,7 @@ module RubyLLM
         return unless value.is_a?(Proc)
         return if value.arity.zero?
 
-        raise ArgumentError, 'context Proc must accept zero arguments'
+        raise ArgumentError, 'A context Proc must accept zero arguments'
       end
 
       def validate_switch_options(name, enabled, options, supported)

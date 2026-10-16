@@ -18,7 +18,7 @@ RSpec.describe RubyLLM::Chat do
   describe '#with_tool_options' do
     it 'rejects an option it does not know' do
       expect { chat.with_tool_options(retries: 3) }.to raise_error(
-        ArgumentError, /Unknown tool option: retries\. Valid options are: choice, calls, concurrency/
+        ArgumentError, 'with_tool_options accepts :choice, :calls, :concurrency, got :retries'
       )
     end
 

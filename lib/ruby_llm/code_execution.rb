@@ -61,9 +61,9 @@ module RubyLLM
       def options(enabled, options) # :nodoc:
         return options(true, enabled.transform_keys(&:to_sym).merge(options)) if enabled.is_a?(Hash)
         unless [true, false].include?(enabled)
-          raise ArgumentError, 'code execution accepts true, false, or code execution options'
+          raise ArgumentError, 'Code execution accepts true, false, or code execution options'
         end
-        raise ArgumentError, 'disabled code execution does not accept options' if !enabled && options.any?
+        raise ArgumentError, 'Disabled code execution does not accept options' if !enabled && options.any?
         return false unless enabled
 
         validate_options(options)
@@ -143,9 +143,9 @@ module RubyLLM
         unknown = options.keys - OPTIONS
         if unknown.any?
           raise ArgumentError,
-                "code execution accepts #{Support::Utils.option_list(OPTIONS)}, got #{Support::Utils.option_list(unknown)}"
+                "Code execution accepts #{Support::Utils.option_list(OPTIONS)}, got #{Support::Utils.option_list(unknown)}"
         end
-        raise ArgumentError, 'code execution options cannot be nil' if options.value?(nil)
+        raise ArgumentError, 'Code execution options cannot be nil' if options.value?(nil)
 
         validate_packages(options)
         escalations(options[:escalate_to]) if options.key?(:escalate_to)
@@ -173,9 +173,9 @@ module RubyLLM
         languages = Array(options.fetch(:languages, default)).map { |language| language.to_s.to_sym }.uniq
         unsupported = languages - LANGUAGES
         if unsupported.any?
-          raise ArgumentError, "code execution runs #{LANGUAGES.join(', ')}, got #{unsupported.join(', ')}"
+          raise ArgumentError, "Code execution runs #{LANGUAGES.join(', ')}, got #{unsupported.join(', ')}"
         end
-        raise ArgumentError, 'code execution needs at least one language' if languages.empty?
+        raise ArgumentError, 'Code execution needs at least one language' if languages.empty?
 
         languages.freeze
       end

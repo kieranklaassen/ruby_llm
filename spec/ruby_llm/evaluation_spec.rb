@@ -231,6 +231,11 @@ RSpec.describe RubyLLM::Evaluation do
     expect { Class.new(described_class).run(dataset: cases) }.to raise_error(ArgumentError, /Define perform/)
   end
 
+  it 'names the unknown fields of a case as a list' do
+    expect { described_class::Case.new(name: 'greeting', inputs: 'Hello', expected: 'HELLO', tags: []) }
+      .to raise_error(ArgumentError, 'Unknown case fields: expected, tags')
+  end
+
   it 'rejects conflicting dataset arguments and invalid acceptance thresholds' do
     expect { evaluation.dataset(cases) { cases } }.to raise_error(ArgumentError, /not both/)
     expect { evaluation.evaluation(:correct, 'Correct', minimum: Float::NAN) }.to raise_error(ArgumentError, /finite/)

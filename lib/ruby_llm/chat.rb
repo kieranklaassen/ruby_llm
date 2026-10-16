@@ -617,7 +617,7 @@ module RubyLLM
         when :choice then apply_tool_choice(value)
         when :calls then @tool_prefs[:calls] = value.nil? ? nil : normalize_calls(value)
         when :concurrency then @concurrency = normalize_tool_concurrency(value.nil? ? @config.tool_concurrency : value)
-        else raise ArgumentError, "Unknown tool option: #{option}. Valid options are: choice, calls, concurrency"
+        else raise ArgumentError, "with_tool_options accepts :choice, :calls, :concurrency, got :#{option}"
         end
       end
       self

@@ -121,7 +121,8 @@ RSpec.describe RubyLLM::Agent do
       expect { Class.new(described_class) { caching nil } }.to raise_error(ArgumentError)
       expect { Class.new(described_class) { compaction nil } }.to raise_error(ArgumentError)
       expect { Class.new(described_class) { citations nil } }.to raise_error(ArgumentError)
-      expect { Class.new(described_class) { thinking effort: nil } }.to raise_error(ArgumentError)
+      expect { Class.new(described_class) { thinking effort: nil } }
+        .to raise_error(ArgumentError, 'thinking options cannot be nil; pass false to disable')
     end
 
     it 'names the accepted values the same way on every feature declaration' do
@@ -192,7 +193,7 @@ RSpec.describe RubyLLM::Agent do
 
     it 'rejects context Procs that require arguments' do
       agent = Class.new(described_class)
-      error = 'context Proc must accept zero arguments'
+      error = 'A context Proc must accept zero arguments'
 
       expect { agent.context(->(config) { config }) }.to raise_error(ArgumentError, error)
       expect { agent.context(proc { |config| config }) }.to raise_error(ArgumentError, error)

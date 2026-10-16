@@ -19,7 +19,7 @@ module RubyLLM
       def initialize(name:, inputs:, metadata: {}, **reference)
         unless (reference.keys - [:expected_output]).empty?
           raise ArgumentError,
-                "Unknown case fields: #{reference.keys - [:expected_output]}"
+                "Unknown case fields: #{(reference.keys - [:expected_output]).join(', ')}"
         end
         raise ArgumentError, 'A case name cannot be empty' if name.to_s.empty?
         raise ArgumentError, 'Case metadata must be a Hash' unless metadata.is_a?(Hash)
