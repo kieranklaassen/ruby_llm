@@ -82,8 +82,7 @@ module RubyLLM
 
           STORAGE_CLIENTS.fetch(storage_key) { ::Google::Cloud::Storage.new(**storage_options) }
         rescue LoadError
-          raise Error, 'The google-cloud-storage gem is required for Vertex AI file uploads. ' \
-                       'Please add it to your Gemfile: gem "google-cloud-storage"'
+          raise LoadError, 'Vertex AI file uploads require the google-cloud-storage gem. Add it to your Gemfile.'
         end
 
         # Without a key, Cloud Storage resolves its own credentials, including

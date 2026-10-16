@@ -598,4 +598,13 @@ RSpec.describe RubyLLM::Protocols::Converse::Streaming do
       expect(streaming).not_to have_received(:parse_stream_chunk)
     end
   end
+
+  describe 'the aws-eventstream dependency' do
+    it 'explains how to install it when missing' do
+      allow(streaming).to receive(:require).with('aws-eventstream').and_raise(LoadError)
+
+      expect { streaming.send(:event_stream_decoder) }
+        .to raise_error(LoadError, /requires the aws-eventstream gem/)
+    end
+  end
 end

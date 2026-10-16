@@ -52,9 +52,7 @@ module RubyLLM
           require 'aws-eventstream'
           Aws::EventStream::Decoder.new
         rescue LoadError
-          raise Error,
-                'The aws-eventstream gem is required for Bedrock streaming. ' \
-                'Please add it to your Gemfile: gem "aws-eventstream"'
+          raise LoadError, 'Bedrock streaming requires the aws-eventstream gem. Add it to your Gemfile.'
         end
 
         # The error body arrives in as many reads as the adapter hands out, so

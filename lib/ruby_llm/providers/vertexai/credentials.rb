@@ -54,8 +54,7 @@ module RubyLLM
             ::Google::Auth.get_application_default(SCOPES)
           end
         rescue LoadError
-          raise Error,
-                'The googleauth gem ~> 1.15 is required for Vertex AI. Please add it to your Gemfile: gem "googleauth"'
+          raise LoadError, 'Vertex AI requires the googleauth gem ~> 1.15. Add it to your Gemfile.'
         end
       end
     end

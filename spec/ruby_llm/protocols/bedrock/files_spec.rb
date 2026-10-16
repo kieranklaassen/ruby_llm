@@ -135,7 +135,7 @@ RSpec.describe RubyLLM::Protocols::Bedrock::Files do
       allow(files).to receive(:s3_client).and_call_original
       allow(files).to receive(:require).with('aws-sdk-s3').and_raise(LoadError)
 
-      expect { files.send(:s3_client) }.to raise_error(RubyLLM::Error, /aws-sdk-s3 gem is required/)
+      expect { files.send(:s3_client) }.to raise_error(LoadError, /require the aws-sdk-s3 gem/)
     end
   end
 end

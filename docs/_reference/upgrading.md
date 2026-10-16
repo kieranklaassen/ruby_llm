@@ -376,6 +376,22 @@ An agent class without `chat_model` raises it as well, from `find`, `create`, `c
 
 `ConfigurationError` inherits from `StandardError`, so `rescue RubyLLM::Error` no longer catches the GPUStack case.
 
+## Rescue `LoadError` for a Missing Optional Gem
+
+A missing optional gem now raises `LoadError` wherever RubyLLM needs one. In 2.1, `googleauth` for Vertex AI, `aws-eventstream` for Bedrock streaming, `aws-sdk-s3` for Bedrock file uploads, and `google-cloud-storage` for Vertex AI file uploads raised `RubyLLM::Error`, while `async`, `websocket-driver`, `avro`, `minitest`, and `opentelemetry-api` already raised `LoadError`:
+
+```ruby
+# 2.1
+rescue RubyLLM::Error => e
+  e.message # => 'The googleauth gem ~> 1.15 is required for Vertex AI. Please add it to your Gemfile: gem "googleauth"'
+
+# 2.2
+rescue LoadError => e
+  e.message # => "Vertex AI requires the googleauth gem ~> 1.15. Add it to your Gemfile."
+```
+
+`LoadError` is not a `StandardError`, so a bare `rescue` does not catch it. Add the gem to your Gemfile and the error goes away.
+
 ## Deploy Without Mixing Versions
 
 Workers on 2.1 do not claim chats, so they can still overlap with workers on 2.2 while a deploy rolls out. Run the schema upgrade first, then let the new version replace every worker before you rely on claims. Chats that run once all workers are on 2.2 are covered.

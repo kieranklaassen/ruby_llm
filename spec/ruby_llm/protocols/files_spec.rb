@@ -317,7 +317,7 @@ RSpec.describe RubyLLM::Protocols::Files do
     it 'lazy-loads the optional gem' do
       allow(protocol).to receive(:require).with('aws-sdk-s3').and_raise(LoadError)
 
-      expect { protocol.send(:s3_client) }.to raise_error(RubyLLM::Error, /aws-sdk-s3/)
+      expect { protocol.send(:s3_client) }.to raise_error(LoadError, /aws-sdk-s3/)
     end
 
     it 'passes credential providers to aws-sdk-s3' do
@@ -368,7 +368,7 @@ RSpec.describe RubyLLM::Protocols::Files do
     it 'lazy-loads the optional gem' do
       allow(protocol).to receive(:require).with('google/cloud/storage').and_raise(LoadError)
 
-      expect { protocol.send(:storage) }.to raise_error(RubyLLM::Error, /google-cloud-storage/)
+      expect { protocol.send(:storage) }.to raise_error(LoadError, /google-cloud-storage/)
     end
   end
 
