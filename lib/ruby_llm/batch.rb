@@ -195,6 +195,17 @@ module RubyLLM
       @completed
     end
 
+    # Returns whether the batch has finished processing, like #complete?.
+    # Reads the same as VideoJob#done? and ResearchJob#done?.
+    def done?
+      complete?
+    end
+
+    # Returns whether the provider is still processing the batch.
+    def pending?
+      !complete?
+    end
+
     # Returns whether the provider completed the batch successfully.
     def succeeded?
       status == :succeeded

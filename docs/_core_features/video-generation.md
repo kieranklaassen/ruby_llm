@@ -233,11 +233,14 @@ RubyLLM.configure do |config|
 end
 ```
 
-When the timeout elapses, `animate` raises `RubyLLM::Error`. The provider keeps rendering; only the wait stops. Video jobs have no cancellation method. `wait` also accepts both values per call:
+When the timeout elapses, `animate` raises `RubyLLM::Error`. The provider keeps rendering; only the wait stops. Video jobs have no cancellation method. `animate` and `wait` also accept both values per call:
 
 ```ruby
+RubyLLM.animate("A rocket launch seen from orbit", timeout: 900, interval: 10)
+
 job = RubyLLM.animate_later("A rocket launch seen from orbit")
 job.wait(timeout: 900, interval: 10)
+job.provider # => "gemini"
 ```
 
 ## Working with Generated Videos

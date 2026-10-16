@@ -33,6 +33,15 @@ RSpec.describe RubyLLM::Batch do
       end
     end
 
+    it 'answers done? and pending? like the other jobs' do
+      provider = RubyLLM::Provider.resolve!(:openai).new(RubyLLM.config)
+      running = described_class.new(provider:, id: 'batch_1', raw_status: 'in_progress', completed: false)
+      finished = described_class.new(provider:, id: 'batch_1', raw_status: 'completed', completed: true)
+
+      expect(running).to have_attributes(pending?: true, done?: false, complete?: false)
+      expect(finished).to have_attributes(pending?: false, done?: true, complete?: true)
+    end
+
     it 'exposes the provider status separately' do
       provider = RubyLLM::Provider.resolve!(:openai).new(RubyLLM.config)
       batch = described_class.new(provider:, id: 'batch_1', raw_status: 'cancelled', completed: true)

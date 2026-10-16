@@ -34,7 +34,8 @@ module RubyLLM
     # rendering it, and returns a Video. Most code calls this through
     # RubyLLM.animate. Video generation is asynchronous on every provider,
     # so this submits a job with VideoJob.animate_later and polls until it
-    # is done, honoring <tt>config.video_generation_timeout</tt> and
+    # is done. +timeout:+ and +interval:+ are seconds and default to
+    # <tt>config.video_generation_timeout</tt> and
     # <tt>config.video_generation_poll_interval</tt>.
     #
     # +model:+ selects the video model and defaults to the configured
@@ -70,7 +71,9 @@ module RubyLLM
                      extend: nil,
                      provider_options: {},
                      metadata: nil,
-                     owner: nil)
+                     owner: nil,
+                     timeout: nil,
+                     interval: nil)
       config = context&.config || RubyLLM.config
       payload = { model:, prompt:, provider_options:, metadata: }
 
@@ -79,7 +82,7 @@ module RubyLLM
                                              context:, with:, extend:, provider_options:, metadata:, owner:)
         event[:model] = job.model
         event[:job_id] = job.id
-        job.wait
+        job.wait(timeout:, interval:)
         result = job.video
         event[:result] = result
         event[:response_model] = result.model

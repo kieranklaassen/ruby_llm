@@ -15,6 +15,11 @@ module RubyLLM
     # The provider's id for the job.
     attr_reader :id
 
+    # The slug of the provider rendering the video, as a String.
+    def provider
+      @protocol.provider.slug
+    end
+
     # The job state: +:pending+, +:succeeded+, or +:failed+.
     attr_reader :status
 
@@ -177,7 +182,7 @@ module RubyLLM
       return if pending? || @usage_recorded
 
       @usage_recorded = true
-      entry = Accounting::Usage::Entry.new(operation: :video, provider: @protocol.provider.slug, model:,
+      entry = Accounting::Usage::Entry.new(operation: :video, provider:, model:,
                                            status: succeeded? ? :succeeded : :failed, cost:, owner: @usage_owner)
       Accounting::Usage.report(entry, config: @protocol.config)
     end
