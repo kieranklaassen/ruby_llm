@@ -88,7 +88,7 @@ Each chunk a persisted chat streams knows its record: `chunk.message` is the ass
 </div>
 ```
 
-The message broadcasts to the chat record's stream, so the view subscribes with `turbo_stream_from @chat`. Rails renders each message with its partial, chosen by `to_partial_path`: `messages/_user`, `messages/_assistant`, `messages/_tool`, and `messages/_tool_calls`. The [chat UI generator]({% link _advanced/rails-generators.md %}#adding-a-chat-ui) writes all of them.
+The message broadcasts to the chat record's stream, so the view subscribes with `turbo_stream_from @chat`. Rails renders each message with its partial, chosen by `to_partial_path`: `messages/_user`, `messages/_assistant`, `messages/_system`, `messages/_tool`, and `messages/_tool_calls`. The [chat UI generator]({% link _advanced/rails-generators.md %}#adding-a-chat-ui) writes all of them.
 
 A model's `broadcasts:` option overrides the configuration either way. An application that broadcasts some models itself turns RubyLLM's broadcasting off for them:
 
