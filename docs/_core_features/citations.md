@@ -61,8 +61,8 @@ response.citations.first.start_page # => 5
 response.citations.first.end_page   # => 5
 ```
 
-{: .note }
 Document citations are supported by Anthropic, Cohere, and Claude models through Bedrock Converse. Anthropic cannot combine document citations with `with_schema`. Citations from search arrive automatically, without this setting.
+{: .note }
 
 ## Citing Tool Results (RAG)
 
