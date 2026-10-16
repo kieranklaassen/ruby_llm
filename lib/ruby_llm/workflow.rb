@@ -27,7 +27,7 @@ module RubyLLM
     end
 
     def run # :nodoc:
-      raise ArgumentError, 'a workflow block is required' unless block_given?
+      raise ArgumentError, 'A workflow block is required' unless block_given?
 
       link_parent
       Support::Instrumentation.with_workflow(workflow_context) do
@@ -40,7 +40,7 @@ module RubyLLM
     # Steps can contain regular Ruby control flow and may be nested.
     # Returns the block's result.
     def step(name, id: nil, &block)
-      raise ArgumentError, 'a workflow step block is required' unless block
+      raise ArgumentError, 'A workflow step block is required' unless block
 
       step_context = workflow_context.merge(
         workflow_step_id: normalize(id || SecureRandom.uuid, 'step id'),
@@ -83,7 +83,7 @@ module RubyLLM
 
     def normalize(value, attribute)
       value = value.to_s
-      raise ArgumentError, "workflow #{attribute} cannot be empty" if value.empty?
+      raise ArgumentError, "A workflow #{attribute} cannot be empty" if value.empty?
 
       value
     end

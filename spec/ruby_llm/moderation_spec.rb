@@ -72,7 +72,7 @@ RSpec.describe RubyLLM::Moderation, :live do
 
   describe 'argument validation' do
     it 'raises ArgumentError when neither text nor image is provided' do
-      expect { RubyLLM.moderate }.to raise_error(ArgumentError, 'must provide input text, image attachment, or both')
+      expect { RubyLLM.moderate }.to raise_error(ArgumentError, 'Moderation needs text, an image attachment, or both')
     end
   end
 end
