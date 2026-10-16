@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-desc 'Run the official MCP client conformance suite against RubyLLM::MCP (SCENARIO=name for one)'
+desc 'Run the official MCP client conformance suite against RubyLLM::MCP (requires Node; SCENARIO=name for one)'
 task :conformance do
   directory = File.expand_path('../conformance', __dir__)
   command = ['npx', '--yes', '@modelcontextprotocol/conformance@0.2.0-alpha.11', 'client',

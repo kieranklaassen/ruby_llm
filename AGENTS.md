@@ -70,6 +70,7 @@ overcommit --install   # required: installs the git hooks that gate every commit
 | `bin/test` | The same suite with Ruby warnings on. Arguments go to `rspec`, as in `bin/test spec/ruby_llm/chat_spec.rb`. |
 | `bundle exec rspec --tag generator` | The slow Rails generator specs, excluded from the commit hook. |
 | `overcommit --run` | Everything the pre-commit hook runs: RuboCop, Flay, archspec, RSpec. |
+| `bundle exec rake` | The default task: the hooks, then `rake models`, which needs API keys and rewrites the generated files. |
 | `bundle exec rubocop` | Lint (auto-corrects on commit). |
 | `bundle exec archspec check` | Architecture rules from `Archspec.rb`. |
 | `bundle exec rake conformance` | The official MCP client conformance suite against `RubyLLM::MCP` (needs Node). |

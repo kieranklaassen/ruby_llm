@@ -12,7 +12,7 @@ desc 'Update models, docs, and aliases'
 task models: ['models:update', 'models:docs', 'models:aliases']
 
 namespace :models do
-  desc 'Update available models from providers (API keys needed)'
+  desc 'Update available models from providers (requires API keys)'
   task :update do
     puts 'Configuring RubyLLM...'
     configure_from_env

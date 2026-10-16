@@ -58,7 +58,7 @@ namespace :release do # rubocop:disable Metrics/BlockLength
     abort "#{notes} must not be empty"
   end
 
-  desc 'Prepare for release'
+  desc 'Prepare for release: re-record stale cassettes, run the hooks, and update models'
   task :prepare do
     Rake::Task['release:refresh_stale_cassettes'].invoke
     sh 'overcommit --run'
