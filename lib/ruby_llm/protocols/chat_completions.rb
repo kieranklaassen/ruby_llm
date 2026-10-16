@@ -2,7 +2,7 @@
 
 module RubyLLM
   module Protocols
-    # The OpenAI Chat Completions API — the lingua franca of LLM APIs.
+    # The OpenAI Chat Completions API, the lingua franca of LLM APIs.
     class ChatCompletions < Protocol
       include ChatCompletions::Chat
       include ChatCompletions::Embeddings
