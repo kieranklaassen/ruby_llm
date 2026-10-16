@@ -59,7 +59,7 @@ The call has the same meaning in every environment. It replaces the in-memory re
 
 RubyLLM does not refresh automatically. Network access and provider credentials remain explicit application concerns, and a missing-model lookup never triggers network I/O.
 
-### How refresh Works
+### How `refresh` Works
 
 The `refresh` method performs the following steps:
 

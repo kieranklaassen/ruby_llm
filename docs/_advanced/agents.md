@@ -268,7 +268,7 @@ end
 Values that depend on runtime `chat` must be lazy (blocks or lambdas), not eager class-load expressions.
 {: .important }
 
-### Choosing the model at runtime
+### Choosing the Model at Runtime
 
 `model` takes a block too, so an agent can route work to a cheaper or larger model based on its inputs:
 
@@ -288,7 +288,7 @@ Options stay alongside the block: `model(provider: :openai) { ... }`.
 
 Agents have prompt conventions built in. They use the same `app/prompts` templates as [Prompt Rendering]({% link _core_features/prompt-rendering.md %}), with class-based lookup layered on top.
 
-### Default instructions prompt
+### Default Instructions Prompt
 
 Named agents automatically use their conventional instructions prompt when it exists:
 
@@ -321,7 +321,7 @@ end
 
 If that file does not exist, RubyLLM raises `RubyLLM::PromptNotFoundError`.
 
-### Prompt shorthand with locals
+### Prompt Shorthand with Locals
 
 You can pass locals directly:
 
@@ -334,7 +334,7 @@ end
 
 This also renders `instructions.txt.erb` for that agent path.
 
-### Prompt helper in runtime blocks
+### Prompt Helper in Runtime Blocks
 
 Within execution context you can call:
 
@@ -342,7 +342,7 @@ Within execution context you can call:
 instructions { prompt("instructions", display_name: chat.user.display_name_or_email) }
 ```
 
-### Naming conventions
+### Naming Conventions
 
 Agent prompt path is derived from class name:
 
@@ -355,7 +355,7 @@ For rendering a prompt directly outside an agent, use `RubyLLM.render_prompt`. S
 
 ## Using an Agent
 
-### Plain Ruby chat
+### Plain Ruby Chat
 
 ```ruby
 chat = WorkAssistant.chat
