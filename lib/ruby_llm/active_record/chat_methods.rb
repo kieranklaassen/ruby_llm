@@ -7,7 +7,7 @@ require 'ruby_llm/active_record/chat_approvals'
 
 module RubyLLM
   module ActiveRecord
-    # ChatMethods provides the RubyLLM::Chat API on ActiveRecord models
+    # ChatMethods provides the RubyLLM::Chat API on Active Record models
     # declared with <tt>acts_as_chat</tt>, persisting every message to the
     # database. Configuration methods return +self+ so calls can be chained.
     #
@@ -15,7 +15,7 @@ module RubyLLM
     #     acts_as_chat
     #   end
     #
-    #   chat = Chat.create!(model: 'gpt-6-luna')
+    #   chat = Chat.create!(model: "gpt-6-luna")
     #   chat.ask "What is the capital of France?"
     #   chat.messages.count # => 2
     #
@@ -158,7 +158,7 @@ module RubyLLM
       # Sets the chat's model from an id, a RubyLLM::Model value, or the
       # associated internal model record.
       #
-      #   chat.model = 'gpt-6-luna'
+      #   chat.model = "gpt-6-luna"
       #
       def model=(value)
         if value.is_a?(RubyLLM::ActiveRecord::Model)
@@ -214,13 +214,13 @@ module RubyLLM
         self
       end
 
-      # Rebinds the underlying chat to +value+ so subsequent requests use its
+      # Rebinds the underlying chat to +context+ so subsequent requests use its
       # configuration. Pass +nil+ to return to the global RubyLLM
       # configuration. The Context itself is runtime-only and is not
       # persisted. Returns +self+.
-      def with_context(value)
-        self.context = value
-        @chat&.with_context(value)
+      def with_context(context)
+        self.context = context
+        @chat&.with_context(context)
         self
       end
 
@@ -257,13 +257,14 @@ module RubyLLM
       # RubyLLM::Chat. Each behaves exactly as documented on RubyLLM::Chat,
       # then returns the record so calls chain.
       CHAINABLE_CHAT_DELEGATES = %i[
-        with_tools with_mcp with_tool_options with_provider_tools with_fallbacks with_temperature answer decline
+        with_tools with_mcp with_tool_options with_provider_tools with_fallbacks with_temperature
         with_max_output_tokens with_thinking with_citations with_caching
         with_end_user with_compaction with_code_execution with_skills
         with_provider_options with_headers with_schema
         convert_unsupported_attachments
         before_request before_message after_message before_tool_call after_tool_result after_tool_progress
         before_fallback after_fallback
+        answer decline
       ].freeze
 
       ##
@@ -521,13 +522,13 @@ module RubyLLM
 
       ##
       # :method: thinking
-      # :call-seq: thinking()
+      # :call-seq: thinking
       #
       # Delegates to Chat#thinking. See that method for arguments and return values.
 
       ##
       # :method: tool_options
-      # :call-seq: tool_options()
+      # :call-seq: tool_options
       #
       # Delegates to Chat#tool_options. See that method for arguments and return values.
 
@@ -625,7 +626,7 @@ module RubyLLM
       # default model when +model_name+ is +nil+. Pass +protocol:+ to override
       # the wire protocol the provider would pick for the model. Returns +self+.
       #
-      #   chat.with_model 'claude-sonnet-5'
+      #   chat.with_model "claude-sonnet-5"
       #
       def with_model(model_name, provider: nil, protocol: nil, assume_model_exists: false)
         model_name ||= (context&.config || RubyLLM.config).default_model
@@ -668,8 +669,8 @@ module RubyLLM
       # latest in-memory message when none is persisted yet. Pass +ttl:+ to
       # give the boundary its own cache lifetime. Returns +self+.
       #
-      #   chat.with_instructions('Reusable analysis prompt').cache_until_here
-      #   chat.with_instructions('Reusable analysis prompt').cache_until_here(ttl: "1h")
+      #   chat.with_instructions("Reusable analysis prompt").cache_until_here
+      #   chat.with_instructions("Reusable analysis prompt").cache_until_here(ttl: "1h")
       #
       # Raises ArgumentError if the chat has no messages.
       def cache_until_here(ttl: nil)
@@ -738,8 +739,8 @@ module RubyLLM
       # RubyLLM::Message. Tool calls in the response are not executed. See
       # RubyLLM::Chat#generate. Returns +nil+ without calling the model
       # while another process is #running? the chat.
-      def generate(...)
-        exclusively(-> {}) { completing { to_llm.generate(...) } }
+      def generate(&block)
+        exclusively(-> {}) { completing { to_llm.generate(&block) } }
       end
 
       # Compacts the model context and persists its assistant Message without
@@ -765,8 +766,8 @@ module RubyLLM
       #
       #   chat.step until chat.complete? || chat.waiting?
       #
-      def step(...)
-        exclusively(-> {}) { completing { to_llm.step(...) } }
+      def step(&block)
+        exclusively(-> {}) { completing { to_llm.step(&block) } }
       end
 
       # Returns whether the conversation has no pending work, neither a
@@ -792,6 +793,7 @@ module RubyLLM
       # run ends.
       #
       #   chat.complete(&:broadcast)
+      #
       def complete(&block)
         on_chunk = ChunkMethods.streaming(block) { @message }
         loop do
