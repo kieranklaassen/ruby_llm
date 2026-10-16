@@ -19,7 +19,7 @@ After reading this guide, you will know:
 * How to make tool results citable with `RubyLLM::SearchResults`.
 * How to read normalized citations from responses and streams.
 * Which citation fields your application can use.
-* How to persist citations with ActiveRecord.
+* How to persist citations with Active Record.
 
 ## What are Citations?
 
@@ -181,7 +181,7 @@ response.citations # all citations, deduplicated
 
 Some citations arrive only when the response finishes. Read the final message for the complete list and response positions.
 
-## ActiveRecord Integration
+## Active Record Integration
 
 When using `acts_as_chat` and `acts_as_message`, citations are persisted to the message table as JSON:
 

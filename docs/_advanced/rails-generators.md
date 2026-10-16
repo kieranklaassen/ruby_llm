@@ -17,7 +17,7 @@ After reading this guide, you will know:
 * How RubyLLM's conventional app directory structure is organized.
 * How to generate agents, tools, schemas, MCP servers, skills, sandboxes, evaluations, and judges.
 * How the generated chat UI renders messages, tool calls, tool results, approvals, and attachments.
-* How to customize model names and set up ActiveStorage.
+* How to customize model names and set up Active Storage.
 
 RubyLLM's generators write models, migrations, controllers, jobs, and views into your application. Start with persistence, then add the chat UI or generate individual agents, tools, and schemas as you need them.
 
@@ -255,7 +255,7 @@ bin/rails active_storage:install
 bin/rails db:migrate
 ```
 
-The ActiveStorage attachments you pass to `with:` from your own models can use any name.
+The Active Storage attachments you pass to `with:` from your own models can use any name.
 
 ## Next Steps
 

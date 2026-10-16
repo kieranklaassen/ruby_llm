@@ -95,7 +95,7 @@ With the default supervisor mode, `processes: 2` creates two worker processes wi
 
 On Rails 7.2+, Solid Queue recommends starting with 3–5 queue database connections per fiber worker process. The pool does not need to match the number of jobs waiting on provider I/O. Size application database pools for the database work your jobs actually perform, and avoid holding a transaction or leased connection open across an AI call. Rails 7.1 needs more conservative pool sizing.
 
-See Solid Queue's [worker configuration](https://github.com/rails/solid_queue#configuration) and [Fiber-Safe ActiveRecord Connections]({% link _advanced/rails-advanced-config.md %}#fiber-safe-activerecord-connections-for-asyncfiber-workloads) for details.
+See Solid Queue's [worker configuration](https://github.com/rails/solid_queue#configuration) and [Fiber-Safe Active Record Connections]({% link _advanced/rails-advanced-config.md %}#fiber-safe-active-record-connections-for-asyncfiber-workloads) for details.
 
 Fiber mode was contributed by RubyLLM's author, Carmine Paolino, and shipped in [Solid Queue 1.6.0](https://github.com/rails/solid_queue/releases/tag/v1.6.0). His post, [Making the Rails Default Job Queue Fiber-Based](https://paolino.me/solid-queue-doesnt-need-a-thread-per-job/), explains the implementation and tradeoffs.
 
@@ -256,7 +256,7 @@ end.wait
 
 At most five calls run at once. That limits concurrency, but does not enforce a requests-per-minute or tokens-per-minute quota. Keep [retry and rate-limit handling]({% link _advanced/error-handling.md %}#automatic-retries) in place. See the [Semaphore reference](https://socketry.github.io/async/source/Async/Semaphore/index.html).
 
-For Active Record work inside fibers, follow [Fiber-Safe ActiveRecord Connections]({% link _advanced/rails-advanced-config.md %}#fiber-safe-activerecord-connections-for-asyncfiber-workloads).
+For Active Record work inside fibers, follow [Fiber-Safe Active Record Connections]({% link _advanced/rails-advanced-config.md %}#fiber-safe-active-record-connections-for-asyncfiber-workloads).
 
 For more on fibers, threads, and processes, read [Ruby Concurrency: What Actually Happens](https://paolino.me/ruby-concurrency-what-actually-happens/).
 

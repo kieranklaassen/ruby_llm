@@ -19,7 +19,7 @@ After reading this guide, you will know:
 * How to control extended thinking with `with_thinking`.
 * How effort and budget are sent to providers.
 * How to access thinking output in responses and streams.
-* How to persist thinking data with ActiveRecord.
+* How to persist thinking data with Active Record.
 
 ## What is Extended Thinking?
 
@@ -102,7 +102,7 @@ end
 
 Some providers only expose thinking in the final response. In those cases, `response.thinking` is populated after the stream completes, and `chunk.thinking` stays empty.
 
-## ActiveRecord Integration
+## Active Record Integration
 
 When using `acts_as_chat` and `acts_as_message`, thinking content is persisted with the message while thinking-token accounting is stored in RubyLLM's internal usage ledger:
 
