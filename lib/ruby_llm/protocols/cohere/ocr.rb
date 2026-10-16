@@ -14,7 +14,7 @@ module RubyLLM
         def render_ocr_payload(file, model:, pages: nil, provider_options: {})
           attachment = file.is_a?(Attachment) ? file : Attachment.new(file, config: @config)
           raise UnsupportedAttachmentError, attachment.mime_type unless attachment.image?
-          raise ArgumentError, 'Cohere Parse accepts one image; pages must be [0]' unless pages.nil? || pages == [0]
+          raise ArgumentError, 'Cohere Parse accepts one image, so pages must be [0]' unless pages.nil? || pages == [0]
 
           reference = attachment.url_or_data_uri
           {

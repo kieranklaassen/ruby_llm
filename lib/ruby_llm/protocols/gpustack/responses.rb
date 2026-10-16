@@ -18,7 +18,8 @@ module RubyLLM
         def self.render_mcp_alias(options, label:, tools:) # :nodoc:
           options = Support::Utils.deep_symbolize_keys(options)
           unless (options.keys - [:require_approval]).empty?
-            raise ArgumentError, 'GPUStack server tool aliases accept only require_approval; use mcp for custom filters'
+            raise ArgumentError,
+                  'GPUStack server tool aliases accept only require_approval. Use mcp for custom filters.'
           end
 
           tool = { type: 'mcp', server_label: label, **options }
@@ -93,7 +94,8 @@ module RubyLLM
 
         def validate_mcp_tool(tool)
           unless tool[:require_approval].to_s == 'never'
-            raise ArgumentError, "GPUStack MCP requires explicit require_approval: 'never'; vLLM has no approval events"
+            raise ArgumentError,
+                  "GPUStack MCP requires explicit require_approval: 'never'. vLLM has no approval events."
           end
           if tool[:server_url] || tool[:connector_id] || tool[:authorization]
             raise ArgumentError, 'GPUStack MCP uses servers configured on vLLM, not per-request URLs or connectors'
@@ -103,7 +105,7 @@ module RubyLLM
           end
           return unless tool[:allowed_tools].is_a?(Hash) && tool[:allowed_tools][:read_only]
 
-          raise ArgumentError, 'vLLM filters MCP tools by name, not by read_only; use allowed_tools: [name]'
+          raise ArgumentError, 'vLLM filters MCP tools by name, not by read_only. Use allowed_tools: [name].'
         end
       end
     end

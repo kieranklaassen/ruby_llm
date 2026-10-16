@@ -77,7 +77,7 @@ module RubyLLM
           return { uri: video.source.to_s } if video.url?
           return { uri: video.provider_file_uri } if video.provider_file?
 
-          raise ArgumentError, 'Gemini extends generated Veo videos; pass the returned Video or its URI'
+          raise ArgumentError, 'Gemini extends generated Veo videos. Pass the returned Video or its URI.'
         end
 
         def render_video_image(image)

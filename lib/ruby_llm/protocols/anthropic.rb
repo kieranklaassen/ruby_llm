@@ -43,13 +43,13 @@ module RubyLLM
       def self.mcp_tool_filter(options) # :nodoc:
         approval = options[:require_approval]
         unless approval.nil? || approval.to_s == 'never'
-          raise ArgumentError, "Anthropic runs MCP tools without approval; use require_approval: 'never'"
+          raise ArgumentError, "Anthropic runs MCP tools without approval. Use require_approval: 'never'."
         end
 
         tools = options[:allowed_tools]
         tools = tools[:tool_names] if tools.is_a?(Hash) && tools.keys == [:tool_names]
         return {} if tools.nil?
-        raise ArgumentError, 'Anthropic filters MCP tools by name; use allowed_tools: [name]' unless tools.is_a?(Array)
+        raise ArgumentError, 'Anthropic filters MCP tools by name. Use allowed_tools: [name].' unless tools.is_a?(Array)
 
         { default_config: { enabled: false }, configs: tools.to_h { |tool| [tool.to_sym, { enabled: true }] } }
       end

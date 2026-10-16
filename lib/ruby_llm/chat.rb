@@ -524,7 +524,9 @@ module RubyLLM
         next if hidden_from_model?(tool)
 
         name = tool.name.to_sym
-        raise ArgumentError, "Two tools are named #{name}. Rename one with `tool :#{name}, as:`" if tools.key?(name)
+        if tools.key?(name)
+          raise ArgumentError, "Two tools are named #{name}. Rename one with tool :#{name}, as: :other_name."
+        end
 
         tools[name] = tool
       end

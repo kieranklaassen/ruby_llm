@@ -54,7 +54,7 @@ module RubyLLM
         def video_options(options)
           options = Support::Utils.deep_symbolize_keys(options)
           if options[:num_outputs_per_prompt] && options[:num_outputs_per_prompt] != 1
-            raise ArgumentError, 'animate returns one video; num_outputs_per_prompt must be 1'
+            raise ArgumentError, 'animate returns one video, so num_outputs_per_prompt must be 1'
           end
 
           options

@@ -33,7 +33,7 @@ module RubyLLM
 
           def render_character_animation(prompt, with:)
             unless prompt.nil? || prompt.empty?
-              raise ArgumentError, 'Creatify Aurora uses image and audio input; omit the prompt'
+              raise ArgumentError, 'Creatify Aurora uses image and audio input. Omit the prompt.'
             end
 
             image = with.select(&:image?)

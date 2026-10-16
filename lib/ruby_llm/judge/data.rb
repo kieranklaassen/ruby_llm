@@ -17,7 +17,7 @@ module RubyLLM
 
           value
         when Integer, TrueClass, FalseClass, NilClass then value
-        else raise ArgumentError, "Unsupported judgment data: #{value.class}; pass JSON-compatible values"
+        else raise ArgumentError, "Unsupported judgment data: #{value.class}. Pass JSON-compatible values."
         end
       end
 

@@ -147,7 +147,7 @@ module RubyLLM
 
         unless normalized.all? { |chat| awaiting_model?(chat) }
           raise ArgumentError,
-                'Every chat in a batch must be awaiting the model; stage one with ask_later, or run_tools first'
+                'Every chat in a batch must be awaiting the model. Stage one with ask_later, or run_tools first.'
         end
 
         normalized

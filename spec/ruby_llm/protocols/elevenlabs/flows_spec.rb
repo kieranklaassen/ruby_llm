@@ -166,7 +166,7 @@ RSpec.describe RubyLLM::Protocols::ElevenLabs::Flows do
     expect do
       protocol.render_video_payload('Ignored directions', model: 'creatify-aurora',
                                                           with: RubyLLM::Attachment.wrap([image_path, audio]))
-    end.to raise_error(ArgumentError, /omit the prompt/)
+    end.to raise_error(ArgumentError, /Omit the prompt/)
     expect do
       protocol.render_video_payload(nil, model: 'creatify-aurora', with: RubyLLM::Attachment.wrap(image_path))
     end.to raise_error(ArgumentError, /exactly one image and one audio/)
