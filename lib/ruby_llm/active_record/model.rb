@@ -52,10 +52,6 @@ module RubyLLM
           end
         end
 
-        def from_llm(model_info) # :nodoc:
-          new(attributes_from_llm(model_info))
-        end
-
         private
 
         # A refresh replaces the registry, so models it no longer carries go

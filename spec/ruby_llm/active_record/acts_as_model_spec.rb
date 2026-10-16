@@ -144,13 +144,6 @@ RSpec.describe RubyLLM::ActiveRecord::Model do # rubocop:disable RSpec/SpecFileP
     expect(RubyLLM.models).to have_received(:refresh)
   end
 
-  it 'builds an unsaved record from a public model' do
-    record = described_class.from_llm(model_info)
-
-    expect(record).not_to be_persisted
-    expect(record.model_id).to eq('test-model')
-  end
-
   context 'when a refresh replaces the registry' do
     # The suite shares one database, so records other examples left behind would
     # join this refresh. The surrounding transaction puts them back.

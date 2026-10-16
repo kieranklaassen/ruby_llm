@@ -87,10 +87,6 @@ module RubyLLM
         RubyLLM::Cost.from_h(recorded, tokens: tokens)
       end
 
-      def usage_available?
-        tokens.to_h.any?
-      end
-
       def cost_available?
         !total_cost.nil?
       end
