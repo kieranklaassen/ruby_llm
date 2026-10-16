@@ -57,8 +57,8 @@ module RubyLLM
     # The provider-assigned identifier of the moderation request.
     attr_reader :id
 
-    # The id of the model that performed the moderation, or +nil+ for an
-    # operation that does not select a model.
+    # The id of the model that performed the moderation, as a String, or
+    # +nil+ for an operation that does not select a model.
     attr_reader :model
 
     # The per-input verdicts, as an array of Result objects, one per

@@ -118,7 +118,7 @@ module RubyLLM
       # model and +protocol:+ to override its wire protocol. A block picks
       # the model when the chat is built, with the declared ::inputs
       # available as methods. Called with no arguments, returns the
-      # configured chat keywords.
+      # configured chat keywords as a Hash, not a Model.
       #
       #   model "gpt-6-luna"
       #   model "gpt-6.1-sol", provider: :openai, protocol: :responses

@@ -19,7 +19,7 @@ module RubyLLM
     # unmodified page hash, including any fields beyond these.
     Page = Struct.new(:index, :markdown, :images, :tables, :raw, keyword_init: true)
 
-    # The id of the model that performed the OCR.
+    # The id of the model that performed the OCR, as a String.
     attr_reader :model
 
     # The provider's usage block for the request, such as the number of

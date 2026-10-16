@@ -63,7 +63,8 @@ module RubyLLM
         preloaded_records(:ruby_llm_usages) || ruby_llm_usages.to_a
       end
 
-      # Returns the model ID from the last successful attempt, or +nil+.
+      # Returns the model ID from the last successful attempt, as a String, or
+      # +nil+.
       def model
         to_llm.model
       end

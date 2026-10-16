@@ -32,7 +32,8 @@ module RubyLLM
     # Attachment objects.
     attr_reader :attachments
 
-    # The ID of the model that produced the message, +nil+ on user messages.
+    # The id of the model that produced the message, as a String, or +nil+
+    # on user messages.
     attr_reader :model
 
     attr_writer :model_info # :nodoc:
