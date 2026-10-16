@@ -43,7 +43,7 @@ chat.with_caching
 chat.with_caching(false)
 ```
 
-The same feature-switch pattern applies to `with_citations` and `with_compaction`. These switches reject `nil`. `with_tools(nil)` clears the tool list; other tool settings are covered in [Controlling Tool Execution]({% link _core_features/tool-execution.md %}).
+The same feature-switch pattern applies to [`with_citations`]({% link _core_features/citations.md %}), [`with_compaction`](#compacting-long-conversations), and [`with_code_execution`]({% link _core_features/code-execution.md %}). [`with_skills`]({% link _core_features/skills.md %}) is a switch too, and takes skill names where the others take options. These switches reject `nil`. `with_tools(nil)` clears the tool list; other tool settings are covered in [Controlling Tool Execution]({% link _core_features/tool-execution.md %}).
 
 ## Identifying End Users
 
