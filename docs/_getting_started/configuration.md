@@ -131,10 +131,6 @@ RubyLLM.configure do |config|
   config.deepgram_api_key = String
   config.deepgram_api_base = String
 
-  # TypeSafe
-  config.typesafe_api_key = String
-  config.typesafe_api_base = String
-
   # DeepSeek
   config.deepseek_api_key = String
   config.deepseek_api_base = String
@@ -184,6 +180,10 @@ RubyLLM.configure do |config|
   # Perplexity
   config.perplexity_api_key = String
   config.perplexity_api_base = String
+
+  # TypeSafe
+  config.typesafe_api_key = String
+  config.typesafe_api_base = String
 
   # Vertex AI
   config.vertexai_project_id = String  # GCP project ID
