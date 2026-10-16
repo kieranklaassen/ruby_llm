@@ -7,7 +7,7 @@ module RubyLLM
   # Rails integration brings the RubyLLM API to Active Record models, with
   # Active Storage attachments and a persisted message lifecycle for Hotwire
   # streaming and background jobs. Applications own chats and messages;
-  # RubyLLM owns the supporting usage, tool-call, registry, and batch records.
+  # RubyLLM owns the supporting records.
   module ActiveRecord
     # Adds the RubyLLM conversation API to application-owned records.
     #

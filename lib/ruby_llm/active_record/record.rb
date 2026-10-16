@@ -2,7 +2,7 @@
 
 module RubyLLM
   module ActiveRecord
-    # Abstract base for RubyLLM's model, tool-call, usage, and batch records.
+    # Abstract base for RubyLLM's supporting records.
     # Inherits the application's default connection unless configured otherwise.
     # Keep these records on the same database and connection pool as chats and
     # messages to preserve foreign keys and shared transactions.
