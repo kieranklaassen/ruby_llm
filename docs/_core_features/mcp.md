@@ -511,7 +511,7 @@ handbook = Handbook.new.listen(resources: ["handbook://policies"])
 
 `listen` asks the server for every list it announces changes to, for updates to the `resources` you pass, as URIs or as resources from `resources`, and for the status of the `tasks` you pass, as [Tasks](#tasks) describes. It returns once the server confirms, then listens in a thread of its own until you call `close`, while chats and requests go on as before. Calling `listen` again replaces the resources and tasks it listens to.
 
-A server that announces no changes leaves `listen` nothing to do. When the server cannot be reached, or will not send updates for a resource or task you pass, `listen` raises `RubyLLM::MCP::Error`.
+A server that announces no changes leaves `listen` nothing to do. When the server cannot be reached, or does not send updates for a resource or task you pass, `listen` raises `RubyLLM::MCP::Error`.
 
 Callbacks for the changes a listener hears run in its thread, one at a time, so keep them short. They can call the server, as `tools` and `content` do above. An exception in one is logged, and listening goes on.
 
@@ -700,7 +700,7 @@ end
 reports = Reports.new.listen(tasks: chat.pending_tasks)
 ```
 
-A server decides whether it announces the status of a task, and servers that predate 2026-07-28 never do, so `listen` raises `RubyLLM::MCP::Error` for tasks it won't hear about. Checking with `complete` works either way.
+A server decides whether it announces the status of a task, and servers that predate 2026-07-28 never do, so `listen` raises `RubyLLM::MCP::Error` for tasks it does not hear about. Checking with `complete` works either way.
 
 A task that needs input pauses the chat on [input requests](#input-requests): answer them and call `complete`. A task that fails raises `RubyLLM::MCP::Error` from `complete`. Cancelling the chat cancels its tasks the next time it runs, so after `chat.cancel`, or the persisted flag on a Rails record, `complete` cancels them and raises `RubyLLM::CancelledError`. `task.cancel` asks the server right away; the server may still finish the task.
 

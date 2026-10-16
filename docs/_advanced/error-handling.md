@@ -253,7 +253,7 @@ When streaming has already yielded chunks before a fallback-worthy error, RubyLL
 
 When building [Tools]({% link _core_features/tools.md %}), you need to decide how errors within the tool's `execute` method should be handled:
 
-1.  **Return Error to LLM:** If the error is something the LLM might be able to recover from (e.g., invalid parameters provided by the LLM, temporary lookup failure), return a Hash containing an `:error` key. The LLM will see this error message as the tool's output and may try again or use a different approach.
+1.  **Return Error to LLM:** If the error is something the LLM might be able to recover from (e.g., invalid parameters provided by the LLM, temporary lookup failure), return a Hash containing an `:error` key. The LLM sees this error message as the tool's output and may try again or use a different approach.
 
     ```ruby
     class Weather < RubyLLM::Tool
@@ -269,7 +269,7 @@ When building [Tools]({% link _core_features/tools.md %}), you need to decide ho
     end
     ```
 
-2.  **Raise Error for Application:** If the error indicates a problem with the tool itself or the application's state (e.g., database connection lost, configuration error, unrecoverable external API failure), `raise` an exception as normal. This will halt the RubyLLM interaction and bubble up to your application's main error handling (`begin/rescue`).
+2.  **Raise Error for Application:** If the error indicates a problem with the tool itself or the application's state (e.g., database connection lost, configuration error, unrecoverable external API failure), `raise` an exception as normal. This halts the RubyLLM interaction and bubbles up to your application's main error handling (`begin/rescue`).
 
     ```ruby
     class DatabaseQueryTool < RubyLLM::Tool

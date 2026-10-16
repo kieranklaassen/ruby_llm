@@ -20,7 +20,7 @@ After reading this guide, you will know:
 
 ## API Keys
 
-Configure API keys only for the providers you use. RubyLLM won't complain about missing keys for providers you never touch.
+Configure API keys only for the providers you use, as [Configuration]({% link _getting_started/configuration.md %}#api-keys) describes.
 
 RubyLLM resolves the provider from the model registry. Pass `provider:` when you want another host for that model or use a custom deployment. See [Model Resolution]({% link _reference/model-resolution.md %}).
 

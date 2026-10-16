@@ -34,7 +34,7 @@ RubyLLM uses its defaults for models, timeouts, and retries. Set only what your 
 
 ## API Keys
 
-Configure API keys only for the providers you use. RubyLLM won't complain about missing keys for providers you never touch.
+Configure API keys only for the providers you use. RubyLLM does not complain about missing keys for providers you never touch.
 
 ```ruby
 RubyLLM.configure do |config|
