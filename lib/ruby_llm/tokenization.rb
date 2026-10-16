@@ -52,6 +52,8 @@ module RubyLLM
       ids.length
     end
 
+    private
+
     def inspect_attributes # :nodoc:
       { model:, count: }
     end

@@ -110,6 +110,8 @@ module RubyLLM
       pages.filter_map(&:markdown).join("\n\n")
     end
 
+    private
+
     def inspect_attributes # :nodoc:
       { model: model, pages: pages.length }
     end

@@ -161,6 +161,8 @@ module RubyLLM
       end
     end
 
+    private
+
     def inspect_attributes # :nodoc:
       { text: text, model: model, language: language, duration: duration }
     end

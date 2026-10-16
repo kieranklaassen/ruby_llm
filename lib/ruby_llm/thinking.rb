@@ -34,6 +34,8 @@ module RubyLLM
       new(text: text, signature: signature)
     end
 
+    private
+
     def inspect_attributes # :nodoc:
       { text: text, signature: signature ? '[REDACTED]' : nil }
     end

@@ -191,10 +191,6 @@ module RubyLLM
       resolved
     end
 
-    def inspect_attributes # :nodoc:
-      { name:, description:, path: path.to_s }
-    end
-
     private
 
     def parse(content)
@@ -255,6 +251,10 @@ module RubyLLM
 
     def invalid(reason)
       raise InvalidSkillError, "#{path.join(FILE)} #{reason}"
+    end
+
+    def inspect_attributes # :nodoc:
+      { name:, description:, path: path.to_s }
     end
   end
 end

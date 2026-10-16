@@ -46,6 +46,8 @@ module RubyLLM
         { index: index, role: role, parts: parts.map(&:to_h) }
       end
 
+      private
+
       def inspect_attributes # :nodoc:
         { index: index, role: role, parts: parts.join(', ') }
       end

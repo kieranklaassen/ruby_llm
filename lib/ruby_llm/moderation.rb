@@ -167,6 +167,8 @@ module RubyLLM
       end
     end
 
+    private
+
     def inspect_attributes # :nodoc:
       { id: id, model: model, flagged: flagged? }
     end

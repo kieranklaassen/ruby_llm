@@ -114,10 +114,6 @@ module RubyLLM
       }
     end
 
-    def inspect_attributes # :nodoc:
-      { provider: provider, model: model, turns: turn_count, problems: problems.size }
-    end
-
     private
 
     def summary_line
@@ -155,6 +151,10 @@ module RubyLLM
 
     def problem_lines
       problems.any? ? problems.map(&:to_s) : ['no problems found']
+    end
+
+    def inspect_attributes # :nodoc:
+      { provider: provider, model: model, turns: turn_count, problems: problems.size }
     end
   end
 end

@@ -67,6 +67,8 @@ module RubyLLM
           error: error && { class: error.class.name, message: error.message } }
       end
 
+      private
+
       def inspect_attributes # :nodoc:
         { name:, status: }
       end

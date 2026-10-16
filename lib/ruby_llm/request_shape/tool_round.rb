@@ -50,14 +50,14 @@ module RubyLLM
         { turn: turn, calls: calls, results: results, paired: paired? }
       end
 
-      def inspect_attributes # :nodoc:
-        to_h
-      end
-
       private
 
       def counted(count, noun)
         "#{count} #{noun}#{'s' unless count == 1}"
+      end
+
+      def inspect_attributes # :nodoc:
+        to_h
       end
     end
   end

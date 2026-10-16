@@ -159,6 +159,8 @@ module RubyLLM
       path
     end
 
+    private
+
     def inspect_attributes # :nodoc:
       { model: model, voice: voice, format: format, data: data && "#{data.bytesize} bytes" }
     end

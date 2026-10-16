@@ -78,10 +78,6 @@ module RubyLLM
       end
     end
 
-    def inspect_attributes # :nodoc:
-      { id: id, provider: provider, attempt: attempt }
-    end
-
     def initialize(id: nil, provider: nil, model: nil, **attributes) # :nodoc:
       @id = id || model&.id
       @provider = (provider || model&.provider)&.to_s
@@ -128,6 +124,12 @@ module RubyLLM
     # error, +false+ otherwise.
     def succeeded?
       !response.nil? && !failed?
+    end
+
+    private
+
+    def inspect_attributes # :nodoc:
+      { id: id, provider: provider, attempt: attempt }
     end
   end
 end

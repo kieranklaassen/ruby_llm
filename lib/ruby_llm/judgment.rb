@@ -65,10 +65,6 @@ module RubyLLM
       { model:, answers: answers.transform_values(&:to_h), tokens: tokens.to_h, cost: cost.to_h }
     end
 
-    def inspect_attributes # :nodoc:
-      { model:, answers: answers.keys }
-    end
-
     def self.judge(input, questions:, with: nil, model: nil, provider: nil, context: nil, # :nodoc:
                    assume_model_exists: false, provider_options: {}, metadata: nil, owner: nil)
       config = context&.config || RubyLLM.config
@@ -120,6 +116,10 @@ module RubyLLM
 
     def respond_to_missing?(name, include_private = nil)
       @answer_keys&.key?(name.to_s) || super
+    end
+
+    def inspect_attributes # :nodoc:
+      { model:, answers: answers.keys }
     end
   end
 end

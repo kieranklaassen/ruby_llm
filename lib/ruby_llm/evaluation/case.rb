@@ -44,6 +44,8 @@ module RubyLLM
         data
       end
 
+      private
+
       def inspect_attributes # :nodoc:
         { name: }
       end

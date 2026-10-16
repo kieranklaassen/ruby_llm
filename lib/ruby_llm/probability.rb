@@ -23,6 +23,8 @@ module RubyLLM
       { type:, probability: }
     end
 
+    private
+
     def inspect_attributes # :nodoc:
       { probability: }
     end

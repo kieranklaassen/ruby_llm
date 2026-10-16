@@ -35,6 +35,8 @@ module RubyLLM
       { type:, score:, levels:, probabilities:, confidence: }
     end
 
+    private
+
     def inspect_attributes # :nodoc:
       { score:, confidence: }
     end

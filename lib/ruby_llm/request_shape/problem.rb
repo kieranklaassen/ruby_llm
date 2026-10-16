@@ -55,6 +55,8 @@ module RubyLLM
         { kind: kind, turn: turn, part: part, call_id: call_id, message: message }.compact
       end
 
+      private
+
       def inspect_attributes # :nodoc:
         to_h
       end

@@ -159,6 +159,8 @@ module RubyLLM
       vectors.first.is_a?(Array) ? vectors.size : 1
     end
 
+    private
+
     def inspect_attributes # :nodoc:
       if vectors&.first.is_a?(Array)
         { model: model, count: vectors.length, dimensions: vectors.first.length }
