@@ -49,7 +49,7 @@ RubyLLM owns six supporting tables under the `ruby_llm_` prefix:
 * `ruby_llm_mcp_credentials` for encrypted MCP OAuth credentials.
 * `ruby_llm_provider_files` for the provider uploads of stored attachments.
 
-They are regular tables installed by migrations, not a Rails engine. Their record classes are implementation details; use the public RubyLLM APIs described below.
+They are regular tables installed by migrations, not a Rails engine. Use the public RubyLLM APIs described below instead of their record classes. The exception is `RubyLLM::ActiveRecord::Usage`, the record your `ruby_llm_usages` associations return.
 
 Their shared abstract base, `RubyLLM::ActiveRecord::Record`, inherits the default database connection. If your chats and messages use a secondary database, [configure the shared connection]({% link _advanced/rails-advanced-config.md %}#using-a-secondary-database) so all related tables stay together.
 
