@@ -26,7 +26,7 @@ module RubyLLM
     # The provider's rewritten version of the prompt, when reported.
     attr_reader :revised_prompt
 
-    # The id of the model that generated the image.
+    # The id of the model that generated the image, as a String.
     attr_reader :model
 
     # Generates an image from +prompt+ and returns an Image. Most code

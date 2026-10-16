@@ -33,7 +33,7 @@ module RubyLLM
     UNFINISHED_TOOL_RESULT = { error: 'The tool call did not finish.' }.to_json.freeze
     private_constant :THINKING_OPTIONS, :PAUSED, :UNFINISHED_TOOL_RESULT
 
-    # The Model the chat sends requests to.
+    # The Model the chat sends requests to. Its id is <tt>model.id</tt>.
     attr_reader :model
 
     # The Provider instance handling requests for the current model.

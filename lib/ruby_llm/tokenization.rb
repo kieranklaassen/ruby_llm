@@ -10,7 +10,7 @@ module RubyLLM
     # The integer token IDs in text order.
     attr_reader :ids
 
-    # The id of the model whose tokenizer was used.
+    # The id of the model whose tokenizer was used, as a String.
     attr_reader :model
 
     # The provider's unmodified response, including token strings when available.

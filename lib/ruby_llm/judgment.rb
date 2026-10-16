@@ -18,7 +18,7 @@ module RubyLLM
     # Returns the answers keyed by their declared String or Symbol names.
     attr_reader :answers
 
-    # Returns the actual model ID reported by the provider.
+    # Returns the actual model ID reported by the provider, as a String.
     attr_reader :model
 
     # Returns the original provider response.

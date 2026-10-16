@@ -20,7 +20,7 @@ module RubyLLM
     # The MIME type of the video, such as <tt>"video/mp4"</tt>.
     attr_reader :mime_type
 
-    # The id of the model that generated the video.
+    # The id of the model that generated the video, as a String.
     attr_reader :model
 
     # The clip length in seconds, when the provider reports one.

@@ -21,7 +21,7 @@ module RubyLLM
     # <tt>"cachedContents/abc123"</tt>.
     attr_reader :name
 
-    # The model the cache was created for.
+    # The id of the model the cache was created for, as a String.
     attr_reader :model
 
     # The slug of the provider that stores the cache.

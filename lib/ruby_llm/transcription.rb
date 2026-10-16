@@ -16,7 +16,7 @@ module RubyLLM
     # The transcribed text.
     attr_reader :text
 
-    # The id of the model that produced the transcription.
+    # The id of the model that produced the transcription, as a String.
     attr_reader :model
 
     # The language of the audio, or +nil+ when the provider does not report it.

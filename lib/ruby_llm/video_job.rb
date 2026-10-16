@@ -18,7 +18,7 @@ module RubyLLM
     # The job state: +:pending+, +:completed+, or +:failed+.
     attr_reader :status
 
-    # The id of the model rendering the video.
+    # The id of the model rendering the video, as a String.
     attr_reader :model
 
     # The provider's failure message when #failed?, or +nil+.

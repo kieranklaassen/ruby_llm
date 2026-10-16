@@ -24,7 +24,7 @@ module RubyLLM
     # The raw audio bytes returned by the provider.
     attr_reader :data
 
-    # The id of the model that generated the audio.
+    # The id of the model that generated the audio, as a String.
     attr_reader :model
 
     # The voice used for synthesis. When no +voice:+ was given, this is the

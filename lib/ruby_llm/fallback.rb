@@ -37,8 +37,8 @@ module RubyLLM
     # The provider slug of the fallback target as a String, or +nil+.
     attr_reader :provider
 
-    # The Model object the fallback was configured with, or +nil+ when it was
-    # configured with a model id.
+    # The Model the fallback was configured with, or +nil+ when it was
+    # configured with a model id. #id holds the id either way.
     attr_reader :model
 
     # The Chat performing the fallback attempt.
