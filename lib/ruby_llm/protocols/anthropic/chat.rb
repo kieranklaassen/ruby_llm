@@ -186,7 +186,7 @@ module RubyLLM
           (existing.to_s.split(',').map(&:strip).reject(&:empty?) + [beta]).uniq.join(',')
         end
 
-        def supports_provider_file_references?
+        def provider_file_references?
           true
         end
 

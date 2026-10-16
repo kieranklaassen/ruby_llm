@@ -7,7 +7,7 @@ module RubyLLM
       module Embeddings
         module_function
 
-        def supports_embedding_media?
+        def embedding_media?
           true
         end
 

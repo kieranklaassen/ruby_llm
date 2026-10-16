@@ -476,7 +476,7 @@ module RubyLLM
           output.find { |item| item['type'] == 'reasoning' }&.dig('encrypted_content')
         end
 
-        def supports_provider_file_references?
+        def provider_file_references?
           true
         end
 

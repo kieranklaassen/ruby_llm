@@ -26,7 +26,7 @@ module RubyLLM
           Support::Utils.deep_merge({ requests: requests }, provider_options)
         end
 
-        def supports_embedding_media?
+        def embedding_media?
           true
         end
 

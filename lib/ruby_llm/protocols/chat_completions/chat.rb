@@ -398,7 +398,7 @@ module RubyLLM
           payload.merge(safety_identifier: identifier)
         end
 
-        def supports_provider_file_references?
+        def provider_file_references?
           @provider.slug == 'openai'
         end
 

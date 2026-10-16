@@ -91,7 +91,7 @@ module RubyLLM
           response.body['inputTokens']
         end
 
-        def supports_provider_file_references?
+        def provider_file_references?
           true
         end
 
