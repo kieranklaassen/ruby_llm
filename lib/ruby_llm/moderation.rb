@@ -143,8 +143,8 @@ module RubyLLM
       results.any?(&:flagged?)
     end
 
-    # Returns provider-reported usage across every attempt. Its fields are
-    # +nil+ when the provider did not report any.
+    # Returns usage aggregated across every provider attempt. Its fields
+    # are +nil+ when the provider did not report any.
     def tokens
       ruby_llm_usage_tokens
     end

@@ -152,8 +152,8 @@ module RubyLLM
       path
     end
 
-    # Returns a Tokens with usage across every provider attempt.
-    # Its fields are +nil+ when none were reported.
+    # Returns usage aggregated across every provider attempt. Its fields
+    # are +nil+ when the provider did not report any.
     #
     #   image.tokens.input
     #   image.tokens.output
@@ -168,8 +168,8 @@ module RubyLLM
       )
     end
 
-    # Returns a Cost across every provider attempt, using reported prices
-    # when available and registry pricing otherwise.
+    # Returns the image cost across every provider attempt, using reported
+    # prices when available and registry pricing otherwise.
     #
     #   image.cost.total
     #

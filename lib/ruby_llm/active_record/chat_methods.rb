@@ -51,7 +51,7 @@ module RubyLLM
 
       # Requests cancellation of the current in-flight chat operation. The
       # request is persisted so a background job can observe it from another
-      # process.
+      # process. Returns +self+.
       def cancel
         if persisted?
           update_column(:cancelled, true)
@@ -217,7 +217,7 @@ module RubyLLM
       # Rebinds the underlying chat to +value+ so subsequent requests use its
       # configuration. Pass +nil+ to return to the global RubyLLM
       # configuration. The Context itself is runtime-only and is not
-      # persisted.
+      # persisted. Returns +self+.
       def with_context(value)
         self.context = value
         @chat&.with_context(value)

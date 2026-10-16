@@ -114,14 +114,13 @@ module RubyLLM
       @chunks_yielded
     end
 
-    # Returns +true+ if the fallback attempt raised an error, +false+
-    # otherwise.
+    # Returns whether the fallback attempt raised an error.
     def failed?
       !fallback_error.nil?
     end
 
-    # Returns +true+ if the fallback attempt produced a response without
-    # error, +false+ otherwise.
+    # Returns whether the fallback attempt produced a response without
+    # error.
     def succeeded?
       !response.nil? && !failed?
     end

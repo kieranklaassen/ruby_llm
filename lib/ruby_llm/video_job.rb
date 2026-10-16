@@ -99,22 +99,22 @@ module RubyLLM
       record_usage
     end
 
-    # Returns +true+ while the provider is still rendering the video.
+    # Returns whether the provider is still rendering the video.
     def pending?
       status == :pending
     end
 
-    # Returns +true+ once the job finished, successfully or not.
+    # Returns whether the job finished, successfully or not.
     def done?
       !pending?
     end
 
-    # Returns +true+ when the job finished with a video.
+    # Returns whether the job finished with a video.
     def succeeded?
       status == :succeeded
     end
 
-    # Returns +true+ when the job finished without a video. #error carries
+    # Returns whether the job finished without a video. #error carries
     # the provider's failure message.
     def failed?
       status == :failed

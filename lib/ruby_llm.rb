@@ -350,8 +350,8 @@ module RubyLLM
     #   end
     #   batch = RubyLLM.batch(chats)
     #
-    def batch(chats)
-      Batch.submit(chats)
+    def batch(requests)
+      Batch.submit(requests)
     end
 
     # Generates a vector embedding for a text, or one embedding per element

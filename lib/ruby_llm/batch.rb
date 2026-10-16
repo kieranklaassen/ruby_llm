@@ -64,8 +64,8 @@ module RubyLLM
       # Raises ArgumentError if the batch is empty, mixes providers, mixes
       # chats with embedding requests, or includes a chat that is not
       # awaiting the model.
-      def submit(chats)
-        records = wrap_records(chats)
+      def submit(requests)
+        records = wrap_records(requests)
         return submit_embeddings(records) if records.any?(EmbeddingRequest)
 
         submit_chats(records)

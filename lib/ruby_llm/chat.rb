@@ -447,7 +447,7 @@ module RubyLLM
     # Cancels the current in-flight chat operation. The next cancellation
     # checkpoint raises CancelledError and clears the flag so the chat can be
     # reused. The MCP tasks that pending tool calls wait on are cancelled
-    # then too; see #pending_tasks.
+    # then too; see #pending_tasks. Returns +self+.
     def cancel
       @cancelled = true
       self

@@ -48,12 +48,13 @@ module RubyLLM
       answers.each(&)
     end
 
-    # Returns token usage across all provider attempts.
+    # Returns usage aggregated across every provider attempt.
     def tokens
       ruby_llm_usage_entries.empty? ? @tokens : ruby_llm_usage_tokens
     end
 
-    # Returns cost across all provider attempts, preserving unknown amounts.
+    # Returns the judgment cost across every provider attempt, preserving
+    # unknown amounts.
     def cost
       return ruby_llm_usage_cost unless ruby_llm_usage_entries.empty?
 
