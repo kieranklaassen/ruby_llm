@@ -43,16 +43,22 @@ RubyLLM::Error                    # Base error class for provider-operation issu
     RubyLLM::ServerError          # 500: Provider server error
     RubyLLM::ServiceUnavailableError # 502/503/504: Service unavailable
     RubyLLM::OverloadedError      # 529: Service overloaded (Specific providers)
+    RubyLLM::MCP::Error           # MCP server answered with an error, an unexpected status, or not at all
+    RubyLLM::ResearchJob::Error   # Hosted research job failed; keeps the job for inspection
 
 # Local Errors (inherit from StandardError)
 RubyLLM::ConfigurationError   # Missing required configuration (e.g., API key)
 RubyLLM::PromptNotFoundError  # Prompt file not found
+RubyLLM::SkillNotFoundError   # Skill named by with_skills not found
+RubyLLM::InvalidSkillError    # SKILL.md breaks the Agent Skills specification
 RubyLLM::ModelNotFoundError   # Requested model ID not found in registry
 RubyLLM::InvalidRoleError     # Invalid role symbol used for a message
 RubyLLM::InvalidToolChoiceError # Invalid tool choice option
 RubyLLM::PendingToolCallsError # A new question was staged before pending tools finished
+RubyLLM::ToolCallRunningError # A persisted tool call was denied after it started running
 RubyLLM::ModelRegistryError   # Model registry could not be fetched, parsed, or persisted
 RubyLLM::CancelledError       # An in-flight chat operation was cancelled
+RubyLLM::DeprecationError     # Deprecated API used while deprecation_behavior is :raise
 ```
 
 ## Basic Error Handling
