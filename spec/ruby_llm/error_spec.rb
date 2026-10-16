@@ -142,15 +142,15 @@ RSpec.describe RubyLLM::Error do
 
   describe 'default messages' do
     {
-      RubyLLM::BadRequestError => 'Invalid request - please check your input',
-      RubyLLM::ForbiddenError => 'Forbidden - you do not have permission to access this resource',
+      RubyLLM::BadRequestError => 'Invalid request. Check your input.',
+      RubyLLM::ForbiddenError => 'Forbidden. You do not have permission to access this resource.',
       RubyLLM::ContextLengthExceededError => 'Context length exceeded',
-      RubyLLM::OverloadedError => 'Service overloaded - please try again later',
-      RubyLLM::PaymentRequiredError => 'Payment required - please top up your account',
-      RubyLLM::RateLimitError => 'Rate limit exceeded - please wait a moment',
-      RubyLLM::ServerError => 'API server error - please try again',
-      RubyLLM::ServiceUnavailableError => 'API server unavailable - please try again later',
-      RubyLLM::UnauthorizedError => 'Invalid API key - check your credentials'
+      RubyLLM::OverloadedError => 'Service overloaded. Try again later.',
+      RubyLLM::PaymentRequiredError => 'Payment required. Top up your account.',
+      RubyLLM::RateLimitError => 'Rate limit exceeded. Wait a moment and retry.',
+      RubyLLM::ServerError => 'API server error. Try again.',
+      RubyLLM::ServiceUnavailableError => 'API server unavailable. Try again later.',
+      RubyLLM::UnauthorizedError => 'Invalid API key. Check your credentials.'
     }.each do |error_class, message|
       it "explains #{error_class} when the provider says nothing" do
         expect(error_class.default_message).to eq(message)

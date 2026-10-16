@@ -140,7 +140,7 @@ module RubyLLM
   # Raised for HTTP 400 responses when the request is invalid.
   class BadRequestError < Error
     def self.default_message # :nodoc:
-      'Invalid request - please check your input'
+      'Invalid request. Check your input.'
     end
   end
 
@@ -148,7 +148,7 @@ module RubyLLM
   # requested resource.
   class ForbiddenError < Error
     def self.default_message # :nodoc:
-      'Forbidden - you do not have permission to access this resource'
+      'Forbidden. You do not have permission to access this resource.'
     end
   end
 
@@ -166,9 +166,13 @@ module RubyLLM
     # The normalized reason generation stopped, or +nil+.
     attr_reader :finish_reason
 
+    def self.default_message # :nodoc:
+      'Provider returned malformed tool call arguments'
+    end
+
     def initialize(message = nil, response: nil, finish_reason: nil) # :nodoc:
       @finish_reason = finish_reason
-      message ||= 'Provider returned malformed tool call arguments'
+      message ||= self.class.default_message
       message = "#{message} (finish_reason: #{finish_reason})" if finish_reason
       super(message, response: response)
     end
@@ -184,7 +188,7 @@ module RubyLLM
   # overloaded.
   class OverloadedError < Error
     def self.default_message # :nodoc:
-      'Service overloaded - please try again later'
+      'Service overloaded. Try again later.'
     end
   end
 
@@ -192,21 +196,21 @@ module RubyLLM
   # or quota problem.
   class PaymentRequiredError < Error
     def self.default_message # :nodoc:
-      'Payment required - please top up your account'
+      'Payment required. Top up your account.'
     end
   end
 
   # Raised for HTTP 429 responses when the provider rate limit is exceeded.
   class RateLimitError < Error
     def self.default_message # :nodoc:
-      'Rate limit exceeded - please wait a moment'
+      'Rate limit exceeded. Wait a moment and retry.'
     end
   end
 
   # Raised for HTTP 500 responses when the provider reports a server error.
   class ServerError < Error
     def self.default_message # :nodoc:
-      'API server error - please try again'
+      'API server error. Try again.'
     end
   end
 
@@ -214,14 +218,14 @@ module RubyLLM
   # temporarily unavailable.
   class ServiceUnavailableError < Error
     def self.default_message # :nodoc:
-      'API server unavailable - please try again later'
+      'API server unavailable. Try again later.'
     end
   end
 
   # Raised for HTTP 401 responses when the API key is missing or invalid.
   class UnauthorizedError < Error
     def self.default_message # :nodoc:
-      'Invalid API key - check your credentials'
+      'Invalid API key. Check your credentials.'
     end
   end
 end
