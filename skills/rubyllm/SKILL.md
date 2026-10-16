@@ -8,7 +8,7 @@ metadata:
 
 # Build with RubyLLM
 
-Use the application's installed RubyLLM version and existing conventions. This skill describes the 2.x API; features marked 2.1 need RubyLLM 2.1 or later. Read `Gemfile.lock`, or inspect the installed gem before choosing an API:
+Use the application's installed RubyLLM version and existing conventions. This skill describes the 2.x API; features marked 2.1 or 2.2 need that release or later. Read `Gemfile.lock`, or inspect the installed gem before choosing an API:
 
 ```bash
 bundle exec ruby -rruby_llm -e 'puts RubyLLM::VERSION'
@@ -41,18 +41,22 @@ Read the relevant page instead of loading the entire documentation site:
 | Declare tools, defer them, or require approval | `tools/`, `tool-parameters/`, `tool-execution/`, `tool-search/` (2.1) |
 | Use tools from MCP servers (2.1) | `mcp/` |
 | Use provider-hosted tools such as web search | `provider-tools/`, `citations/` |
+| Run code the model writes in a sandbox (2.2) | `code-execution/`, `sandboxes/` |
+| Load Agent Skills on demand (2.2) | `skills/` |
 | Parse structured output | `structured-output/` |
 | Build reusable agents | `agents/`, `prompt-rendering/` |
+| Give agents short-term and long-term memory | `memory/` |
 | Enable thinking or prompt caching | `thinking/`, `prompt-caching/` |
 | Generate images or video | `image-generation/`, `video-generation/` |
 | Generate speech or transcribe audio | `text-to-speech/`, `audio-transcription/` |
 | Extract document text or moderate content | `ocr/`, `moderation/` |
 | Embed text or rank search results | `embeddings/`, `rerank/`, `rag/` |
 | Classify, score, or decide with typed answers (2.1) | `judgments/` |
-| Measure answer quality against a dataset (2.1) | `evaluations/`, `evaluation-datasets/`, `evaluation-evaluators/`, `evaluation-running/`, `evaluation-examples/` |
+| Measure answer quality against a dataset (2.1) | `evaluations/`, `evaluation-datasets/`, `evaluation-evaluators/`, `evaluation-running/`, `evaluation-examples/`, `evaluation-conversations/`, `evaluation-progress/` |
 | Count tokens, upload provider files, or run hosted research | `tokenization/`, `files/`, `hosted-research/` |
 | Persist chats, attach files, or stream with Hotwire | `rails/`, `rails-persistence/`, `rails-streaming/`, `rails-generators/`, `rails-advanced-config/` |
 | Resume agents in background jobs | `durable-agents/` |
+| Run many AI calls concurrently | `async/` |
 | Track spend or handle failures | `cost-and-usage-tracking/`, `error-handling/` |
 | Observe calls, group workflows, or trace with OpenTelemetry | `instrumentation/`, `opentelemetry/` (2.1) |
 | Submit batches or drive the conversation loop | `batches/`, `agentic-workflows/` |
@@ -68,7 +72,7 @@ Markdown guides use the same name with `.md`, such as `chat.md`. The API referen
 - `ask` runs the conversation and returns a message. `ask_later` stages input and returns the chat. For explicit loop control, use `generate`, `run_tools`, `step`, and `complete?`. Approval can park the loop before completion; inspect `awaiting_approval?` and resume after `approve` or `deny`.
 - Read text through `message.content` and structured output through `message.parsed`. Declare schemas with `Schematist::Schema` or the schema DSL. Do not assume `content` is a parsed Hash.
 - Subclass `RubyLLM::Tool`. Use `description`, `parameter`, or a `parameters` block, and keyword arguments on `execute`. Register tools with `with_tools`; configure choice and concurrency with `with_tool_options`. Keep application authorization in the tool or underlying service. Use `requires_approval` when the product needs a user's decision before execution. With large tool sets, pass `defer: true` to `with_tools` or `with_mcp` (or declare `defer` on the class) so the model searches for tools instead of receiving them all (2.1).
-- Use `with_thinking`, `with_caching`, `with_compaction`, and `with_citations` without arguments to enable them and `false` to disable them. They reject `nil`. Read the relevant guide for supported options and model requirements.
+- Use `with_thinking`, `with_caching`, `with_compaction`, `with_citations`, and `with_code_execution` (2.2) without arguments to enable them and `false` to disable them. `with_skills` (2.2) is a switch too, and takes skill names where the others take options. They reject `nil`. Read the relevant guide for supported options and model requirements.
 - Connect MCP servers by subclassing `RubyLLM::MCP` (`url` or `command`, then `only` and `requires_approval` to shape tools) and attach them with `chat.with_mcp(...)` or the agent `mcp` macro (2.1). Do not add a separate MCP client gem.
 - For a yes/no probability, a choice, or a score about application data, subclass `RubyLLM::Judge` and call `.judge(input)` instead of parsing free text from a chat (2.1). Backends are TypeSafe's Jev, OpenAI Decisions, and local decision models such as Clef with `provider: :ollama`.
 - Use `with_fallbacks` for alternate models, `with_provider_tools` for provider-hosted tools, and `progress` inside a long-running tool with `after_tool_progress` on the chat (2.1) to report it.
