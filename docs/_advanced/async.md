@@ -46,7 +46,7 @@ config.active_job.queue_adapter = :solid_queue
 config.active_support.isolation_level = :fiber
 ```
 
-The isolation setting keeps Rails execution state separate for each fiber. It applies to the whole application and is required for Solid Queue fiber workers.
+Solid Queue requires the isolation setting before it starts fiber workers. See [Fiber-Safe Active Record Connections]({% link _advanced/rails-advanced-config.md %}#fiber-safe-active-record-connections-for-asyncfiber-workloads) for what it changes.
 
 In `config/queue.yml`, replace `threads:` with `fibers:` for the worker that handles AI jobs. You can keep thread workers for your other queues:
 

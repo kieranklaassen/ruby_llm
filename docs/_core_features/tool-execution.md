@@ -295,25 +295,7 @@ RubyLLM sends tools to any model. If the model doesn't support function calling,
 
 ## Monitoring Tool Calls with Callbacks
 
-You can monitor tool execution using additive callbacks to track when tools are called and what they return.
-
-```ruby
-chat = RubyLLM.chat(model: '{{ site.models.openai_tools }}')
-      .with_tools(Weather)
-      .before_tool_call do |tool_call|
-        puts "Calling tool: #{tool_call.name}"
-        puts "Arguments: #{tool_call.arguments}"
-      end
-      .after_tool_result do |result|
-        puts "Tool returned: #{result}"
-      end
-
-response = chat.ask "What's the weather in Paris?"
-# Output:
-# Calling tool: weather
-# Arguments: {"latitude": "48.8566", "longitude": "2.3522"}
-# Tool returned: {"temperature": 15, "conditions": "Partly cloudy"}
-```
+`before_tool_call` and `after_tool_result` report each tool call and what it returns. See [Tool Events]({% link _core_features/chat-callbacks.md %}#tool-events).
 
 
 ## Reporting Progress

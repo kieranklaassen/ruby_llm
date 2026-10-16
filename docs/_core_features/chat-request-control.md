@@ -206,7 +206,7 @@ chat.ask('Analyze this request using the provider-native block above.')
 
 Hooks mutate the payload in place; return values are ignored (use `payload.replace(new_payload)` to swap it wholesale). Use hooks sparingly: they operate on the provider's wire format, so it is your responsibility to match what the provider expects, and switching providers means revisiting the hook. Nothing a hook adds is persisted; it is applied fresh on each request. For prompt reuse, prefer [Prompt Caching]({% link _core_features/prompt-caching.md %}).
 
-`Chat#render` returns the request the chat would send, with hooks applied, which makes hook output easy to inspect and test.
+To check a hook's output, see [Inspecting the Payload](#inspecting-the-payload).
 
 The same idea applies to tool definitions:
 

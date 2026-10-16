@@ -85,21 +85,9 @@ If the model requests an unavailable tool, RubyLLM returns an error listing the 
 
 ## Declaring Parameters
 
-The simplest case needs nothing extra. When a tool has no `parameter` or `parameters` declaration, RubyLLM builds a JSON Schema from the `execute` keyword arguments:
+The simplest case needs nothing extra. When a tool has no `parameter` or `parameters` declaration, RubyLLM builds a JSON Schema from the `execute` keyword arguments. See [Signature Inference]({% link _core_features/tool-parameters.md %}#signature-inference) for what it infers.
 
-```ruby
-class Weather < RubyLLM::Tool
-  description "Gets current weather for a location"
-
-  def execute(latitude:, longitude:, units: "metric")
-    # ...
-  end
-end
-```
-
-Required keywords become required string parameters. Optional keywords become optional string parameters. A tool with `def execute` receives an empty object schema.
-
-Ruby method signatures do not expose reliable JSON Schema types or descriptions, so add explicit declarations when those details matter. For the `parameter` helper, the `parameters` DSL, and supplying JSON Schema manually, see [Tool Parameters]({% link _core_features/tool-parameters.md %}).
+Add explicit declarations when types or descriptions matter. For the `parameter` helper, the `parameters` DSL, and supplying JSON Schema manually, see [Tool Parameters]({% link _core_features/tool-parameters.md %}).
 
 ## Using Tools in Chat
 
