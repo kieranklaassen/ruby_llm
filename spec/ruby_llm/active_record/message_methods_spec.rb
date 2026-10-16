@@ -176,6 +176,17 @@ RSpec.describe RubyLLM::ActiveRecord::MessageMethods do
         expect(restore(record).cost.output).to eq(record.cost.output)
       end
 
+      it 'reprices the recorded tokens with an explicit model' do
+        record = reply(prompt_tokens: 1000, completion_tokens: 2000, cost: 0.123)
+        priced = RubyLLM::Model.new(
+          id: 'priced-model', name: 'Priced Model', provider: 'openai',
+          pricing: { text_tokens: { standard: { input_per_million: 1.0, output_per_million: 2.0 } } }
+        )
+
+        expect(record.cost(model: priced).total).to eq(0.005)
+        expect(record.cost.total).to eq(0.123)
+      end
+
       it 'adds no cost to a message without recorded usage' do
         record = chat.add_message(role: :user, content: 'Hello')
 

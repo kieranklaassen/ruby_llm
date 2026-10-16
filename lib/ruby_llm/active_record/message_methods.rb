@@ -125,8 +125,12 @@ module RubyLLM
         RubyLLM::Tokens.aggregate(ruby_llm_usages.map(&:tokens))
       end
 
-      # Returns the cost across every attempt that produced the message, as a RubyLLM::Cost.
-      def cost
+      # Returns the cost across every attempt that produced the message, as a
+      # RubyLLM::Cost. An explicit +model:+ reprices the recorded tokens with
+      # that model instead, as RubyLLM::Message#cost does.
+      def cost(model: nil)
+        return RubyLLM::Cost.new(tokens:, model:) if model
+
         records = ruby_llm_usage_records
         RubyLLM::Cost.aggregate(records.map(&:cost), complete: records.all?(&:cost_available?))
       end

@@ -55,6 +55,13 @@ response.cost.output
 
 `response.tokens` aggregates every transport attempt associated with the response. `chat.tokens` and `chat.cost` aggregate the chat's whole internal ledger, including failed retries and cancelled attempts (see [The Usage Ledger](#the-usage-ledger) below).
 
+To see what the same tokens cost on another model, pass `model:`. It works on a response and on a persisted message record:
+
+```ruby
+other = RubyLLM.models.find("{{ site.models.default_chat }}")
+response.cost(model: other).total
+```
+
 The same pair of value objects is used by one-shot results. Their fields remain `nil` when the provider does not report enough information:
 
 ```ruby
