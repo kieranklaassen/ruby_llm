@@ -19,7 +19,7 @@ RSpec.describe RubyLLM::CachedContent, :live do
         instructions: 'You are a meticulous release engineer.'
       )
 
-      expect(cache.name).to start_with('cachedContents/')
+      expect(cache.id).to start_with('cachedContents/')
       expect(cache.model).to eq(model_for(:gemini))
       expect(cache.provider).to eq('gemini')
       expect(cache.tokens).to be > 2_048
@@ -42,7 +42,7 @@ RSpec.describe RubyLLM::CachedContent, :live do
     it "vertexai/#{model_for(:vertexai)} creates, uses, and deletes a cache" do
       cache = RubyLLM.cache(long_text, model: model_for(:vertexai), provider: :vertexai, ttl: 300)
 
-      expect(cache.name).to include('/cachedContents/')
+      expect(cache.id).to include('/cachedContents/')
       expect(cache.model).to eq(model_for(:vertexai))
       expect(cache.provider).to eq('vertexai')
       expect(cache.tokens).to be > 2_048
@@ -60,9 +60,9 @@ RSpec.describe RubyLLM::CachedContent, :live do
     it 'finds an existing cache by name' do
       created = RubyLLM.cache(long_text, model: model_for(:gemini), ttl: 300)
 
-      found = described_class.find(created.name, provider: :gemini)
+      found = described_class.find(created.id, provider: :gemini)
 
-      expect(found.name).to eq(created.name)
+      expect(found.id).to eq(created.id)
       expect(found.tokens).to eq(created.tokens)
 
       created.delete

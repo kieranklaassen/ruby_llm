@@ -287,6 +287,20 @@ page.to_h.values
 
 `OCR::Page.new` requires `index:` and `markdown:`, and `Rerank::Result.new` requires all three of its values. Both print one short line in the console, and so does `SearchResults`.
 
+## Caches Have an `id`
+
+`CachedContent#id` replaces `name`, so a cache is identified the way an uploaded file, a batch, and a job are. It is the value `with_caching(id:)` and `CachedContent.find` already take. `name` still works and logs a deprecation warning. It is removed in 3.0:
+
+```ruby
+# 2.1
+Document.update!(cache_name: cache.name)
+
+# 2.2
+Document.update!(cache_name: cache.id)
+```
+
+A provider gem that builds a `CachedContent` passes `id:` where it passed `name:`.
+
 ## A Chat With Thinking Disabled Reads `false`
 
 `Chat#thinking` returns `false` after `with_thinking(false)`, the way `caching`, `compaction`, and `code_execution` do. It returned the control RubyLLM sends to the model. The `enabled:` key is gone from the options it returns for a model that only switches thinking on:

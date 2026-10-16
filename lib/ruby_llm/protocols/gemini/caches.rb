@@ -31,7 +31,7 @@ module RubyLLM
 
         def parse_cache_response(data)
           CachedContent.new(
-            name: data['name'],
+            id: data['name'],
             model: data['model']&.split('/')&.last,
             provider_instance: @provider,
             created_at: (Time.iso8601(data['createTime']) if data['createTime']),
@@ -42,7 +42,7 @@ module RubyLLM
         end
 
         def cache_name(name)
-          name = name.name if name.is_a?(CachedContent)
+          name = name.id if name.is_a?(CachedContent)
           name.to_s.include?('/') ? name.to_s : "cachedContents/#{name}"
         end
 

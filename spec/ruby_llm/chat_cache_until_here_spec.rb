@@ -156,7 +156,7 @@ RSpec.describe RubyLLM::Chat, :live do
     end
 
     it 'accepts a CachedContent as the id' do
-      cache = RubyLLM::CachedContent.new(name: 'cachedContents/abc123')
+      cache = RubyLLM::CachedContent.new(id: 'cachedContents/abc123')
       chat = RubyLLM.chat(model: model_for(:gemini), provider: :gemini)
                     .with_caching(id: cache)
                     .ask_later('Hello')

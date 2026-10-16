@@ -12,14 +12,14 @@ module RubyLLM
   #   chat.ask "What does the document conclude?"
   #   cache.delete
   #
-  # Cache names are provider-owned. Persist #provider alongside #name and
+  # Cache ids are provider-owned. Persist #provider alongside #id and
   # pass it back when finding the cache later.
   class CachedContent
     include Support::Inspectable
 
-    # The provider-assigned resource name, such as
+    # The provider's id for the cache, such as
     # <tt>"cachedContents/abc123"</tt>.
-    attr_reader :name
+    attr_reader :id
 
     # The id of the model the cache was created for, as a String.
     attr_reader :model
@@ -44,8 +44,13 @@ module RubyLLM
       raw
     end
 
-    def initialize(name:, **attributes) # :nodoc:
-      @name = name
+    def name # :nodoc:
+      RubyLLM.deprecator.deprecate('CachedContent#name', replacement: 'CachedContent#id', removal: '3.0')
+      id
+    end
+
+    def initialize(id:, **attributes) # :nodoc:
+      @id = id
       @model = attributes[:model]
       @provider_instance = attributes[:provider_instance]
       @provider = attributes[:provider] || @provider_instance&.slug
@@ -57,7 +62,7 @@ module RubyLLM
 
     # Deletes the cache resource from the provider. Returns +self+.
     def delete
-      @provider_instance.delete_cache(name)
+      @provider_instance.delete_cache(id)
       self
     end
 
@@ -68,7 +73,7 @@ module RubyLLM
     #   cache.renew(ttl: 3600)
     #
     def renew(ttl:)
-      refreshed = @provider_instance.extend_cache(name, ttl: ttl)
+      refreshed = @provider_instance.extend_cache(id, ttl: ttl)
       @expires_at = refreshed.expires_at
       @raw = refreshed.raw
       self
@@ -94,13 +99,13 @@ module RubyLLM
       provider_instance.cache_content(content, model: model_instance, ttl:, instructions:, with:)
     end
 
-    # Fetches an existing cache resource by +name+ and returns a
+    # Fetches an existing cache resource by +id+ and returns a
     # CachedContent. When +provider:+ is omitted, the provider of the
     # configured default model is used.
     #
     #   cache = RubyLLM::CachedContent.find("cachedContents/abc123", provider: :gemini)
     #
-    def self.find(name, provider: nil, context: nil)
+    def self.find(id, provider: nil, context: nil)
       config = context&.config || RubyLLM.config
 
       provider_instance = if provider
@@ -108,13 +113,13 @@ module RubyLLM
                           else
                             Models.resolve(config.default_model, config:).last
                           end
-      provider_instance.find_cache(name)
+      provider_instance.find_cache(id)
     end
 
     private
 
     def inspect_attributes # :nodoc:
-      { name: name, model: model, provider: provider, expires_at: expires_at }
+      { id: id, model: model, provider: provider, expires_at: expires_at }
     end
   end
 end

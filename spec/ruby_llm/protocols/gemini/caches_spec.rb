@@ -77,7 +77,7 @@ RSpec.describe RubyLLM::Protocols::Gemini::Caches do
       cache = protocol.send(:parse_cache_response, data)
 
       expect(cache).to be_a(RubyLLM::CachedContent)
-      expect(cache.name).to eq('cachedContents/abc123')
+      expect(cache.id).to eq('cachedContents/abc123')
       expect(cache.model).to eq('gemini-2.5-flash')
       expect(cache.provider).to eq('gemini')
       expect(cache.created_at).to eq(Time.iso8601('2026-08-11T10:00:00Z'))
@@ -97,7 +97,7 @@ RSpec.describe RubyLLM::Protocols::Gemini::Caches do
     end
 
     it 'unwraps CachedContent instances' do
-      cache = RubyLLM::CachedContent.new(name: 'cachedContents/abc123')
+      cache = RubyLLM::CachedContent.new(id: 'cachedContents/abc123')
 
       expect(protocol.send(:cache_name, cache)).to eq('cachedContents/abc123')
     end

@@ -750,7 +750,7 @@ module RubyLLM
 
     # Enables provider prompt caching. With no arguments the provider's
     # default behavior applies; options such as +ttl:+ apply where
-    # supported. Pass +id:+ with a CachedContent (or its name) from
+    # supported. Pass +id:+ with a CachedContent (or its id) from
     # RubyLLM.cache to attach an explicit
     # content cache. Pass +false+ to stop RubyLLM from sending cache
     # controls or rendering explicit cache boundaries. A provider may still
