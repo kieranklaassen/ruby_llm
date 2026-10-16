@@ -51,12 +51,12 @@ bin/rails ruby_llm:load_models
 
 Generated primary and foreign keys follow your application's `config.generators` setting for `active_record.primary_key_type`, including `:uuid`. The default is `:bigint`.
 
-Configure a provider in the generated initializer:
+The generator writes an initializer that reads your OpenAI key from the environment, then from your credentials. Configure your provider there:
 
 ```ruby
 # config/initializers/ruby_llm.rb
 RubyLLM.configure do |config|
-  config.openai_api_key = ENV.fetch('OPENAI_API_KEY')
+  config.openai_api_key = ENV.fetch("OPENAI_API_KEY", Rails.application.credentials.dig(:openai_api_key))
 end
 ```
 
