@@ -345,7 +345,7 @@ The [upgrade guide](https://github.com/crmne/ruby_llm/blob/v2.0.0/docs/_referenc
 
 Install RubyLLM 2.0:
 
-```sh
+```bash
 bundle add ruby_llm --version 2.0.0
 ```
 

@@ -25,7 +25,7 @@ Some tasks need more than a sentence of instructions: how your company formats a
 
 A skill is a folder that holds those procedures. It follows the open [Agent Skills format](https://agentskills.io/specification), so the skills you write work in other tools that read the format, and skills written elsewhere work in RubyLLM:
 
-```
+```text
 app/skills/
 └── invoices/
     ├── SKILL.md

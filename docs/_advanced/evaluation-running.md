@@ -72,7 +72,7 @@ Each case runs on a fresh instance, so instance variables never leak between cas
 
 In Rails, the task is available automatically:
 
-```sh
+```bash
 bin/rails ruby_llm:eval                                      # every evaluation
 bin/rails "ruby_llm:eval[SupportEvaluation]"                 # one evaluation
 bin/rails "ruby_llm:eval[SupportEvaluation,unopened_return]" # one case

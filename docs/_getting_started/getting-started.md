@@ -30,13 +30,13 @@ Each example shows one feature. Try the ones your application needs, then follow
 {% if site.docs_unreleased %}
 These guides cover unreleased changes on `main`. Install from GitHub to use them:
 
-```sh
+```bash
 bundle add ruby_llm --git https://github.com/crmne/ruby_llm --branch main
 ```
 {% else %}
 Add RubyLLM 2.1 with Bundler:
 
-```sh
+```bash
 bundle add ruby_llm --version 2.1.1
 ```
 {% endif %}

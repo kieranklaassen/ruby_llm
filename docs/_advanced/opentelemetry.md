@@ -52,7 +52,7 @@ RubyLLM::OpenTelemetry.enable
 
 Point the exporter at your backend with the standard environment variables:
 
-```sh
+```bash
 OTEL_EXPORTER_OTLP_ENDPOINT=https://otel.example.com:4318
 OTEL_EXPORTER_OTLP_HEADERS="x-api-key=your-key"
 ```

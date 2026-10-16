@@ -263,7 +263,7 @@ Pass `assume_model_exists: true` for models that aren't in the registry, or have
 
 To ship your provider so others can add it to RubyLLM, package these files in a gem that depends on `ruby_llm`. Lay the files out under `lib/ruby_llm/providers/` mirroring the built-in providers:
 
-```
+```text
 ruby_llm-providers-acme/
 ├── models.json
 ├── lib/

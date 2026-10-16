@@ -52,7 +52,7 @@ cases:
 
 Run it:
 
-```sh
+```bash
 bin/rails "ruby_llm:eval[SupportEvaluation]"
 ```
 
