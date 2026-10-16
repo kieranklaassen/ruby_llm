@@ -134,8 +134,8 @@ When a chat switches to another model of the same provider, the tools the earlie
 
 ## Next Steps
 
-* [Tools]({% link _core_features/tools.md %})
-* [MCP Client]({% link _core_features/mcp.md %})
-* [Provider Tools]({% link _core_features/provider-tools.md %})
-* [Anthropic tool search](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool)
-* [OpenAI tool search](https://developers.openai.com/api/docs/guides/tools-tool-search)
+* [Tools]({% link _core_features/tools.md %}) - define the tools the model searches for.
+* [MCP Client]({% link _core_features/mcp.md %}) - connect the servers whose tools you defer.
+* [Provider Tools]({% link _core_features/provider-tools.md %}) - use tools that run on the provider's servers.
+* [Anthropic tool search](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool) - Anthropic's reference for its tool search tool.
+* [OpenAI tool search](https://developers.openai.com/api/docs/guides/tools-tool-search) - OpenAI's guide to tool search.

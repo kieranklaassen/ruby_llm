@@ -313,11 +313,11 @@ Then visit `http://localhost:3000/chats` to start chatting. See [Rails Integrati
 
 Continue with the guide for the feature you want to build:
 
-* [Chat]({% link _core_features/chat.md %})
-* [Models]({% link _reference/available-models.md %}) for comparing capabilities and pricing
-* [Agents]({% link _advanced/agents.md %}) and [Agentic Workflows]({% link _advanced/agentic-workflows.md %})
-* [Batches]({% link _advanced/batches.md %}) and [Prompt Caching]({% link _core_features/prompt-caching.md %})
-* [Rails Integration]({% link _advanced/rails.md %})
-* [AI Coding Assistants]({% link _getting_started/ai-coding-assistants.md %})
-* [Configuration]({% link _getting_started/configuration.md %})
-* [Error Handling]({% link _advanced/error-handling.md %})
+* [Chat]({% link _core_features/chat.md %}) - choose models, set instructions, and continue conversations.
+* [Models]({% link _reference/available-models.md %}) - compare capabilities and pricing.
+* [Agents]({% link _advanced/agents.md %}) and [Agentic Workflows]({% link _advanced/agentic-workflows.md %}) - define reusable agents and compose them.
+* [Batches]({% link _advanced/batches.md %}) and [Prompt Caching]({% link _core_features/prompt-caching.md %}) - lower the cost of bulk and repeated work.
+* [Rails Integration]({% link _advanced/rails.md %}) - persist chats and stream responses in your application.
+* [AI Coding Assistants]({% link _getting_started/ai-coding-assistants.md %}) - help your coding assistant use the RubyLLM API.
+* [Configuration]({% link _getting_started/configuration.md %}) - set API keys, defaults, and connection options.
+* [Error Handling]({% link _advanced/error-handling.md %}) - rescue provider errors and fall back to other models.

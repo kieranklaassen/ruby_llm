@@ -518,10 +518,10 @@ WorkAssistant.new.ask("Help me find docs about callbacks.")
 
 ## Next Steps
 
-* Compose agents with [Agentic Workflows]({% link _advanced/agentic-workflows.md %})
-* Resume them across jobs and deploys with [Durable Agents]({% link _advanced/durable-agents.md %})
-* Give them [Memory]({% link _advanced/memory.md %}) across conversations
-* Ground them in your documents with [RAG]({% link _advanced/rag.md %})
-* Learn about [Chat]({% link _core_features/chat.md %})
-* Explore [Tools]({% link _core_features/tools.md %})
-* Review [Rails Integration]({% link _advanced/rails.md %})
+* [Agentic Workflows]({% link _advanced/agentic-workflows.md %}) - compose agents into larger workflows.
+* [Durable Agents]({% link _advanced/durable-agents.md %}) - resume agents across jobs and deploys.
+* [Memory]({% link _advanced/memory.md %}) - give agents memory across conversations.
+* [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) - ground agents in your documents.
+* [Chat]({% link _core_features/chat.md %}) - the conversation interface agents configure.
+* [Tools]({% link _core_features/tools.md %}) - write the tools your agents call.
+* [Rails Integration]({% link _advanced/rails.md %}) - persist agent chats in your application.

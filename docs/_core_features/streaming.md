@@ -188,6 +188,6 @@ end
 
 ## Next Steps
 
-* [Tools]({% link _core_features/tools.md %})
-* [Rails Integration]({% link _advanced/rails.md %})
-* [Error Handling]({% link _advanced/error-handling.md %})
+* [Tools]({% link _core_features/tools.md %}) - let the model call your Ruby code.
+* [Rails Integration]({% link _advanced/rails.md %}) - stream persisted chats into your views.
+* [Error Handling]({% link _advanced/error-handling.md %}) - rescue errors raised during a stream.

@@ -877,6 +877,6 @@ A server that answers with a protocol error raises `RubyLLM::MCP::Error`, whose 
 
 ## Next Steps
 
-* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) for approvals and concurrency
-* [Provider Tools]({% link _core_features/provider-tools.md %}) for MCP servers the provider connects to
-* [Agents]({% link _advanced/agents.md %}) for reusable chat configurations
+* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - approvals and concurrency.
+* [Provider Tools]({% link _core_features/provider-tools.md %}) - MCP servers the provider connects to.
+* [Agents]({% link _advanced/agents.md %}) - reusable chat configurations.
