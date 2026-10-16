@@ -38,7 +38,7 @@ class Message < ApplicationRecord
 end
 ```
 
-That is the complete application-facing persistence setup. There is no `Model`, `ToolCall`, `UsageEntry`, or `Batch` model to add to `app/models`.
+That is the complete application-facing persistence setup. There are no supporting models to add to `app/models`.
 
 RubyLLM owns six supporting tables under the `ruby_llm_` prefix:
 

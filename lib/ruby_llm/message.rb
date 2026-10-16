@@ -176,8 +176,8 @@ module RubyLLM
     end
 
     # Returns the tool result messages answering this message's tool calls,
-    # or an empty array when it made none. Mirrors the +tool_results+
-    # association on acts_as_message records.
+    # or an empty array when it made none. Mirrors +tool_results+ on
+    # acts_as_message records.
     def tool_results
       return [] unless tool_call? && conversation
 

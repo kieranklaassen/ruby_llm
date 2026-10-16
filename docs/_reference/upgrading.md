@@ -24,7 +24,7 @@ This guide covers **2.1 to 2.2**. Coming from 2.0? Follow the [2.1 upgrade guide
 
 ## One Release at a Time
 
-Each release ships the upgrade steps for the changes since the previous release. When a release changes the Rails schema, `bin/rails generate ruby_llm:upgrade` generates the migrations that take your database from the previous release to the current one. The next release replaces that generator with its own.
+Each release ships the upgrade steps for the changes since the previous release. When a release changes the Rails schema, `bin/rails generate ruby_llm:upgrade` generates the migration that takes your database from the previous release to the current one. The next release replaces that generator with its own.
 
 To move across several releases, upgrade to each one in turn. Deploy it, run its upgrade, and resolve its deprecation warnings before you continue. Each release's upgrade guide stays in the repository at that release's tag.
 

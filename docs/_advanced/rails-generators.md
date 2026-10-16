@@ -48,7 +48,7 @@ bin/rails ruby_llm:load_models
 
 You can now create a persisted chat with `Chat.create!` and send a message with `chat.ask`.
 
-### Install Generator Options
+### Custom Model Names
 
 The generator uses Rails-like syntax for custom model names:
 
@@ -220,7 +220,7 @@ The generated chat UI follows one convention: each message partial uses the loca
 
 This comes from Rails partial rendering: `render @chat.messages` calls `to_partial_path`, and Rails injects a local named after that partial.
 
-For compatibility with model broadcasts (`broadcasts_to`), generated message partials also accept a `message` local as a fallback.
+Turbo broadcasts pass the record as a `message` local, so generated message partials also accept `message` as a fallback.
 
 Shared partials take explicit locals: `messages/_attachments.html.erb` gets `message`, `chats/_approvals.html.erb` gets `chat`, and `approvals/_approval.html.erb` gets `approval` and `chat`.
 
