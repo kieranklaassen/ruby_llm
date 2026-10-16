@@ -5,7 +5,7 @@ require_relative '../generator_helpers'
 
 module RubyLLM
   module Generators
-    # Generates a simple chat UI scaffold for RubyLLM
+    # Generator for the chat UI scaffold.
     class ChatUIGenerator < Rails::Generators::Base
       include RubyLLM::Generators::GeneratorHelpers
 
@@ -16,12 +16,12 @@ module RubyLLM
 
       namespace 'ruby_llm:chat_ui'
 
-      argument :model_mappings, type: :array, default: [], banner: 'chat:ChatName message:MessageName ...'
+      argument :model_mappings, type: :array, default: [], banner: 'chat:ChatName message:MessageName'
       class_option :ui, type: :string, default: 'auto', enum: %w[scaffold tailwind auto],
                         desc: 'UI template style (scaffold, tailwind, auto)'
 
       desc 'Creates a chat UI scaffold with Turbo streaming\n' \
-           'Usage: bin/rails g ruby_llm:chat_ui [chat:ChatName] [message:MessageName] ...'
+           'Usage: bin/rails generate ruby_llm:chat_ui [chat:ChatName] [message:MessageName]'
 
       def check_model_exists
         model_path = "app/models/#{message_model_name.underscore}.rb"

@@ -10,7 +10,7 @@ module RubyLLM
 
       namespace 'ruby_llm:schema'
 
-      desc 'Creates a RubyLLM schema class'
+      desc 'Creates a schema class in app/schemas'
 
       def create_schema_file
         template 'schema.rb.tt', File.join('app/schemas', class_path, "#{schema_file_name}.rb")

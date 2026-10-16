@@ -6,7 +6,7 @@ require_relative '../generator_helpers'
 
 module RubyLLM
   module Generators
-    # Generator for RubyLLM Rails models and migrations
+    # Generator for RubyLLM Rails models and migrations.
     class InstallGenerator < Rails::Generators::Base
       include Rails::Generators::Migration
       include RubyLLM::Generators::GeneratorHelpers
@@ -15,10 +15,10 @@ module RubyLLM
 
       source_root File.expand_path('templates', __dir__)
 
-      argument :model_mappings, type: :array, default: [], banner: 'chat:ChatName message:MessageName ...'
+      argument :model_mappings, type: :array, default: [], banner: 'chat:ChatName message:MessageName'
 
       desc 'Creates models and migrations for RubyLLM Rails integration\n' \
-           'Usage: bin/rails g ruby_llm:install [chat:ChatName] [message:MessageName] ...'
+           'Usage: bin/rails generate ruby_llm:install [chat:ChatName] [message:MessageName]'
 
       def self.next_migration_number(dirname)
         ::ActiveRecord::Generators::Base.next_migration_number(dirname)

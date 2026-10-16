@@ -18,7 +18,7 @@ module RubyLLM
       class_option :ui, type: :string, default: 'auto', enum: %w[scaffold tailwind auto],
                         desc: 'UI template style (scaffold, tailwind, auto)'
 
-      desc 'Creates a RubyLLM tool class and matching tool call/result view partials'
+      desc 'Creates a tool class in app/tools and its tool call and result partials'
 
       def check_tool_class_collision
         class_collisions tool_class_name

@@ -10,7 +10,7 @@ module RubyLLM
 
       namespace 'ruby_llm:agent'
 
-      desc 'Creates a RubyLLM agent class and default instructions prompt'
+      desc 'Creates an agent class in app/agents and its instructions prompt in app/prompts'
 
       def create_agent_file
         template 'agent.rb.tt', File.join('app/agents', class_path, "#{agent_file_name}.rb")
