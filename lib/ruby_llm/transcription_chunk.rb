@@ -61,6 +61,8 @@ module RubyLLM
     # Whether this is the final event of the transcription.
     def done? = type == DONE
 
+    private
+
     def inspect_attributes # :nodoc:
       { type: type, delta: delta, text: text, segment: segment }
     end

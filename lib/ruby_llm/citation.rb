@@ -71,10 +71,6 @@ module RubyLLM
       new(Support::Utils.deep_symbolize_keys(data))
     end
 
-    def inspect_attributes # :nodoc:
-      { url: url, title: title, start_index: start_index, end_index: end_index }
-    end
-
     # Returns the citation as a Hash with symbol keys, omitting +nil+ fields.
     def to_h
       {
@@ -100,6 +96,12 @@ module RubyLLM
 
     def hash # :nodoc:
       to_h.hash
+    end
+
+    private
+
+    def inspect_attributes # :nodoc:
+      { url: url, title: title, start_index: start_index, end_index: end_index }
     end
   end
 end

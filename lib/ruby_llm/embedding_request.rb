@@ -46,6 +46,8 @@ module RubyLLM
       @provider.render_embedding(text, model: @model, dimensions: @dimensions)
     end
 
+    private
+
     def inspect_attributes # :nodoc:
       { text: text, model: model.id, dimensions: dimensions, result: result }
     end

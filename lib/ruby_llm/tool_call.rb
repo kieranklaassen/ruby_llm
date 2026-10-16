@@ -64,10 +64,6 @@ module RubyLLM
       end
     end
 
-    def inspect_attributes # :nodoc:
-      { id: id, name: name, arguments: arguments, remote: remote? || nil }.compact
-    end
-
     # Returns the call as a Hash, omitting +nil+ values.
     def to_h
       {
@@ -90,6 +86,10 @@ module RubyLLM
       when Array then value.map { |item| canonical_arguments(item) }
       else value
       end
+    end
+
+    def inspect_attributes # :nodoc:
+      { id: id, name: name, arguments: arguments, remote: remote? || nil }.compact
     end
   end
 end

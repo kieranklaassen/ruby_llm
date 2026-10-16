@@ -87,10 +87,6 @@ module RubyLLM
         hash.merge(source: source, mime_type: mime_type, signed: signed? || nil).compact
       end
 
-      def inspect_attributes # :nodoc:
-        to_h
-      end
-
       private
 
       def description
@@ -111,6 +107,10 @@ module RubyLLM
         return source.to_s if source && source != :inline
 
         TEXT_KINDS.include?(kind) ? 'no text' : 'no data'
+      end
+
+      def inspect_attributes # :nodoc:
+        to_h
       end
     end
   end

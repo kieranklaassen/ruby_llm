@@ -74,6 +74,8 @@ module RubyLLM
       }.compact
     end
 
+    private
+
     def inspect_attributes # :nodoc:
       { type: type, name: name, id: id, input: input }
     end

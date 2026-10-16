@@ -31,6 +31,8 @@ module RubyLLM
       { type:, choice:, probabilities:, confidence: }
     end
 
+    private
+
     def inspect_attributes # :nodoc:
       { choice:, confidence: }
     end

@@ -93,6 +93,8 @@ module RubyLLM
           task_cost: task_cost.to_h, evaluator_cost: evaluator_cost.to_h }
       end
 
+      private
+
       def inspect_attributes # :nodoc:
         { case: test_case.name, repetition:, status: }
       end

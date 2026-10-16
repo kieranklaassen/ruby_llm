@@ -26,6 +26,8 @@ module RubyLLM
       data
     end
 
+    private
+
     def inspect_attributes # :nodoc:
       { format: format, data: "#{data.bytesize} bytes" }
     end

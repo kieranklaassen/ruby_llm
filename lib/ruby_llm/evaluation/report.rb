@@ -82,10 +82,6 @@ module RubyLLM
         [name, *rows, summary].join("\n")
       end
 
-      def inspect_attributes # :nodoc:
-        { name:, trials: trials.size, **counts }
-      end
-
       private
 
       def trial_description(trial)
@@ -101,6 +97,10 @@ module RubyLLM
           "#{item.name}: #{item.error&.message || item.reason || item.value.inspect}"
         end)
         messages.compact
+      end
+
+      def inspect_attributes # :nodoc:
+        { name:, trials: trials.size, **counts }
       end
     end
   end

@@ -15,10 +15,6 @@ module RubyLLM
   class UploadedFile
     include Support::Inspectable
 
-    def inspect_attributes # :nodoc:
-      { id: id, provider: provider, filename: filename, byte_size: byte_size }
-    end
-
     # The provider-assigned file identifier, such as <tt>"file_..."</tt>.
     attr_reader :id
 
@@ -140,5 +136,11 @@ module RubyLLM
       end
     end
     private_class_method :provider_for
+
+    private
+
+    def inspect_attributes # :nodoc:
+      { id: id, provider: provider, filename: filename, byte_size: byte_size }
+    end
   end
 end

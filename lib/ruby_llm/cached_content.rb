@@ -17,10 +17,6 @@ module RubyLLM
   class CachedContent
     include Support::Inspectable
 
-    def inspect_attributes # :nodoc:
-      { name: name, model: model, provider: provider, expires_at: expires_at }
-    end
-
     # The provider-assigned resource name, such as
     # <tt>"cachedContents/abc123"</tt>.
     attr_reader :name
@@ -107,6 +103,12 @@ module RubyLLM
                             Models.resolve(config.default_model, config:).last
                           end
       provider_instance.find_cache(name)
+    end
+
+    private
+
+    def inspect_attributes # :nodoc:
+      { name: name, model: model, provider: provider, expires_at: expires_at }
     end
   end
 end
