@@ -41,7 +41,7 @@ RSpec.describe RubyLLM::Rerank, :live do
   end
 
   describe 'reranking' do
-    context "with cohere/#{model_for(:cohere, :rerank)}", if: provider_recorded?(:cohere) do
+    context "with cohere/#{model_for(:cohere, :rerank)}" do
       it 'orders documents by relevance and resolves them from the request' do
         rerank = RubyLLM.rerank(
           'What is the capital of the United States?',

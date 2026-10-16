@@ -195,7 +195,7 @@ RSpec.describe RubyLLM::Chat, :live do
       end
     end
 
-    context "with cohere/#{model_for(:cohere, :vision)}", if: provider_recorded?(:cohere) do
+    context "with cohere/#{model_for(:cohere, :vision)}" do
       let(:chat) { RubyLLM.chat(model: model_for(:cohere, :vision), provider: :cohere).with_citations }
 
       it 'cites text documents in responses' do
