@@ -286,10 +286,10 @@ bundle add ruby_llm --version 2.1.1
 Configure a provider in your script, or in `config/initializers/ruby_llm.rb` in Rails:
 
 ```ruby
-require 'ruby_llm'
+require "ruby_llm"
 
 RubyLLM.configure do |config|
-  config.openai_api_key = ENV.fetch('OPENAI_API_KEY')
+  config.openai_api_key = ENV.fetch("OPENAI_API_KEY")
 end
 ```
 
