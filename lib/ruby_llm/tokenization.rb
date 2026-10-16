@@ -16,10 +16,13 @@ module RubyLLM
     # The provider's unmodified response, including token strings when available.
     attr_reader :raw
 
-    # Tokenizes +text+ and returns a Tokenization. Most code calls
-    # RubyLLM.tokenize. +model:+ defaults to the configured chat model;
-    # +provider:+ selects its provider. +assume_model_exists:+ skips
-    # registry lookup, and +context:+ supplies an isolated configuration.
+    # Tokenizes +text+ and returns a Tokenization. Most code calls this
+    # through RubyLLM.tokenize.
+    #
+    # +model:+ selects the model and defaults to the configured
+    # +default_model+. +provider:+ forces a specific provider, and
+    # +assume_model_exists:+ skips the registry lookup. +context:+ supplies
+    # a Context whose configuration replaces the global one.
     #
     #   result = RubyLLM.tokenize("Hello Ruby", model: "grok-4.3", provider: :xai)
     #   result.ids

@@ -77,10 +77,17 @@ module RubyLLM
     end
 
     # Screens +input+ and optional image attachments and returns a Moderation with the
-    # provider's verdict. Uses the configured default moderation model when
-    # +model+ is not given. Pass +provider:+ and <tt>assume_model_exists: true</tt>
-    # to use a model that is not in the registry. An explicitly selected
-    # provider may instead use a configured resource without a model.
+    # provider's verdict. Most code calls this through RubyLLM.moderate.
+    #
+    # +model:+ selects the moderation model and defaults to the configured
+    # +default_moderation_model+. +provider:+ forces a specific provider, and
+    # +assume_model_exists:+ skips the registry lookup. An explicitly
+    # selected provider may instead use a configured resource without a
+    # model. +context:+ supplies a Context whose configuration replaces the
+    # global one. +with:+ passes one or more images to screen.
+    # +provider_options:+ takes options in the provider's request
+    # vocabulary and merges them into the request as-is. +metadata:+ is
+    # included in the instrumentation payload.
     # +owner:+ attributes the usage to a record, such as a user, and wins
     # over RubyLLM.with_usage_owner.
     #

@@ -74,13 +74,14 @@ module RubyLLM
     #
     #   RubyLLM::CachedContent.create(big_document, model: 'gemini-3.7-flash')
     #
-    # +content+ is the text to cache; pass file attachments with +with:+
-    # the way Chat#ask accepts them. +instructions:+ caches a system
-    # prompt alongside the content, and +ttl:+ sets the cache lifetime in
-    # seconds (Integer) or as a provider duration string such as
-    # <tt>"300s"</tt>. When +provider:+ is omitted, the model's default
-    # provider is used. The content must exceed the model's minimum
-    # cacheable token count.
+    # +content+ is the text to cache. +model:+ selects the model the cache
+    # is created for and is required. +provider:+ forces a specific
+    # provider. +context:+ supplies a Context whose configuration replaces
+    # the global one. +ttl:+ sets the cache lifetime in seconds (Integer) or
+    # as a provider duration string such as <tt>"300s"</tt>.
+    # +instructions:+ caches a system prompt alongside the content, and
+    # +with:+ passes file attachments the way Chat#ask accepts them. The
+    # content must exceed the model's minimum cacheable token count.
     def self.create(content, model:, provider: nil, context: nil, ttl: nil, instructions: nil, with: nil)
       config = context&.config || RubyLLM.config
       model_instance, provider_instance = Models.resolve(model, provider: provider, config: config)

@@ -61,10 +61,16 @@ module RubyLLM
     end
 
     # Ranks +documents+ (an array of strings) by relevance to +query+ and
-    # returns a Rerank. +model:+ is required; rerank catalogs are
-    # provider-specific and have no cross-provider default. +top_n:+
-    # limits how many results come back. +provider_options:+ merges
-    # options into the request in the provider's vocabulary.
+    # returns a Rerank. Most code calls this through RubyLLM.rerank.
+    #
+    # +model:+ selects the rerank model and is required; rerank catalogs are
+    # provider-specific and have no cross-provider default. +provider:+
+    # forces a specific provider, and +assume_model_exists:+ skips the
+    # registry lookup. +context:+ supplies a Context whose configuration
+    # replaces the global one. +top_n:+ limits how many results come back.
+    # +provider_options:+ takes options in the provider's request
+    # vocabulary and merges them into the request as-is. +metadata:+ is
+    # included in the instrumentation payload.
     # +owner:+ attributes the usage to a record, such as a user, and wins
     # over RubyLLM.with_usage_owner.
     #

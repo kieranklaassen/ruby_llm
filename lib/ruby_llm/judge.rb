@@ -133,14 +133,21 @@ module RubyLLM
       end
     end
 
-    # Judges the supplied input and returns a Judgment. Accepts model and
-    # provider overrides, images as +with:+, an isolated +context:+,
-    # +provider_options:+, instrumentation +metadata:+, and a usage +owner:+,
-    # as RubyLLM.with_usage_owner describes. Additional
-    # +questions:+ are a Hash keyed by question name, with +type:+,
-    # +instructions:+, and +criteria:+ (probability), +options:+ (choice), or
-    # +levels:+ (score). The block supplies input only. Input may be omitted
-    # when images are supplied.
+    # Judges the supplied input and returns a Judgment. The block supplies
+    # input only. Input may be omitted when images are supplied.
+    #
+    # +model:+ selects the judgment model and defaults to the judge's
+    # declared model, then to the configured +default_judgment_model+.
+    # +provider:+ forces a specific provider, and +assume_model_exists:+
+    # skips the registry lookup. +context:+ supplies a Context whose
+    # configuration replaces the global one. +questions:+ adds questions
+    # as a Hash keyed by question name, with +type:+, +instructions:+, and
+    # +criteria:+ (probability), +options:+ (choice), or +levels:+ (score).
+    # +with:+ passes one or more images to judge. +provider_options:+ takes
+    # options in the provider's request vocabulary and merges them into the
+    # request as-is. +metadata:+ is included in the instrumentation payload.
+    # +owner:+ attributes the usage to a record, such as a user, and wins
+    # over RubyLLM.with_usage_owner.
     #
     #   RubyLLM.judge("Please help today",
     #     questions: { urgent: { type: :probability, instructions: "Is this urgent?" } })
