@@ -658,13 +658,13 @@ module RubyLLM
     private
 
     def ensure_batches_supported!(protocol = batch_protocol)
-      raise Error, "#{slug} doesn't support batch requests" unless protocol.public_method_defined?(:create_batch)
+      raise Error, "#{name} doesn't support batch requests" unless protocol.public_method_defined?(:create_batch)
     end
 
     def ensure_files_supported!
       return if files?
 
-      raise Error, "#{slug} doesn't support file uploads"
+      raise Error, "#{name} doesn't support file uploads"
     end
 
     def resolve_protocol(name, model, **request)

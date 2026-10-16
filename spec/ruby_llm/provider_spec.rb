@@ -691,7 +691,7 @@ RSpec.describe RubyLLM::Provider do
     let(:provider) { RubyLLM::Providers::Ollama.new(config_for(:ollama)) }
 
     it 'refuses every file operation' do
-      expect { provider.upload_file('file.txt') }.to raise_error(RubyLLM::Error, /doesn't support file uploads/)
+      expect { provider.upload_file('file.txt') }.to raise_error(RubyLLM::Error, "Ollama doesn't support file uploads")
       expect { provider.find_file('id') }.to raise_error(RubyLLM::Error, /doesn't support file uploads/)
       expect { provider.download_file('id') }.to raise_error(RubyLLM::Error, /doesn't support file uploads/)
       expect { provider.list_file_uris('uri') }.to raise_error(RubyLLM::Error, /doesn't support file uploads/)
