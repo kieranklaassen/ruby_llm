@@ -177,7 +177,7 @@ If a process dies, its claims expire and another process picks the chat up. See 
 RubyLLM 2.2 requires Ruby 3.2 or later. Install it:
 
 ```bash
-bundle add ruby_llm --version "~> 2.2.0"
+{% if site.docs_unreleased %}bundle add ruby_llm --git https://github.com/crmne/ruby_llm --branch main{% else %}bundle add ruby_llm --version "~> 2.2.0"{% endif %}
 ```
 
 Start with [Getting Started]({% link _getting_started/getting-started.md %}), or follow [Upgrading]({% link _reference/upgrading.md %}) to update a 2.1 application.
