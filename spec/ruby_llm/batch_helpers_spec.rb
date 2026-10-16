@@ -165,7 +165,7 @@ RSpec.describe RubyLLM::Batch do
         requests = [{ model: 'a' }, { model: 'b' }]
 
         expect { helpers.single_batch_model(requests, 'anthropic') }.to raise_error(
-          RubyLLM::Error, 'anthropic batch requests must use one model per submission'
+          ArgumentError, 'anthropic batches take one model per submission'
         )
       end
     end

@@ -56,7 +56,7 @@ RSpec.describe RubyLLM::Providers::VertexAI::Gemini::Batches do
         { custom_id: '1', model: 'gemini-3-flash-preview', payload: {} }
       ]
 
-      expect { protocol.create_batch(requests) }.to raise_error(RubyLLM::Error, /one model/)
+      expect { protocol.create_batch(requests) }.to raise_error(ArgumentError, /one model/)
     end
 
     it 'requires a GCS bucket prefix' do

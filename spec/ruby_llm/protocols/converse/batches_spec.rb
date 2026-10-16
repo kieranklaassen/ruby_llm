@@ -52,7 +52,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Batches do
         { custom_id: '1', model: 'amazon.nova-2-lite-v1:0', payload: {} }
       ]
 
-      expect { protocol.create_batch(requests) }.to raise_error(RubyLLM::Error, /one model/)
+      expect { protocol.create_batch(requests) }.to raise_error(ArgumentError, /one model/)
     end
 
     it 'requires an S3 bucket prefix' do

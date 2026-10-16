@@ -634,7 +634,7 @@ RSpec.describe RubyLLM::Provider do
                         { payload: { input: [{ role: 'user', content: 'hi' }] } },
                         { payload: { messages: [] } }
                       ])
-      end.to raise_error(RubyLLM::Error, /one endpoint/)
+      end.to raise_error(ArgumentError, 'OpenAI batches take one endpoint per submission')
     end
   end
 

@@ -138,7 +138,7 @@ RSpec.describe RubyLLM::Protocols::VertexAI::EmbeddingPrediction do
     expect do
       protocol.create_batch([request.merge(text: %w[Ruby Rails])])
     end.to raise_error(ArgumentError, /number of texts/)
-    expect { provider.create_batch([request, { model:, payload: {} }]) }.to raise_error(RubyLLM::Error, /not both/)
+    expect { provider.create_batch([request, { model:, payload: {} }]) }.to raise_error(ArgumentError, /not both/)
     expect(provider).not_to have_received(:upload_file)
   end
 

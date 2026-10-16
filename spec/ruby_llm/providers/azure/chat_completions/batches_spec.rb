@@ -33,7 +33,7 @@ RSpec.describe RubyLLM::Providers::Azure::ChatCompletions::Batches do
         { custom_id: '1', model: 'gpt-5-mini', payload: { model: 'gpt-5-mini', messages: [] } }
       ]
 
-      expect { protocol.create_batch(requests) }.to raise_error(RubyLLM::Error, /one model/)
+      expect { protocol.create_batch(requests) }.to raise_error(ArgumentError, /one model/)
     end
   end
 end

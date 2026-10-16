@@ -70,7 +70,7 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Batches do
       ]
 
       expect { protocol.send(:single_batch_model, requests, 'openai') }
-        .to raise_error(RubyLLM::Error, /one model/)
+        .to raise_error(ArgumentError, /one model/)
     end
   end
 

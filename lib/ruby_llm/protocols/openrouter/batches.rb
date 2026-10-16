@@ -15,7 +15,7 @@ module RubyLLM
         def create_batch(requests)
           model = single_batch_model(requests, 'OpenRouter')
           endpoints = requests.map { |request| batch_request_endpoint(request) }.uniq
-          raise ArgumentError, 'OpenRouter batches require one API protocol per submission' unless endpoints.one?
+          raise ArgumentError, 'OpenRouter batches take one API protocol per submission' unless endpoints.one?
 
           endpoint = endpoints.first
           rows = requests.map { |request| render_batch_request(request, endpoint:) }

@@ -69,7 +69,7 @@ module RubyLLM
             end.uniq
             return endpoints.first if endpoints.one?
 
-            raise Error, 'Mistral batches cannot mix chat and embedding requests'
+            raise ArgumentError, 'Mistral batches take chat or embedding requests, not both'
           end
 
           def parse_batch_response(data)

@@ -396,7 +396,7 @@ RSpec.describe RubyLLM::Providers::VertexAI do
       requests = [{ model: 'gemini-2.5-flash' }, { model: 'claude-haiku-4-5' }]
 
       expect { provider.send(:batch_protocol_for, requests) }.to raise_error(
-        RubyLLM::Error, 'vertexai batch requests must use one model per submission'
+        ArgumentError, 'Vertex AI batches take one model per submission'
       )
     end
 

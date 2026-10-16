@@ -457,7 +457,7 @@ module RubyLLM
         models = requests.map { |request| request.fetch(:model) }.uniq
         return models.first if models.one?
 
-        raise Error, "#{provider_name} batch requests must use one model per submission"
+        raise ArgumentError, "#{provider_name} batches take one model per submission"
       end
 
       def batch_payload(request, except: [])

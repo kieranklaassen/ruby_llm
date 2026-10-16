@@ -84,11 +84,11 @@ module RubyLLM
 
       def batch_protocol_for(requests)
         kinds = requests.map { |request| request.key?(:text) }.uniq
-        raise Error, 'Vertex AI batches take chat or embedding requests, not both' unless kinds.size == 1
+        raise ArgumentError, 'Vertex AI batches take chat or embedding requests, not both' unless kinds.size == 1
         return protocols[:embedding_prediction] if kinds.first
 
         models = requests.map { |request| request.fetch(:model) }.uniq
-        raise Error, 'vertexai batch requests must use one model per submission' unless models.one?
+        raise ArgumentError, 'Vertex AI batches take one model per submission' unless models.one?
 
         protocol_name = batch_protocol_name_for(models.first)
         protocol = batch_protocol_for_name(protocol_name)

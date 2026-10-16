@@ -133,7 +133,7 @@ RSpec.describe RubyLLM::Protocols::Gemini::EmbeddingBatches do
   it 'rejects mixed operations and empty embedding inputs before submission' do
     expect do
       protocol.create_batch([batch_request('Ruby'), { model: model.id, payload: { contents: [] } }])
-    end.to raise_error(RubyLLM::Error, /chat or embedding requests/)
+    end.to raise_error(ArgumentError, /chat or embedding requests/)
     expect { protocol.create_batch([batch_request([])]) }.to raise_error(ArgumentError, /at least one text/)
   end
 

@@ -319,6 +319,28 @@ chat.with_thinking.thinking        # => {}
 
 The reader still returns `nil` when thinking was never configured, and the `effort`, `budget`, and `display` it resolved otherwise. Requests are unchanged.
 
+## Rescue `ArgumentError` for a Mixed Batch
+
+A batch that mixes models, endpoints, or chats and embedding requests where the provider takes one kind now raises `ArgumentError` on every provider, like a batch that mixes providers. In 2.1, OpenAI, Gemini, Mistral, Vertex AI, and the model check shared by most providers raised `RubyLLM::Error`. The messages share one wording too:
+
+```ruby
+# 2.1
+begin
+  RubyLLM.batch(chats)
+rescue RubyLLM::Error => e
+  e.message # => "openai batch requests must use one model per submission"
+end
+
+# 2.2
+begin
+  RubyLLM.batch(chats)
+rescue ArgumentError => e
+  e.message # => "OpenAI batches take one model per submission"
+end
+```
+
+`RubyLLM::Error` stays the class for what the provider reports, including a provider that has no batch API.
+
 ## Deploy Without Mixing Versions
 
 Workers on 2.1 do not claim chats, so they can still overlap with workers on 2.2 while a deploy rolls out. Run the schema upgrade first, then let the new version replace every worker before you rely on claims. Chats that run once all workers are on 2.2 are covered.
