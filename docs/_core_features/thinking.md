@@ -69,7 +69,7 @@ Pass `false` to disable thinking:
 chat.with_thinking(false)
 ```
 
-Disabling is model-specific too. RubyLLM sends the registered off control and raises an `ArgumentError` when the model does not expose one. Passing `nil` is invalid.
+Disabling is model-specific too. RubyLLM sends the registered off control and raises an `ArgumentError` when the model does not expose one. Passing `nil` is invalid. `chat.thinking` returns `false` after `with_thinking(false)`, the resolved options when thinking is on, and `nil` when you never configured it.
 
 ### Effort and Budget
 

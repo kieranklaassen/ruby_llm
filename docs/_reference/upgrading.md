@@ -287,6 +287,22 @@ page.to_h.values
 
 `OCR::Page.new` requires `index:` and `markdown:`, and `Rerank::Result.new` requires all three of its values. Both print one short line in the console, and so does `SearchResults`.
 
+## A Chat With Thinking Disabled Reads `false`
+
+`Chat#thinking` returns `false` after `with_thinking(false)`, the way `caching`, `compaction`, and `code_execution` do. It returned the control RubyLLM sends to the model. The `enabled:` key is gone from the options it returns for a model that only switches thinking on:
+
+```ruby
+# 2.1
+chat.with_thinking(false).thinking # => { enabled: false }
+chat.with_thinking.thinking        # => { enabled: true }
+
+# 2.2
+chat.with_thinking(false).thinking # => false
+chat.with_thinking.thinking        # => {}
+```
+
+The reader still returns `nil` when thinking was never configured, and the `effort`, `budget`, and `display` it resolved otherwise. Requests are unchanged.
+
 ## Deploy Without Mixing Versions
 
 Workers on 2.1 do not claim chats, so they can still overlap with workers on 2.2 while a deploy rolls out. Run the schema upgrade first, then let the new version replace every worker before you rely on claims. Chats that run once all workers are on 2.2 are covered.

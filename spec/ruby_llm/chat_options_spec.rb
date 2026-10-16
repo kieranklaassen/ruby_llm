@@ -242,6 +242,12 @@ RSpec.describe RubyLLM::Chat do
 
       expect(chat.thinking).to eq(effort: :high, budget: 2_000)
     end
+
+    it 'returns false when disabled, like the other feature switches' do
+      chat.with_model(model_for(:anthropic)).with_thinking(false).with_caching(false).with_compaction(false)
+
+      expect([chat.thinking, chat.caching, chat.compaction]).to eq([false, false, false])
+    end
   end
 
   describe 'callbacks without a block' do

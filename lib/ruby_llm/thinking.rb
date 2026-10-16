@@ -136,6 +136,10 @@ module RubyLLM
         enabled == false || effort == :none
       end
 
+      def disable?
+        @intent == :disable
+      end
+
       def resolve(model)
         return self if @intent.nil?
 

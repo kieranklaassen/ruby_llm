@@ -722,18 +722,15 @@ module RubyLLM
       self
     end
 
-    # Returns the thinking options resolved for the current model, or +nil+
-    # when thinking was not configured or needs no provider control.
+    # Returns the thinking options resolved for the current model, +false+
+    # when explicitly disabled, or +nil+ when thinking was not configured or
+    # needs no provider control.
     def thinking
       config = resolved_thinking
       return unless config
+      return false if @thinking.disable?
 
-      {
-        effort: config.effort,
-        budget: config.budget,
-        display: config.display,
-        enabled: config.enabled
-      }.compact
+      { effort: config.effort, budget: config.budget, display: config.display }.compact
     end
 
     # Enables document citations, so the model backs its claims with quotes
