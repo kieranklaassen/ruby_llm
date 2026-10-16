@@ -102,7 +102,7 @@ end
 linear = Linear.new(user: current_user)
 ```
 
-Blocks run on the instance whenever RubyLLM sends a request, so a token that refreshes is always current.
+Blocks run on the instance whenever RubyLLM sends a request, so a token that refreshes is always current. Set several headers at once with `headers "X-Workspace" => :workspace_id, "X-Team" => "core"`.
 
 ### Inline Servers
 

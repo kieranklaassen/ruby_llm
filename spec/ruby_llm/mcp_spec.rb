@@ -1066,6 +1066,15 @@ RSpec.describe RubyLLM::MCP do
     end
   end
 
+  it 'adds several headers at once, as env adds several variables' do
+    mcp_class = Class.new(described_class) do
+      header 'X-Team', 'core'
+      headers 'X-Extra' => 'yes', 'X-Account' => :account_id
+    end
+
+    expect(mcp_class.headers).to eq('X-Team' => 'core', 'X-Extra' => 'yes', 'X-Account' => :account_id)
+  end
+
   it 'passes its settings to subclasses' do
     parent = Class.new(described_class) do
       url 'https://mcp.example.com/mcp'

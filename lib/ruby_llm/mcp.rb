@@ -146,8 +146,16 @@ module RubyLLM
         @headers = headers.merge(name.to_s => block || value)
       end
 
-      def headers # :nodoc:
-        @headers || {}
+      # Adds HTTP headers sent with every request to the server, as ::header
+      # does for one, and ::env does for environment variables. Values may
+      # be blocks or method names. Called with no arguments, returns them.
+      #
+      #   headers "X-MCP-Toolsets" => "issues", "X-Account" => :account_id
+      #
+      def headers(**headers)
+        return @headers || {} if headers.empty?
+
+        @headers = self.headers.merge(headers.transform_keys(&:to_s))
       end
 
       # Sets the bearer token sent in the +Authorization+ header. Pass the
