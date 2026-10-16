@@ -80,7 +80,7 @@ module RubyLLM
     end
 
     # Creates a provider-side prompt cache from +content+ and returns a
-    # CachedContent. Also available as RubyLLM.cache.
+    # CachedContent. Most code calls this through RubyLLM.cache.
     #
     #   RubyLLM::CachedContent.create(big_document, model: 'gemini-3.7-flash')
     #

@@ -50,9 +50,10 @@ module RubyLLM
 
     class << self
       # Submits chats or embedding requests to their shared provider as a
-      # batch and returns a new Batch. Accepts a single Chat or an array.
-      # Every chat must be awaiting the model (see Chat#ask_later), and all
-      # requests must use the same provider.
+      # batch and returns a new Batch. Most code calls this through
+      # RubyLLM.batch. Accepts a single Chat or an array. Every chat must
+      # be awaiting the model (see Chat#ask_later), and all requests must
+      # use the same provider.
       #
       #   chats = tickets.map do |ticket|
       #     RubyLLM.chat(model: "claude-haiku-4-5").ask_later(ticket.body)

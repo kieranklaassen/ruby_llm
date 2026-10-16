@@ -2,9 +2,9 @@
 
 module RubyLLM
   # An EmbeddingRequest is an embedding awaiting a provider-side batch.
-  # RubyLLM.embed_later stages one; submit an array of them with
-  # RubyLLM.batch, and once the batch completes, collecting the results
-  # fills in #result:
+  # RubyLLM.embed_later stages one and documents its arguments; submit an
+  # array of them with RubyLLM.batch, and once the batch completes,
+  # collecting the results fills in #result:
   #
   #   requests = texts.map { |text| RubyLLM.embed_later(text) }
   #   batch = RubyLLM.batch(requests)
