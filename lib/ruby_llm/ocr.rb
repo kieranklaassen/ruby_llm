@@ -102,6 +102,17 @@ module RubyLLM
       @raw = raw
     end
 
+    attr_writer :model_info # :nodoc:
+
+    # Returns the OCR result's Model from its provider's registry, falling
+    # back to the requested model when the response ID is unknown.
+    # Returns +nil+ if the model is unknown.
+    def model_info
+      @model_info ||= RubyLLM.models.find(model)
+    rescue ModelNotFoundError
+      nil
+    end
+
     # Returns the pages of the document as an array of Page.
     def pages
       @pages ||= @page_hashes.map.with_index do |page, position|

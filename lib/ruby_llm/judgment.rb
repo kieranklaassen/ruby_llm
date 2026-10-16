@@ -60,6 +60,17 @@ module RubyLLM
       Cost.new(tokens:, model: @model_info)
     end
 
+    attr_writer :model_info # :nodoc:
+
+    # Returns the judgment's Model from its provider's registry, falling
+    # back to the requested model when the response ID is unknown.
+    # Returns +nil+ if the model is unknown.
+    def model_info
+      @model_info ||= RubyLLM.models.find(model)
+    rescue ModelNotFoundError
+      nil
+    end
+
     # Returns the model, typed answers, token usage, and cost as a Hash.
     def to_h
       { model:, answers: answers.transform_values(&:to_h), tokens: tokens.to_h, cost: cost.to_h }

@@ -50,6 +50,15 @@ module RubyLLM
       @raw = raw
     end
 
+    # Returns the tokenization's Model from its provider's registry, falling
+    # back to the requested model when the response ID is unknown.
+    # Returns +nil+ if the model is unknown.
+    def model_info
+      @model_info ||= RubyLLM.models.find(model)
+    rescue ModelNotFoundError
+      nil
+    end
+
     # Returns the number of tokens in the text.
     def count
       ids.length

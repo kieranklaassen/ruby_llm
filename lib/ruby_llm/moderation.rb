@@ -154,6 +154,19 @@ module RubyLLM
       ruby_llm_usage_cost
     end
 
+    attr_writer :model_info # :nodoc:
+
+    # Returns the moderation's Model from its provider's registry, falling
+    # back to the requested model when the response ID is unknown.
+    # Returns +nil+ if the model is unknown.
+    def model_info
+      return unless model
+
+      @model_info ||= RubyLLM.models.find(model)
+    rescue ModelNotFoundError
+      nil
+    end
+
     # Returns the unique names of the categories flagged across all results.
     #
     #   result.flagged_categories  # => ["harassment", "violence"]

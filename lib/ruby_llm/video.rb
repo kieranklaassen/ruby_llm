@@ -107,6 +107,17 @@ module RubyLLM
       @raw = raw
     end
 
+    # Returns the video's Model from its provider's registry, falling
+    # back to the requested model when the response ID is unknown.
+    # Returns +nil+ if the model is unknown.
+    def model_info
+      return unless model
+
+      @model_info ||= RubyLLM.models.find(model)
+    rescue ModelNotFoundError
+      nil
+    end
+
     # Returns the raw binary video bytes, downloading from #url when the
     # provider returned a hosted video.
     #
