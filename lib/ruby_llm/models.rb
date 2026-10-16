@@ -600,15 +600,17 @@ module RubyLLM
 
     # Returns the Model matching +model_id+, resolving aliases along the
     # way. Without +provider+, picks the preferred provider that carries
-    # the model, first-party providers before aggregators. Raises
+    # the model, first-party providers before aggregators. +context:+
+    # supplies a Context whose configuration resolves the provider's
+    # model ids in place of the global one. Raises
     # RubyLLM::ModelNotFoundError if no model matches.
     #
     #   RubyLLM.models.find 'gpt-6.1-sol'
     #   RubyLLM.models.find 'claude-sonnet-5', provider: :bedrock
     #
-    def find(model_id, provider: nil, config: nil)
+    def find(model_id, provider: nil, context: nil, config: nil)
       if provider
-        find_with_provider(model_id, provider, config)
+        find_with_provider(model_id, provider, context&.config || config)
       else
         find_without_provider(model_id)
       end

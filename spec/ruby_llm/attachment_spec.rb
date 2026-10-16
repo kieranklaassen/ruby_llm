@@ -355,6 +355,12 @@ RSpec.describe RubyLLM::Attachment do
                                          mime_type: 'image/png')
     end
 
+    it 'takes a context for its configuration, like every operation' do
+      context = RubyLLM.context { |config| config.request_timeout = 5 }
+
+      expect(described_class.new(StringIO.new('notes'), filename: 'notes.txt', context:).config).to be(context.config)
+    end
+
     it 'passes the configuration to rebuilt attachments' do
       config = RubyLLM.config.dup
 

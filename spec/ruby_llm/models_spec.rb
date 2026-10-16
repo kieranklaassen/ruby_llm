@@ -118,6 +118,14 @@ RSpec.describe RubyLLM::Models do
       end
     end
 
+    it 'resolves provider model ids with the configuration of a context' do
+      context = RubyLLM.context do |config|
+        config.azure_deployments = { 'prod-chat' => 'grok-4-1-fast-non-reasoning' }
+      end
+
+      expect(RubyLLM.models.find('prod-chat', provider: :azure, context:).provider).to eq('azure')
+    end
+
     it 'raises ModelNotFoundError for unknown models' do
       expect do
         RubyLLM.models.find('nonexistent-model-12345')

@@ -170,7 +170,7 @@ page = RubyLLM::Attachment.new("page-3.png", resolution: :original)
 chat.ask "Where is the revenue figure?", with: page
 ```
 
-The values are `:low`, `:medium`, `:high`, `:ultra_high`, and `:original`. Each attachment keeps its own setting, so one message can mix a high-detail page with low-detail thumbnails. Leave it unset to use the provider's default. Persisted chats keep the setting, so later turns and background jobs send the same detail.
+The values are `:low`, `:medium`, `:high`, `:ultra_high`, and `:original`. Each attachment keeps its own setting, so one message can mix a high-detail page with low-detail thumbnails. Leave it unset to use the provider's default. Persisted chats keep the setting, so later turns and background jobs send the same detail. When you build an attachment for a chat from a [configuration context]({% link _getting_started/configuration-connection.md %}), pass `context:` so a URL source downloads with that configuration.
 
 Gemini applies the setting to images, videos, and PDFs, sending `:high` for videos and PDFs when you ask for `:ultra_high`. OpenAI, Azure, OpenRouter, and xAI apply it to images, sending `:low` as low detail and `:medium`, `:high`, and `:ultra_high` as high detail. Other providers ignore it, since it is a quality hint rather than a requirement.
 

@@ -259,7 +259,7 @@ model_anthropic = RubyLLM.models.find('{{ site.models.anthropic_current }}', pro
 model_bedrock = RubyLLM.models.find('{{ site.models.anthropic_current }}', provider: :bedrock)
 ```
 
-When you pass a provider, RubyLLM resolves aliases first. For Bedrock, it then applies region/inference-profile resolution (for example `us.` prefixes) before falling back to an exact ID match. See [Model Resolution]({% link _reference/model-resolution.md %}) for the exact order, step by step.
+When you pass a provider, RubyLLM resolves aliases first. For Bedrock, it then applies region/inference-profile resolution (for example `us.` prefixes) before falling back to an exact ID match. See [Model Resolution]({% link _reference/model-resolution.md %}) for the exact order, step by step. Pass `context:` to resolve with the configuration of a context, such as its Azure deployments.
 
 ## Next Steps
 
