@@ -46,7 +46,7 @@ RubyLLM falls back to its bundled snapshot until the configured file exists. The
 
 ## Connection Settings
 
-### Timeouts & Retries
+### Timeouts and Retries
 
 Fine-tune how RubyLLM handles network connections:
 
@@ -117,7 +117,7 @@ The default `:net_http` adapter opens a new connection for every request. `:net_
 
 Contexts share connections when their connection settings match. Credentials travel with each request, so tenants with their own API keys reuse the same connections. A context that changes an API base, `request_timeout`, a retry setting, `http_proxy`, or `faraday_adapter` gets connections of its own. Each forked process, such as a Puma worker, opens its own connections instead of sharing its parent's.
 
-## Logging & Debugging
+## Logging and Debugging
 
 ### Basic Logging
 

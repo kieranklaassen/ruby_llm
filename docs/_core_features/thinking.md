@@ -21,7 +21,7 @@ After reading this guide, you will know:
 * How to access thinking output in responses and streams.
 * How to persist thinking data with Active Record.
 
-## What is Extended Thinking?
+## What Is Extended Thinking?
 
 Extended Thinking gives supported models more time and a larger computation budget to deliberate before answering. It can improve results on multi-step tasks like coding, math, and logic, at the expense of latency and cost. Some providers can also return a thinking trace or signature alongside the final answer.
 

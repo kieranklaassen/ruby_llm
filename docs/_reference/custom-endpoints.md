@@ -21,7 +21,7 @@ After reading this guide, you will know:
 
 Sometimes you need to interact with models or endpoints not covered by the standard registry, such as:
 
-* API Proxies & Gateways (LiteLLM, Fastly AI Accelerator).
+* API proxies and gateways (LiteLLM, Fastly AI Accelerator).
 * Self-hosted or local models (LM Studio, vLLM).
 * Brand-new model releases.
 * Custom fine-tunes or deployments with unique names.
@@ -30,7 +30,7 @@ Azure has a first-class provider: configure `azure_api_base` and use `provider: 
 
 RubyLLM offers two mechanisms for these cases.
 
-### Custom OpenAI API Base URL (`openai_api_base`)
+## Custom OpenAI API Base URL (`openai_api_base`)
 
 If you need to target an endpoint that uses the **OpenAI API format** but has a different URL, configure `openai_api_base` in `RubyLLM.configure`.
 
@@ -46,7 +46,7 @@ end
 * It directs those requests to your specified URL instead of `https://api.openai.com/v1`.
 * See [Provider Setup and Custom Endpoints]({% link _getting_started/configuration-providers.md %}) for the full `api_base` setup details.
 
-### Assuming Model Existence (`assume_model_exists`)
+## Assuming Model Existence (`assume_model_exists`)
 
 To use a model identifier not listed in RubyLLM's registry, use the `assume_model_exists: true` flag. This tells RubyLLM to bypass its validation check.
 
@@ -86,7 +86,7 @@ image = RubyLLM.paint(
 )
 ```
 
-**Key Points when Assuming Existence:**
+### Key Points When Assuming Existence
 
 * **`provider:` is Mandatory:** You must tell RubyLLM which API format to use (`ArgumentError` otherwise).
 * **No Validation:** RubyLLM does not check the registry for the model ID.

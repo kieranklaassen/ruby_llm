@@ -226,7 +226,7 @@ RubyLLM.configure do |config|
 end
 ```
 
-## OpenAI Organization & Project Headers
+## OpenAI Organization and Project Headers
 
 For OpenAI users with multiple organizations or projects:
 

@@ -331,7 +331,7 @@ end
 
 The callback runs in the thread or fiber that reports, before the tool's result. That includes threads and fibers the tool starts itself, such as a batch of downloads. With concurrent tool execution, callbacks for different tool calls can run at the same time, so keep shared state thread-safe. Tools can report as often as they like; throttle in the callback if you forward reports to a UI. Outside a chat, `progress` does nothing.
 
-### Limiting Tool Calls
+## Limiting Tool Calls
 
 To cap a runaway loop, give the loop a step budget instead of raising inside a callback:
 

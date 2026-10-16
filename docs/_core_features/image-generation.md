@@ -82,7 +82,7 @@ image = RubyLLM.paint(
 
 `with:` accepts the same kinds of sources RubyLLM already supports elsewhere for attachments: local files, URLs, IO-like objects, and Active Storage attachments.
 
-### Editing With Multiple Images
+### Editing with Multiple Images
 
 ```ruby
 image = RubyLLM.paint(
@@ -92,7 +92,7 @@ image = RubyLLM.paint(
 )
 ```
 
-### Editing With a Mask
+### Editing with a Mask
 
 ```ruby
 image = RubyLLM.paint(

@@ -21,7 +21,7 @@ After reading this guide, you will know:
 * Which citation fields your application can use.
 * How to persist citations with Active Record.
 
-## What are Citations?
+## What Are Citations?
 
 Citations link spans of a model's answer back to the source material that supports them: a document you attached, or a web page found through search or grounding. They let readers inspect the source behind a claim. A citation points to evidence; your application or reader still needs to assess whether it supports the answer.
 

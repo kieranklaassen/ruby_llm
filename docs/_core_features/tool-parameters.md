@@ -67,7 +67,7 @@ class Distance < RubyLLM::Tool
 end
 ```
 
-### parameters DSL
+### The `parameters` DSL
 
 When you need nested objects, arrays, enums, or union types, the `parameters do ... end` DSL produces the JSON Schema that function-calling models expect while staying Ruby-flavoured.
 

@@ -146,7 +146,7 @@ Persisted chats take the same calls, and `BillingAgent.find(id)` applies the age
 chat = Chat.create!(model: "{{ site.models.default_chat }}").with_skills(:invoices)
 ```
 
-## Skills From Engines
+## Skills from Engines
 
 RubyLLM looks for skills in `app/skills` under `Rails.root`, or under the current directory outside Rails. An engine adds its own folder in an initializer:
 

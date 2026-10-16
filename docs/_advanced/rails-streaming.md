@@ -149,7 +149,7 @@ end
 
 Action Cable processes messages concurrently, which can cause out-of-order delivery:
 
-#### Solution 1: Numbered Chunks and Page Refreshes
+### Solution 1: Numbered Chunks and Page Refreshes
 
 This is what `acts_as_message` and the [generated chat UI]({% link _advanced/rails-generators.md %}#adding-a-chat-ui) do. Each chunk is sent once, as a span numbered with `chunk.index` that also names the chunk before it:
 
@@ -163,7 +163,7 @@ Every other change, such as a new message or an approval card, broadcasts a page
 
 Morphing needs `<%= yield :head %>` in your layout. The chat UI generator adds it when your layout lacks it.
 
-#### Solution 2: Client-Side Reordering
+### Solution 2: Client-Side Reordering
 
 Use Stimulus to maintain chronological order:
 
@@ -246,11 +246,11 @@ Update your views to use the controller:
 
 Wrap the other role partials the same way.
 
-#### Solution 3: Server-Side Ordering
+### Solution 3: Server-Side Ordering
 
 [AnyCable](https://anycable.io) provides order guarantees at the server level through "sticky concurrency", which ensures messages from the same stream are processed by the same worker. This eliminates the need for client-side reordering code.
 
-#### Why This Happens
+### Why This Happens
 
 Action Cable uses concurrent processing by design for performance.
 
