@@ -144,5 +144,5 @@ See [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) for the 
 ## Next Steps
 
 * [Embeddings]({% link _core_features/embeddings.md %}) - generate the vectors that produce your candidates.
-* [RAG]({% link _advanced/rag.md %}) - build retrieval-augmented generation on top of this pipeline.
+* [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) - build retrieval-augmented generation on top of this pipeline.
 * [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) - track what retrieval costs across every call.
