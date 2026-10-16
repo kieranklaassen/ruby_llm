@@ -23,12 +23,12 @@
 
 ## Quality check
 
-- [ ] I ran `overcommit --install` and all hooks pass
+- [ ] I ran `overcommit --run` and all hooks pass
 - [ ] I tested my changes thoroughly
   - [ ] For provider changes: Re-recorded VCR cassettes with `bundle exec rake vcr:record[provider_name]`
-  - [ ] All tests pass: `bundle exec rspec`
+  - [ ] All tests pass: `bundle exec rake test`
 - [ ] I updated documentation if needed
-- [ ] I didn't modify auto-generated files manually (`models.json`, `aliases.json`)
+- [ ] I didn't modify auto-generated files manually (`models.json`, `aliases.json`, `docs/_reference/available-models.md`)
 
 ## Ownership
 
@@ -36,7 +36,6 @@
 
 ## API changes
 
-- [ ] Breaking change
 - [ ] New public methods/classes
 - [ ] Changed method signatures
 - [ ] No API changes
