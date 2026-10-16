@@ -59,7 +59,7 @@ module RubyLLM
         validate_criterion(name, minimum)
         name = name.to_sym
         @declared_names ||= []
-        raise ArgumentError, "Duplicate evaluation: #{name}" if @declared_names.include?(name)
+        raise ArgumentError, "Two evaluations are named #{name}" if @declared_names.include?(name)
 
         @declared_names << name
         backend = Evaluator.new(evaluator) if evaluator
@@ -172,7 +172,7 @@ module RubyLLM
 
       def prepare_criterion(backend, criterion, cases)
         existing = backend.question_names.include?(criterion[:name])
-        raise ArgumentError, "Duplicate Judge question: #{criterion[:name]}" if existing && criterion[:instructions]
+        raise ArgumentError, "Two Judge questions are named #{criterion[:name]}" if existing && criterion[:instructions]
         return criterion if existing || !criterion[:instructions].to_s.empty?
 
         if criterion[:name] == :correctness && criterion[:instructions].nil?

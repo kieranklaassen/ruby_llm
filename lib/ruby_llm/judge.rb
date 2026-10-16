@@ -111,7 +111,7 @@ module RubyLLM
       def declare_question(name, type, instructions, criteria, &)
         question = Question.new(name, type:, instructions:, criteria:, &)
         @declared_names ||= []
-        raise ArgumentError, "Duplicate question: #{name}" if @declared_names.include?(name.to_s)
+        raise ArgumentError, "Two questions are named #{name}" if @declared_names.include?(name.to_s)
 
         @declared_names << name.to_s
         question_definitions[name.to_s] = question
@@ -177,7 +177,7 @@ module RubyLLM
 
       definitions = self.class.question_definitions.dup
       questions.each do |name, definition|
-        raise ArgumentError, "Duplicate question: #{name}" if definitions.key?(name.to_s)
+        raise ArgumentError, "Two questions are named #{name}" if definitions.key?(name.to_s)
 
         definitions[name.to_s] = Question.from_h(name, definition)
       end

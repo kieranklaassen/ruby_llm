@@ -170,7 +170,7 @@ RSpec.describe RubyLLM::Evaluation::Evaluator do
     it 'rejects conflicting question declarations before making a request' do
       evaluation.evaluator(judge)
 
-      expect { evaluation.run(dataset: cases) }.to raise_error(ArgumentError, /Duplicate Judge question/)
+      expect { evaluation.run(dataset: cases) }.to raise_error(ArgumentError, /Two Judge questions are named/)
       expect(requests).to be_empty
     end
 

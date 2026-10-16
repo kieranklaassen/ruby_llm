@@ -14,7 +14,9 @@ module RubyLLM
           row.is_a?(Case) ? row : Case.new(**row.transform_keys(&:to_sym))
         end
         raise ArgumentError, 'A dataset cannot be empty' if cases.empty?
-        raise ArgumentError, 'Dataset case names must be unique' unless cases.map(&:name).uniq.size == cases.size
+
+        repeated, count = cases.map(&:name).tally.max_by(&:last)
+        raise ArgumentError, "Two cases are named #{repeated}" if count > 1
 
         cases
       end

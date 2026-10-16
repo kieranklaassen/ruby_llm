@@ -113,13 +113,13 @@ RSpec.describe RubyLLM::Evaluation do
     expect(evaluation.definitions.keys).to eq([:correct])
     expect(evaluation.definitions[:correct][:instructions]).to eq('Correct answer')
     expect(evaluation.adapters).to be_empty
-    expect { child.evaluation(:short, 'Duplicate') }.to raise_error(ArgumentError, /Duplicate/)
+    expect { child.evaluation(:short, 'Duplicate') }.to raise_error(ArgumentError, 'Two evaluations are named short')
   end
 
   it 'rejects invalid runs and incomplete definitions before executing' do
     expect { evaluation.run(dataset: [], repetitions: 0) }.to raise_error(ArgumentError, /Repetitions/)
     expect { evaluation.run(dataset: []) }.to raise_error(ArgumentError, /empty/)
-    expect { evaluation.run(dataset: cases * 2) }.to raise_error(ArgumentError, /unique/)
+    expect { evaluation.run(dataset: cases * 2) }.to raise_error(ArgumentError, /\ATwo cases are named /)
     evaluation.evaluation(:correct)
     evaluation.evaluator(model: model_for(:openai))
     expect { evaluation.run(dataset: cases) }.to raise_error(ArgumentError, /Missing instructions/)

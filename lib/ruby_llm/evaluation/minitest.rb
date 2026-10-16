@@ -13,7 +13,7 @@ module RubyLLM
       def evaluates(evaluation, dataset: nil, only: nil, **options)
         evaluation.cases(dataset:, only:).each do |test_case|
           name = "test_#{evaluation.name}: #{test_case.name}"
-          raise ArgumentError, "Duplicate evaluation test: #{name}" if method_defined?(name)
+          raise ArgumentError, "Two evaluation tests are named #{name}" if method_defined?(name)
 
           define_method(name) do
             report = evaluation.run(dataset: [test_case], **options)
