@@ -200,7 +200,7 @@ module RubyLLM
         end
       end
 
-      def ensure_configured!
+      def ensure_configured
         return if configured?
 
         missing = []

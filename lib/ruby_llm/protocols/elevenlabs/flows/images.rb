@@ -43,7 +43,7 @@ module RubyLLM
             end
           end
 
-          def validate_paint_inputs!(with:, mask:)
+          def validate_paint_inputs(with:, mask:)
             images = Attachment.wrap(with, config: @config)
             raise ArgumentError, 'An image mask requires a source image' if mask && images.empty?
 

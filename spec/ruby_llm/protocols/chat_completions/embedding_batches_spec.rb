@@ -55,9 +55,9 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::EmbeddingBatches do
     end
   end
 
-  describe '#validate_batch_requests!' do
+  describe '#validate_batch_requests' do
     it 'rejects unsupported payload shapes' do
-      expect { protocol.send(:validate_batch_requests!, [{ payload: { messages: [] } }]) }
+      expect { protocol.send(:validate_batch_requests, [{ payload: { messages: [] } }]) }
         .to raise_error(RubyLLM::Error, /embedding payloads/)
     end
   end

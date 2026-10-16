@@ -69,7 +69,7 @@ module RubyLLM
                    context: nil, with: nil, provider_options: {}, metadata: nil, owner: nil)
       config = context&.config || RubyLLM.config
       attachments = Attachment.wrap(with, config:)
-      validate_input!(input, attachments)
+      validate_input(input, attachments)
       raise ArgumentError, 'A judgment requires a model' unless model || config.default_judgment_model
 
       model, provider_instance = Models.resolve(model, provider:, assume_model_exists:, config:, operation: :judge,
@@ -99,12 +99,12 @@ module RubyLLM
       end
     end
 
-    def self.validate_input!(input, attachments)
+    def self.validate_input(input, attachments)
       return if input.is_a?(String) || input.is_a?(Hash) || input.is_a?(Array) || (input.nil? && attachments.any?)
 
       raise ArgumentError, 'Judgment input must be text, a Hash, or an Array'
     end
-    private_class_method :validate_input!
+    private_class_method :validate_input
 
     private
 

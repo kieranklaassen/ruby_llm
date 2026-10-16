@@ -55,21 +55,21 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Batches do
     end
   end
 
-  describe '#validate_batch_requests!' do
+  describe '#validate_batch_requests' do
     it 'rejects unsupported payload shapes' do
-      expect { protocol.send(:validate_batch_requests!, [{ payload: { input: 'hi' } }]) }
+      expect { protocol.send(:validate_batch_requests, [{ payload: { input: 'hi' } }]) }
         .to raise_error(RubyLLM::Error, /chat completion payloads/)
     end
   end
 
-  describe '#single_batch_model!' do
+  describe '#single_batch_model' do
     it 'rejects mixed-model batches' do
       requests = [
         { custom_id: '0', model: 'gpt-5-nano', payload: { input: 'hi' } },
         { custom_id: '1', model: 'gpt-4o', payload: { input: 'hi' } }
       ]
 
-      expect { protocol.send(:single_batch_model!, requests, 'openai') }
+      expect { protocol.send(:single_batch_model, requests, 'openai') }
         .to raise_error(RubyLLM::Error, /one model/)
     end
   end

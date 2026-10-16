@@ -73,15 +73,15 @@ RSpec.describe RubyLLM::Providers::VertexAI::ChatCompletions::Batches do
     end
   end
 
-  describe '#validate_batch_requests!' do
+  describe '#validate_batch_requests' do
     it 'accepts chat completion payloads' do
       requests = [{ payload: { messages: [] } }, { payload: { 'messages' => [] } }]
 
-      expect { protocol.send(:validate_batch_requests!, requests) }.not_to raise_error
+      expect { protocol.send(:validate_batch_requests, requests) }.not_to raise_error
     end
 
     it 'refuses anything else' do
-      expect { protocol.send(:validate_batch_requests!, [{ payload: { input: 'hi' } }]) }.to raise_error(
+      expect { protocol.send(:validate_batch_requests, [{ payload: { input: 'hi' } }]) }.to raise_error(
         RubyLLM::Error, 'vertexai MaaS batch requests require chat completion payloads'
       )
     end

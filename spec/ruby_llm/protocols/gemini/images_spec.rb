@@ -221,12 +221,12 @@ RSpec.describe RubyLLM::Protocols::Gemini::Images do
     end
   end
 
-  describe '#validate_paint_inputs!' do
+  describe '#validate_paint_inputs' do
     it 'rejects masks for Gemini image models' do
       protocol.instance_variable_set(:@model, 'gemini-2.5-flash-image')
 
       expect do
-        protocol.send(:validate_paint_inputs!, with: image_path, mask: image_path)
+        protocol.send(:validate_paint_inputs, with: image_path, mask: image_path)
       end.to raise_error(RubyLLM::UnsupportedAttachmentError, /Unsupported attachment type: image mask/)
     end
   end

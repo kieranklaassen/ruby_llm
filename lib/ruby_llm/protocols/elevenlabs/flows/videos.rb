@@ -73,7 +73,7 @@ module RubyLLM
                       model: job.model, raw: job.raw)
           end
 
-          def validate_animate_inputs!(with:)
+          def validate_animate_inputs(with:)
             with.each do |attachment|
               unless attachment.image? || attachment.audio? || attachment.video?
                 raise UnsupportedAttachmentError, attachment.mime_type

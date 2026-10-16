@@ -55,14 +55,14 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Images do
     end
   end
 
-  describe '#validate_paint_inputs!' do
+  describe '#validate_paint_inputs' do
     it 'allows reference images' do
-      expect { protocol.send(:validate_paint_inputs!, with: image_fixture, mask: nil) }.not_to raise_error
+      expect { protocol.send(:validate_paint_inputs, with: image_fixture, mask: nil) }.not_to raise_error
     end
 
     it 'rejects masks' do
       expect do
-        protocol.send(:validate_paint_inputs!, with: image_fixture, mask: image_fixture)
+        protocol.send(:validate_paint_inputs, with: image_fixture, mask: image_fixture)
       end.to raise_error(RubyLLM::UnsupportedAttachmentError, /image mask/)
     end
   end

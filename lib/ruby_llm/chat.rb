@@ -204,7 +204,7 @@ module RubyLLM
     # tool calls: finish the round first, recording #approve or #deny
     # decisions for calls that require approval.
     def ask_later(message = nil, with: nil)
-      raise_if_pending_tool_calls!
+      raise_if_pending_tool_calls
       if message.is_a?(MCP::Prompt)
         message.messages.each { |prompt_message| add_message(prompt_message) }
       else
@@ -219,7 +219,7 @@ module RubyLLM
     # Chunk objects. Tool calls in the response are not executed; that is
     # #run_tools.
     def generate(&)
-      raise_if_cancelled!
+      raise_if_cancelled
 
       return generate_once(&) if fallbacks.empty?
 
@@ -237,7 +237,7 @@ module RubyLLM
     # is then ready for the next #generate, or the next batch round.
     # Returns +self+.
     def run_tools
-      raise_if_cancelled!
+      raise_if_cancelled
 
       message = pending_tool_response
       execute_pending_tool_calls(message) if message
@@ -254,7 +254,7 @@ module RubyLLM
     def step(&)
       return if complete?
 
-      raise_if_cancelled!
+      raise_if_cancelled
       return generate(&) unless pending_tool_response
 
       before = messages.length
@@ -1120,8 +1120,8 @@ module RubyLLM
     # when the provider has no manual compaction endpoint, and
     # PendingToolCallsError until pending tool calls have been answered.
     def compact
-      raise_if_cancelled!
-      raise_if_pending_tool_calls!
+      raise_if_cancelled
+      raise_if_pending_tool_calls
       usage_start = usage_entries.length
       payload = instrumentation_payload(streaming: false)
       RubyLLM.instrument('compaction.ruby_llm', payload, config: @config) do |event|
@@ -1227,7 +1227,7 @@ module RubyLLM
     # Refuses to stage a user message onto an unfinished tool round, which
     # providers reject. Called by #ask_later here and in the Rails
     # integration before it persists anything.
-    def raise_if_pending_tool_calls! # :nodoc:
+    def raise_if_pending_tool_calls # :nodoc:
       response = pending_tool_response
       return unless response
 
@@ -1323,7 +1323,7 @@ module RubyLLM
       self
     end
 
-    def raise_if_cancelled!
+    def raise_if_cancelled
       external_cancelled = @cancellation_checker&.call
       return unless @cancelled || external_cancelled
 
@@ -1332,7 +1332,7 @@ module RubyLLM
     end
 
     def generate_once(stream_tracker: nil, usage_start: nil, &block)
-      raise_if_cancelled!
+      raise_if_cancelled
 
       result = nil
       entries_before = usage_entries.length
@@ -1352,7 +1352,7 @@ module RubyLLM
     end
 
     def record_generated_message(result, usage_start, streaming: false)
-      raise_if_cancelled!
+      raise_if_cancelled
       link_completion_usage(result, usage_start)
       run_callbacks(:before_message) unless streaming
       add_message result
@@ -1556,7 +1556,7 @@ module RubyLLM
     end
 
     def provider_completion(usage_recorder:, stream_tracker: nil, &)
-      raise_if_cancelled!
+      raise_if_cancelled
 
       request_messages = preprocessed_messages
       tool_call_ids = ToolCallIds.new
@@ -1659,17 +1659,17 @@ module RubyLLM
       index = -1
 
       proc do |chunk|
-        raise_if_cancelled!
+        raise_if_cancelled
         chunk = tool_call_ids.assign(chunk)
         chunk.index = index += 1
         stream_tracker&.call(chunk)
         block.call(chunk)
-        raise_if_cancelled!
+        raise_if_cancelled
       end
     end
 
     def execute_pending_tool_calls(response)
-      raise_if_cancelled!
+      raise_if_cancelled
 
       server_calls, local_calls = pending_tool_calls(response).partition { |_, call| call.remote? }.map(&:to_h)
       decisions = server_calls.transform_values { |tool_call| approval_decision(nil, tool_call) }.compact
@@ -1722,7 +1722,7 @@ module RubyLLM
     def respond_to_tool_approvals(tool_calls, decisions)
       tool_calls.each do |id, tool_call|
         decision = decisions.fetch(id)
-        raise_if_cancelled!
+        raise_if_cancelled
         run_callbacks(:before_message)
         response = @provider.tool_approval_response(tool_call, approved: decision, model: @model, protocol: @protocol)
         message = add_message(response)
@@ -1749,7 +1749,7 @@ module RubyLLM
 
     def deny_tool_calls(tool_calls)
       tool_calls.each_value do |tool_call|
-        raise_if_cancelled!
+        raise_if_cancelled
         run_callbacks(:before_message)
         add_tool_result_message(tool_call, { error: "The user denied the #{tool_call.name} tool call." })
       end
@@ -1817,7 +1817,7 @@ module RubyLLM
 
     def handle_sequential_tool_calls(tool_calls)
       tool_calls.each_value do |tool_call|
-        raise_if_cancelled!
+        raise_if_cancelled
         result = execute_tool_with_callbacks(tool_call)
         next if result.equal?(PAUSED)
 
@@ -1830,7 +1830,7 @@ module RubyLLM
       execute_tools_concurrently(tool_calls) do |tool_call, result|
         next if result.equal?(PAUSED)
 
-        raise_if_cancelled!
+        raise_if_cancelled
         run_callbacks(:before_message)
         add_tool_result_message(tool_call, result)
       end
@@ -1843,12 +1843,12 @@ module RubyLLM
     end
 
     def execute_tool_with_callbacks(tool_call)
-      raise_if_cancelled!
+      raise_if_cancelled
       run_callbacks(:before_tool_call, tool_call)
       result = execute_tool tool_call
       return result if result.equal?(PAUSED)
 
-      raise_if_cancelled!
+      raise_if_cancelled
       run_callbacks(:after_tool_result, result)
       result
     end
@@ -1886,7 +1886,7 @@ module RubyLLM
       }
 
       RubyLLM.instrument('tool_call.ruby_llm', payload, config: @config) do |event|
-        result = Support::Cancellation.watch(-> { raise_if_cancelled! }) do
+        result = Support::Cancellation.watch(-> { raise_if_cancelled }) do
           Support::ProgressReporter.listen(progress_listener(tool_call)) { invoke_tool(tool, tool_call, args) }
         end
         event[:result] = result

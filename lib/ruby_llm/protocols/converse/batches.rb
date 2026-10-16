@@ -19,7 +19,7 @@ module RubyLLM
           end.join("\n")
         end
 
-        def validate_bedrock_batch_requests!(requests)
+        def validate_bedrock_batch_requests(requests)
           unsupported = requests.any? do |request|
             payload = request.fetch(:payload)
             payload.key?(:toolConfig) || payload.key?('toolConfig') ||

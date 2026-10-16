@@ -289,7 +289,7 @@ module RubyLLM
 
     def paint(prompt, model:, size:, count: nil, with: nil, mask: nil, provider_options: {})
       track_usage(:image) do
-        validate_paint_inputs!(with:, mask:)
+        validate_paint_inputs(with:, mask:)
         payload = render_image_payload(prompt, model:, size:, count:, with:, mask:, provider_options:)
         response = post_image(payload, with:, mask:)
         images = parse_image_responses(response, model:)
@@ -324,7 +324,7 @@ module RubyLLM
         url = video_extension_url
       else
         attachments = Attachment.wrap(with, config: @config)
-        validate_animate_inputs!(with: attachments)
+        validate_animate_inputs(with: attachments)
         payload = render_video_payload(prompt, model:, with: attachments, provider_options:)
         url = video_request_url(payload)
       end
@@ -788,13 +788,13 @@ module RubyLLM
       {}
     end
 
-    def validate_paint_inputs!(with:, mask:)
+    def validate_paint_inputs(with:, mask:)
       return if with.nil? && mask.nil?
 
       raise UnsupportedAttachmentError, 'image reference'
     end
 
-    def validate_animate_inputs!(with:)
+    def validate_animate_inputs(with:)
       return if with.empty?
 
       raise UnsupportedAttachmentError, 'video reference image'

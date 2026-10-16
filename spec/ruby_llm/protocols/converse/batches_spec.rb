@@ -35,10 +35,10 @@ RSpec.describe RubyLLM::Protocols::Converse::Batches do
     end
   end
 
-  describe '#validate_bedrock_batch_requests!' do
+  describe '#validate_bedrock_batch_requests' do
     it 'rejects tools and structured output' do
       expect do
-        protocol.send(:validate_bedrock_batch_requests!, [
+        protocol.send(:validate_bedrock_batch_requests, [
                         { payload: { toolConfig: { tools: [] } } }
                       ])
       end.to raise_error(RubyLLM::Error, /tools or structured output/)

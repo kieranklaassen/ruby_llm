@@ -48,7 +48,7 @@ module RubyLLM
           end
         end
 
-        def validate_paint_inputs!(with:, mask:)
+        def validate_paint_inputs(with:, mask:)
           return unless editing?(with, mask)
 
           raise ArgumentError, 'with: is required when mask: is provided' if mask && !attachments?(with)

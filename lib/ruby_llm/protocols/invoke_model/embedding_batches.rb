@@ -13,7 +13,7 @@ module RubyLLM
           'InvokeModel'
         end
 
-        def validate_bedrock_batch_requests!(requests)
+        def validate_bedrock_batch_requests(requests)
           requests.each do |request|
             values = request.fetch(:text)
             values = [values] unless values.is_a?(Array)

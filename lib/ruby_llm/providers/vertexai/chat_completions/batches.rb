@@ -19,7 +19,7 @@ module RubyLLM
             }
           end
 
-          def validate_batch_requests!(requests)
+          def validate_batch_requests(requests)
             return if requests.all? { |request| chat_completion_payload?(request.fetch(:payload)) }
 
             raise Error, 'vertexai MaaS batch requests require chat completion payloads'

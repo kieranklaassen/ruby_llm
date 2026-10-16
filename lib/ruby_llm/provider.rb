@@ -51,7 +51,7 @@ module RubyLLM
 
     def initialize(config) # :nodoc:
       @config = config
-      ensure_configured!
+      ensure_configured
       @connection = Transport::Connection.new(self, @config)
     end
 
@@ -220,29 +220,29 @@ module RubyLLM
 
     def create_batch(requests) # :nodoc:
       protocol = batch_protocol_for(requests)
-      ensure_batches_supported!(protocol)
+      ensure_batches_supported(protocol)
       protocol.new(self).create_batch(requests).merge(batch_protocol: protocol)
     end
 
     def find_batch(id) # :nodoc:
-      ensure_batches_supported!
+      ensure_batches_supported
       batch_protocol.new(self).find_batch(id)
     end
 
     def cancel_batch(id) # :nodoc:
-      ensure_batches_supported!
+      ensure_batches_supported
       batch_protocol.new(self).cancel_batch(id)
     end
 
     def batch_results(id, batch_protocol: nil) # :nodoc:
       protocol = resolve_batch_protocol(batch_protocol) || self.batch_protocol
-      ensure_batches_supported!(protocol)
+      ensure_batches_supported(protocol)
       protocol.new(self).batch_results(id)
     end
 
     def batch_status(raw_status, completed:, batch_protocol: nil) # :nodoc:
       protocol = resolve_batch_protocol(batch_protocol) || self.batch_protocol
-      ensure_batches_supported!(protocol)
+      ensure_batches_supported(protocol)
       parser = protocol.new(self)
       return parser.send(:parse_batch_status, raw_status, completed:) if parser.respond_to?(:parse_batch_status, true)
 
@@ -403,7 +403,7 @@ module RubyLLM
 
     def upload_file(file, filename: nil, purpose: nil, expires_in: nil, uri: nil, content_type: nil, # :nodoc:
                     provider_options: {})
-      ensure_files_supported!
+      ensure_files_supported
       options = { filename:, purpose:, expires_in:, uri:, content_type:, provider_options: }.compact
 
       protocols.fetch(:files).new(self).upload(file, **options)
@@ -429,17 +429,17 @@ module RubyLLM
     end
 
     def find_file(file_id) # :nodoc:
-      ensure_files_supported!
+      ensure_files_supported
       protocols.fetch(:files).new(self).find(file_id)
     end
 
     def download_file(file_id) # :nodoc:
-      ensure_files_supported!
+      ensure_files_supported
       protocols.fetch(:files).new(self).download(file_id)
     end
 
     def list_file_uris(uri) # :nodoc:
-      ensure_files_supported!
+      ensure_files_supported
       protocols.fetch(:files).new(self).list_uris(uri)
     end
 
@@ -657,11 +657,11 @@ module RubyLLM
 
     private
 
-    def ensure_batches_supported!(protocol = batch_protocol)
+    def ensure_batches_supported(protocol = batch_protocol)
       raise Error, "#{name} doesn't support batch requests" unless protocol.public_method_defined?(:create_batch)
     end
 
-    def ensure_files_supported!
+    def ensure_files_supported
       return if files?
 
       raise Error, "#{name} doesn't support file uploads"
@@ -764,7 +764,7 @@ module RubyLLM
       text unless text.empty?
     end
 
-    def ensure_configured!
+    def ensure_configured
       return if configured?
 
       missing = configuration_requirements.reject { |req| @config.send(req) }

@@ -39,7 +39,7 @@ module RubyLLM
 
         private
 
-        def validate_paint_inputs!(with:, mask:)
+        def validate_paint_inputs(with:, mask:)
           if gemini_image_model?(@model)
             raise UnsupportedAttachmentError, 'image mask' if mask
 

@@ -14,8 +14,8 @@ module RubyLLM
         private_constant :TERMINAL_STATUSES
 
         def create_batch(requests)
-          single_batch_model!(requests, @provider.slug)
-          validate_batch_requests!(requests)
+          single_batch_model(requests, @provider.slug)
+          validate_batch_requests(requests)
 
           response = @connection.post(batch_create_url, {
                                         input_file_id: upload_batch_file(requests),
@@ -73,7 +73,7 @@ module RubyLLM
           }
         end
 
-        def validate_batch_requests!(_requests); end
+        def validate_batch_requests(_requests); end
 
         def batch_endpoint
           raise NotImplementedError

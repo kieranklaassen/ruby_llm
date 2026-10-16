@@ -19,7 +19,7 @@ module RubyLLM
         "/model/#{model}/invoke"
       end
 
-      def ensure_no_embedding_media!(with)
+      def ensure_no_embedding_media(with)
         attachments = Attachment.wrap(with)
         raise UnsupportedAttachmentError, attachments.first.mime_type if attachments.any?
       end

@@ -34,7 +34,7 @@ module RubyLLM
           end
         end
 
-        def validate_paint_inputs!(with:, mask:) # rubocop:disable Lint/UnusedMethodArgument
+        def validate_paint_inputs(with:, mask:) # rubocop:disable Lint/UnusedMethodArgument
           raise UnsupportedAttachmentError, 'image mask' unless mask.nil?
         end
 

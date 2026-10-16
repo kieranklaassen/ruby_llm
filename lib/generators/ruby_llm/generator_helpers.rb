@@ -112,7 +112,7 @@ module RubyLLM
 
         model_mappings.each do |mapping|
           key, value = mapping.split(':', 2)
-          validate_model_mapping!(mapping, key, value, allowed_types)
+          validate_model_mapping(mapping, key, value, allowed_types)
           raise Thor::Error, "Duplicate model mapping: #{key}" if @explicit_model_mappings.include?(key.to_sym)
 
           @explicit_model_mappings << key.to_sym
@@ -122,7 +122,7 @@ module RubyLLM
         @model_names
       end
 
-      def validate_model_mapping!(mapping, key, value, allowed_types)
+      def validate_model_mapping(mapping, key, value, allowed_types)
         return if allowed_types.include?(key) && value.present?
 
         expected = allowed_types.map { |type| "#{type}:ModelName" }.join(', ')

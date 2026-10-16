@@ -14,7 +14,7 @@ module RubyLLM
         private_constant :TERMINAL
 
         def create_batch(requests)
-          model = single_batch_model!(requests, 'gemini')
+          model = single_batch_model(requests, 'gemini')
           action = embedding_batch?(requests) ? 'asyncBatchEmbedContent' : 'batchGenerateContent'
           response = @connection.post("models/#{model}:#{action}", {
                                         batch: {
