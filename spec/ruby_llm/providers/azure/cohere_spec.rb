@@ -24,7 +24,7 @@ RSpec.describe RubyLLM::Providers::Azure::Cohere do
     chat = context.chat(model: model_for(:azure), provider: :azure)
     expect { chat.ask('Hello') }.to raise_error(RubyLLM::Error, /doesn't support chat/)
     expect { chat.provider.batch_results('batch_test', batch_protocol: described_class) }
-      .to raise_error(RubyLLM::Error, /doesn't support batch requests/)
+      .to raise_error(RubyLLM::Error, "Azure doesn't support batch requests")
     expect(a_request(:any, /azure\.example\.test/)).not_to have_been_made
   end
 

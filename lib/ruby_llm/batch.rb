@@ -90,7 +90,7 @@ module RubyLLM
         end
 
         provider = Provider.resolve!(provider).new(config)
-        raise Error, "#{provider.slug} doesn't support batch requests" unless provider.batches?
+        raise Error, "#{provider.name} doesn't support batch requests" unless provider.batches?
 
         new(provider:, store: config.batch_store, **provider.find_batch(id))
       end
@@ -161,7 +161,7 @@ module RubyLLM
         raise ArgumentError, "A batch takes one provider per submission, got: #{slugs.join(', ')}" if slugs.size > 1
 
         provider = chats.first.provider
-        raise Error, "#{provider.slug} doesn't support batch requests" unless provider.batches?
+        raise Error, "#{provider.name} doesn't support batch requests" unless provider.batches?
 
         provider
       end

@@ -32,7 +32,7 @@ module RubyLLM
       end
 
       def list_uris(_uri)
-        raise Error, "#{@provider.slug} doesn't support file listing"
+        raise Error, "#{@provider.name} doesn't support file listing"
       end
 
       private
