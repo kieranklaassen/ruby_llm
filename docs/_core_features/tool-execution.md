@@ -291,7 +291,7 @@ RubyLLM stores the provider's original identifier separately as `provider_call_i
 
 ## Model Compatibility
 
-RubyLLM will attempt to use tools with any model. If the model doesn't support function calling, the provider will return an appropriate error when you call `ask`.
+RubyLLM sends tools to any model. If the model doesn't support function calling, the provider returns an error when you call `ask`.
 
 ## Monitoring Tool Calls with Callbacks
 

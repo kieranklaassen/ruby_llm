@@ -167,7 +167,7 @@ A long conversation keeps its first 10 and last 50 turns, and `omitted_turns` co
 
 ## Error Handling During Streaming
 
-When using streaming with a block, errors can occur *during* the stream after some chunks have already been processed. The `ask` method will raise the error *after* the block execution finishes or is interrupted by the error.
+When using streaming with a block, errors can occur *during* the stream after some chunks have already been processed. `ask` raises the error *after* the block execution finishes or is interrupted by the error.
 
 ```ruby
 begin
@@ -187,7 +187,7 @@ rescue RubyLLM::Error => e
 end
 ```
 
-Your block will execute for chunks received *before* the error. Because `ask` raises, it does not return a final response in this case; handle the exception and any partial content you accumulated.
+Your block runs for chunks received *before* the error. Because `ask` raises, it does not return a final response in this case; handle the exception and any partial content you accumulated.
 
 ## Model Fallbacks
 
