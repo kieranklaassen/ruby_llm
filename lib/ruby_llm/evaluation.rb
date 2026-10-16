@@ -38,7 +38,7 @@ module RubyLLM
       # Sets the default evaluator: a model, Agent class, or Judge class.
       # Model keywords accept provider, protocol, and context as Chat does.
       # Without a declaration, uses the default chat model and built-in reviewer.
-      # Pass false to disable model grading and run only Ruby assertions.
+      # Pass +false+ to disable model grading and run only Ruby assertions.
       def evaluator(target = nil, **options)
         if target.nil? && options.empty?
           @evaluator = Evaluator.new if @evaluator.nil?
@@ -190,9 +190,13 @@ module RubyLLM
       end
     end
 
-    # Returns the current case's input, reference output, and metadata, respectively.
-    attr_reader :input, :expected_output, :metadata
-    # Returns the original value returned by perform.
+    # The current case's input.
+    attr_reader :input
+    # The current case's reference output, or +nil+ when none was supplied.
+    attr_reader :expected_output
+    # The current case's metadata.
+    attr_reader :metadata
+    # The original value returned by perform.
     attr_reader :result
 
     # Runs the application under evaluation. Override in your evaluation class.
@@ -237,7 +241,7 @@ module RubyLLM
     # :call-seq:
     #   refute(condition, message = nil)
     #
-    # Asserts that condition is false or nil. See #assert.
+    # Asserts that condition is +false+ or +nil+. See #assert.
 
     # :method: assert_equal
     # :call-seq:

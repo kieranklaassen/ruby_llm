@@ -15,13 +15,13 @@ module RubyLLM
     include Support::Inspectable
     include Accounting::Usage::Result
 
-    # Returns the answers keyed by their declared String or Symbol names.
+    # The answers keyed by their declared String or Symbol names.
     attr_reader :answers
 
-    # Returns the actual model ID reported by the provider, as a String.
+    # The actual model ID reported by the provider, as a String.
     attr_reader :model
 
-    # Returns the original provider response.
+    # The original provider response.
     attr_reader :raw
 
     def initialize(answers:, model:, tokens: Tokens.new, raw: nil, model_info: nil) # :nodoc:
@@ -33,7 +33,7 @@ module RubyLLM
       @model_info = model_info
     end
 
-    # Returns the named answer, accepting a String or Symbol, or nil if absent.
+    # Returns the named answer, accepting a String or Symbol, or +nil+ if absent.
     def [](name)
       answers[@answer_keys[name.to_s]]
     end

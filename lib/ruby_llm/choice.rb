@@ -5,13 +5,13 @@ module RubyLLM
   class Choice
     include Support::Inspectable
 
-    # Returns the selected option, preserving its declared String or Symbol type.
+    # The selected option, preserving its declared String or Symbol type.
     attr_reader :choice
 
-    # Returns each declared option's probability.
+    # Each declared option's probability.
     attr_reader :probabilities
 
-    # Returns the provider's confidence in the distribution, between 0 and 1.
+    # The provider's confidence in the distribution, between 0 and 1.
     attr_reader :confidence
 
     def initialize(choice:, probabilities:, confidence:) # :nodoc:
@@ -21,7 +21,7 @@ module RubyLLM
       freeze
     end
 
-    # Returns :choice.
+    # Returns +:choice+.
     def type
       :choice
     end

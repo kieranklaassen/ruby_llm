@@ -198,7 +198,7 @@ module RubyLLM
       @message
     end
 
-    # Returns the provider-reported task usage. Unreported fields are nil.
+    # The provider-reported task usage. Unreported fields are +nil+.
     attr_reader :tokens
 
     # Returns the reported cost, or unknown cost when the provider supplies

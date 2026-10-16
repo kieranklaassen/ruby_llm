@@ -6,13 +6,13 @@ module RubyLLM
     class Case
       include Support::Inspectable
 
-      # Returns the stable case name used to compare runs.
+      # The stable case name used to compare runs.
       attr_reader :name
-      # Returns the value passed to Evaluation#perform.
+      # The value passed to Evaluation#perform.
       attr_reader :inputs
-      # Returns the reference answer, or nil when none was supplied.
+      # The reference answer, or +nil+ when none was supplied.
       attr_reader :expected_output
-      # Returns application-defined reference evidence and category labels.
+      # The application-defined reference evidence and category labels.
       attr_reader :metadata
 
       # Creates a case. Inputs and reference evidence must be JSON-compatible.
@@ -32,7 +32,7 @@ module RubyLLM
         freeze
       end
 
-      # Returns whether a reference was supplied, including an explicit nil.
+      # Returns whether a reference was supplied, including an explicit +nil+.
       def expected_output?
         @reference_supplied
       end

@@ -13,10 +13,10 @@ module RubyLLM
   #   end
   #
   class Workflow
-    # Returns the workflow identifier shared by its instrumentation events.
+    # The workflow identifier shared by its instrumentation events.
     attr_reader :id
 
-    # Returns the workflow name.
+    # The workflow name.
     attr_reader :name
 
     def initialize(name, id: nil, metadata: nil, config: RubyLLM.config) # :nodoc:

@@ -7,25 +7,25 @@ module RubyLLM
       include Support::Inspectable
       include Accounting::Usage::Result
 
-      # Returns the case whose inputs were executed.
+      # The case whose inputs were executed.
       attr_reader :test_case
-      # Returns the one-based repetition number.
+      # The one-based repetition number.
       attr_reader :repetition
-      # Returns the original value returned by perform, when it completed.
+      # The original value returned by perform, when it completed.
       attr_reader :result
-      # Returns the primary output extracted from the returned value.
+      # The primary output extracted from the returned value.
       attr_reader :output
-      # Returns the frozen evidence supplied to evaluators.
+      # The frozen evidence supplied to evaluators.
       attr_reader :evidence
-      # Returns each criterion's Evaluation::Result.
+      # Each criterion's Evaluation::Result.
       attr_reader :evaluations
-      # Returns the number of Ruby assertions attempted.
+      # The number of Ruby assertions attempted.
       attr_reader :assertion_count
-      # Returns an assertion failure, or nil.
+      # An assertion failure, or +nil+.
       attr_reader :assertion_failure
-      # Returns an execution or evidence-conversion error, or nil.
+      # An execution or evidence-conversion error, or +nil+.
       attr_reader :error
-      # Returns elapsed wall-clock seconds, including evaluators.
+      # The elapsed wall-clock seconds, including evaluators.
       attr_reader :duration
 
       def initialize(test_case:, repetition:, task_usage: [], evaluator_usage: [], **attributes) # :nodoc:
@@ -69,7 +69,7 @@ module RubyLLM
         Cost.aggregate(@evaluator_usage.map(&:cost), complete: @evaluator_usage.all?(&:cost_available?))
       end
 
-      # Returns :passed, :failed, :measured, :unassessed, or :error. Empty trials are never passes.
+      # Returns +:passed+, +:failed+, +:measured+, +:unassessed+, or +:error+. Empty trials are never passes.
       def status
         statuses = evaluations.map(&:status)
         statuses << :error if error

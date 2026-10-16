@@ -5,7 +5,7 @@ module RubyLLM
   class Probability
     include Support::Inspectable
 
-    # Returns the probability of yes, between 0 and 1.
+    # The probability of yes, between 0 and 1.
     attr_reader :probability
 
     def initialize(probability:) # :nodoc:
@@ -13,7 +13,7 @@ module RubyLLM
       freeze
     end
 
-    # Returns :probability.
+    # Returns +:probability+.
     def type
       :probability
     end

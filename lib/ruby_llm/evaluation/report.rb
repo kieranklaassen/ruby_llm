@@ -8,15 +8,15 @@ module RubyLLM
       include Support::Inspectable
       include Accounting::Usage::Result
 
-      # Returns the evaluation class name.
+      # The evaluation class name.
       attr_reader :name
-      # Returns the unique run identifier.
+      # The unique run identifier.
       attr_reader :id
-      # Returns the trials in dataset and repetition order.
+      # The trials in dataset and repetition order.
       attr_reader :trials
-      # Returns the UTC time the run started.
+      # The UTC time the run started.
       attr_reader :started_at
-      # Returns the criterion definitions and evaluator identities captured for this run.
+      # The criterion definitions and evaluator identities captured for this run.
       attr_reader :definitions
 
       def initialize(name:, trials:, id:, started_at:, definitions:) # :nodoc:
@@ -55,7 +55,7 @@ module RubyLLM
         trials.empty? ? nil : counts[:passed].fdiv(trials.size)
       end
 
-      # Returns true only when the run is nonempty and every trial passed.
+      # Returns +true+ only when the run is nonempty and every trial passed.
       def passed?
         trials.any? && trials.all?(&:passed?)
       end
