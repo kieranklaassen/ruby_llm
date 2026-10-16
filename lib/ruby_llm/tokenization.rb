@@ -22,7 +22,8 @@ module RubyLLM
     # +model:+ selects the model and defaults to the configured
     # +default_model+. +provider:+ forces a specific provider, and
     # +assume_model_exists:+ skips the registry lookup. +context:+ supplies
-    # a Context whose configuration replaces the global one.
+    # a Context whose configuration replaces the global one. +metadata:+
+    # is included in the instrumentation payload.
     #
     #   result = RubyLLM.tokenize("Hello Ruby", model: "grok-4.3", provider: :xai)
     #   result.ids
@@ -30,13 +31,13 @@ module RubyLLM
     #
     # Raises ArgumentError for non-string input and RubyLLM::Error when
     # the provider does not expose a tokenizer.
-    def self.tokenize(text, model: nil, provider: nil, assume_model_exists: false, context: nil)
+    def self.tokenize(text, model: nil, provider: nil, assume_model_exists: false, context: nil, metadata: nil)
       raise ArgumentError, 'text must be a String' unless text.is_a?(String)
 
       config = context&.config || RubyLLM.config
       model ||= config.default_model
       model, provider_instance = Models.resolve(model, provider:, assume_model_exists:, config:)
-      payload = { model: model.id, provider: provider_instance.slug }
+      payload = { model: model.id, provider: provider_instance.slug, metadata: }
       RubyLLM.instrument('tokenization.ruby_llm', payload, config:) do |event|
         result = provider_instance.tokenize(text, model:)
         event[:result] = result
