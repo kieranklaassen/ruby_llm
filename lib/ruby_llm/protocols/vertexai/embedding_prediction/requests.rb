@@ -35,7 +35,8 @@ module RubyLLM
             unknown = payload.keys - supported
             return if unknown.empty?
 
-            raise ArgumentError, "Unsupported Vertex AI embedding batch options: #{unknown.join(', ')}"
+            raise ArgumentError, "Vertex AI embedding batches accept #{Support::Utils.option_list(supported)}, " \
+                                 "got #{Support::Utils.option_list(unknown)}"
           end
 
           def validate_gemini_embedding_options(payload, inputs)

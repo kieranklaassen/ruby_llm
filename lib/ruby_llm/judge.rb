@@ -124,7 +124,10 @@ module RubyLLM
       missing = self.class.inputs - inputs.keys
       extra = inputs.keys - self.class.inputs
       raise ArgumentError, "Missing judge inputs: #{missing.join(', ')}" unless missing.empty?
-      raise ArgumentError, "Unknown judge inputs: #{extra.join(', ')}" unless extra.empty?
+      unless extra.empty?
+        raise ArgumentError, "This judge accepts #{Support::Utils.option_list(self.class.inputs)}, " \
+                             "got #{Support::Utils.option_list(extra)}"
+      end
 
       inputs.each do |name, value|
         raise ArgumentError, "Judge input conflicts with a method: #{name}" if respond_to?(name, true)

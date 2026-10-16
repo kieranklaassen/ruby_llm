@@ -56,7 +56,7 @@ RSpec.describe RubyLLM::Judge::Question do
     end
     expect { described_class.from_h(:question, {}) }.to raise_error(ArgumentError, /Unknown judgment type/)
     expect { described_class.from_h(:question, type: :choice, option: { billing: nil }) }
-      .to raise_error(ArgumentError, /Unknown question options: option/)
+      .to raise_error(ArgumentError, /question accepts :type, :instructions, .*, got :option/)
   end
 
   it 'supports a proc returning a Hash through the same builder as a declaration block' do

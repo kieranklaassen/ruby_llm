@@ -32,8 +32,8 @@ module RubyLLM
       def cases_from_hash(source)
         unknown = source.keys.map(&:to_s) - %w[name cases]
         if unknown.any?
-          raise ArgumentError,
-                "Unsupported dataset fields: #{unknown.join(', ')}; declare evaluators in Ruby"
+          raise ArgumentError, "A dataset accepts :name, :cases, got #{Support::Utils.option_list(unknown)}. " \
+                               'Declare evaluators in Ruby.'
         end
 
         source.fetch('cases') { source.fetch(:cases) }

@@ -477,7 +477,7 @@ RSpec.describe RubyLLM::MCP do
 
     it 'refuses kinds of input it does not know' do
       expect { Class.new(described_class) { input_requests :email } }
-        .to raise_error(ArgumentError, 'Unknown input requests: email')
+        .to raise_error(ArgumentError, 'input_requests accepts :form, :url, got :email')
     end
   end
 
@@ -1062,7 +1062,7 @@ RSpec.describe RubyLLM::MCP do
     end
 
     it 'rejects unknown inputs' do
-      expect { mcp_class.new(account: 'acme') }.to raise_error(ArgumentError, 'Unknown MCP inputs: account')
+      expect { mcp_class.new(account: 'acme') }.to raise_error(ArgumentError, 'This MCP accepts :user, got :account')
     end
   end
 
@@ -1241,7 +1241,7 @@ RSpec.describe RubyLLM::MCP do
 
     it 'refuses unknown settings' do
       expect { RubyLLM.mcp(url: 'https://mcp.linear.app/mcp', only: [:search]) }
-        .to raise_error(ArgumentError, 'Unknown MCP settings: only')
+        .to raise_error(ArgumentError, /An inline MCP accepts :name, .*:log_level, got :only/)
     end
 
     it 'accepts a name' do

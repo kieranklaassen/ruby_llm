@@ -35,6 +35,7 @@ module RubyLLM
     INPUT_ROUNDS = 10
     INPUT_REQUESTS = %i[form url].freeze
     INLINE_SETTINGS = %i[url command transport bearer_token directory timeout prefix input_requests log_level].freeze
+    INLINE_KEYWORDS = %i[name headers env oauth extensions].freeze
     LOG_LEVELS = {
       debug: Logger::DEBUG, info: Logger::INFO, notice: Logger::INFO, warning: Logger::WARN,
       error: Logger::ERROR, critical: Logger::FATAL, alert: Logger::FATAL, emergency: Logger::FATAL
@@ -50,8 +51,8 @@ module RubyLLM
       @url @command @directory @env @headers @bearer_token @timeout @input_names @only @except @prefix
       @tool_declarations @approvals @deferrals @callbacks @oauth @input_requests @extensions @log_level
     ].freeze
-    private_constant :SETTINGS, :INPUT_ROUNDS, :INPUT_REQUESTS, :INLINE_SETTINGS, :EXTENSIONS, :POLL_INTERVAL,
-                     :LOG_LEVELS, :UNKNOWN_TOOL_ERRORS
+    private_constant :SETTINGS, :INPUT_ROUNDS, :INPUT_REQUESTS, :INLINE_SETTINGS, :INLINE_KEYWORDS, :EXTENSIONS,
+                     :POLL_INTERVAL, :LOG_LEVELS, :UNKNOWN_TOOL_ERRORS
 
     class << self
       attr_writer :default_name # :nodoc:
@@ -328,7 +329,7 @@ module RubyLLM
       #
       def requires_approval(*names, **options)
         unknown = options.keys - [:if]
-        raise ArgumentError, "Unknown requires_approval options: #{unknown.join(', ')}" if unknown.any?
+        raise ArgumentError, "requires_approval accepts :if, got #{Support::Utils.option_list(unknown)}" if unknown.any?
 
         @approvals = approvals + [[names.flatten.map(&:to_s), options[:if]]]
       end
@@ -397,8 +398,8 @@ module RubyLLM
         return @input_requests || INPUT_REQUESTS if kinds.empty?
 
         kinds = (kinds.flatten - [false, nil]).map(&:to_sym)
-        unknown = kinds - INPUT_REQUESTS
-        raise ArgumentError, "Unknown input requests: #{unknown.join(', ')}" if unknown.any?
+        unknown = Support::Utils.option_list(kinds - INPUT_REQUESTS)
+        raise ArgumentError, "input_requests accepts :form, :url, got #{unknown}" unless unknown.empty?
 
         @input_requests = kinds
       end
@@ -491,8 +492,9 @@ module RubyLLM
       private
 
       def check_inline_settings(name, settings)
-        unknown = settings.keys - INLINE_SETTINGS
-        raise ArgumentError, "Unknown MCP settings: #{unknown.join(', ')}" if unknown.any?
+        unknown = Support::Utils.option_list(settings.keys - INLINE_SETTINGS)
+        accepted = Support::Utils.option_list(INLINE_KEYWORDS + INLINE_SETTINGS)
+        raise ArgumentError, "An inline MCP accepts #{accepted}, got #{unknown}" unless unknown.empty?
         raise ArgumentError, 'An MCP with a transport needs a name' if settings[:transport] && name.nil?
       end
 
@@ -533,7 +535,10 @@ module RubyLLM
     # Raises ArgumentError for keywords that are not declared inputs.
     def initialize(context: nil, **inputs)
       unknown = inputs.keys - self.class.inputs
-      raise ArgumentError, "Unknown MCP inputs: #{unknown.join(', ')}" if unknown.any?
+      if unknown.any?
+        accepted = self.class.inputs.empty? ? 'no inputs' : Support::Utils.option_list(self.class.inputs)
+        raise ArgumentError, "This MCP accepts #{accepted}, got #{Support::Utils.option_list(unknown)}"
+      end
 
       @context = context
       @inputs = inputs

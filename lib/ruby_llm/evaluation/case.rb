@@ -18,8 +18,8 @@ module RubyLLM
       # Creates a case. Inputs and reference evidence must be JSON-compatible.
       def initialize(name:, inputs:, metadata: {}, **reference)
         unless (reference.keys - [:expected_output]).empty?
-          raise ArgumentError,
-                "Unknown case fields: #{(reference.keys - [:expected_output]).join(', ')}"
+          raise ArgumentError, 'A case accepts :name, :inputs, :metadata, :expected_output, ' \
+                               "got #{Support::Utils.option_list(reference.keys - [:expected_output])}"
         end
         raise ArgumentError, 'A case name cannot be empty' if name.to_s.empty?
         raise ArgumentError, 'Case metadata must be a Hash' unless metadata.is_a?(Hash)

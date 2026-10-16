@@ -176,7 +176,8 @@ RSpec.describe RubyLLM::Judge do
     configured = Class.new(judge_class) { inputs :ticket }
 
     expect { configured.new }.to raise_error(ArgumentError, /Missing judge inputs: ticket/)
-    expect { configured.new(ticket: 'Help', extra: true) }.to raise_error(ArgumentError, /Unknown judge inputs: extra/)
+    expect { configured.new(ticket: 'Help', extra: true) }
+      .to raise_error(ArgumentError, 'This judge accepts :ticket, got :extra')
   end
 
   it 'rejects duplicate questions, including String and Symbol spellings' do

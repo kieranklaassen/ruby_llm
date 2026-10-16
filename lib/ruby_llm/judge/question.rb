@@ -29,7 +29,10 @@ module RubyLLM
         type = type.to_sym if type.is_a?(String)
         key = CRITERIA_KEYS.fetch(type) { raise ArgumentError, "Unknown judgment type: #{type.inspect}" }
         extra = definition.keys - [:type, :instructions, key]
-        raise ArgumentError, "Unknown question options: #{extra.join(', ')}" unless extra.empty?
+        unless extra.empty?
+          raise ArgumentError, "A #{type} question accepts :type, :instructions, :#{key}, " \
+                               "got #{Support::Utils.option_list(extra)}"
+        end
 
         new(name, type:, instructions: definition[:instructions], criteria: definition[key])
       end

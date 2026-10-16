@@ -211,7 +211,7 @@ RSpec.describe RubyLLM::Evaluation do
   it 'rejects imported executable evaluators instead of silently ignoring their checks' do
     expect do
       evaluation.run(dataset: { cases:, evaluators: ['EqualsExpected'] })
-    end.to raise_error(ArgumentError, /declare evaluators in Ruby/)
+    end.to raise_error(ArgumentError, /A dataset accepts :name, :cases, got :evaluators\. Declare evaluators in Ruby\./)
   end
 
   it 'runs teardown when setup fails and keeps the original error' do
@@ -233,7 +233,7 @@ RSpec.describe RubyLLM::Evaluation do
 
   it 'names the unknown fields of a case as a list' do
     expect { described_class::Case.new(name: 'greeting', inputs: 'Hello', expected: 'HELLO', tags: []) }
-      .to raise_error(ArgumentError, 'Unknown case fields: expected, tags')
+      .to raise_error(ArgumentError, 'A case accepts :name, :inputs, :metadata, :expected_output, got :expected, :tags')
   end
 
   it 'rejects conflicting dataset arguments and invalid acceptance thresholds' do
