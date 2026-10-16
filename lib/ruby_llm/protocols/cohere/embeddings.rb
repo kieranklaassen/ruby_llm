@@ -61,7 +61,7 @@ module RubyLLM
         def embedding_inputs(text, attachments)
           return { texts: Support::Utils.to_safe_array(text).map(&:to_s) } if attachments.empty?
 
-          raise ArgumentError, 'embed one text at a time when embedding attachments' if text.is_a?(Array)
+          raise ArgumentError, 'Embed one text at a time when embedding attachments' if text.is_a?(Array)
 
           { inputs: [{ content: Media.render_content(text, attachments) }] }
         end

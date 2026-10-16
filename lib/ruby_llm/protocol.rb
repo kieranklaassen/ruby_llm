@@ -317,7 +317,7 @@ module RubyLLM
     # job and returns a VideoJob, whose #refresh and #video poll and
     # download through this protocol instance.
     def animate_later(prompt, model:, with: nil, extend: nil, provider_options: {})
-      raise ArgumentError, 'with: and extend: cannot be combined' if with && extend
+      raise ArgumentError, 'Pass with: or extend:, not both' if with && extend
 
       if extend
         payload = render_video_extension_payload(prompt, model:, extend:, provider_options:)

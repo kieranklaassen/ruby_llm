@@ -15,7 +15,7 @@ module RubyLLM
                                      provider_options: {})
           payload = super(text, model:, dimensions:, task_type:, title:, provider_options: {})
           if with.any?
-            raise ArgumentError, 'embed one text at a time when embedding attachments' if text.is_a?(Array)
+            raise ArgumentError, 'Embed one text at a time when embedding attachments' if text.is_a?(Array)
 
             payload.delete(:input)
             payload[:messages] = [{ role: 'user', content: GPUStack::Media.render_content(text, with) }]

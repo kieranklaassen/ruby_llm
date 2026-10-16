@@ -156,7 +156,7 @@ module RubyLLM
         { gems: :gem_home, python: :virtualenv, npm: :node_modules }.each do |declared, prebuilt|
           next unless options.key?(declared) && options.key?(prebuilt)
 
-          raise ArgumentError, "pass #{declared}: or #{prebuilt}:, not both"
+          raise ArgumentError, "Pass #{declared}: or #{prebuilt}:, not both"
         end
       end
 

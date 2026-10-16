@@ -141,7 +141,7 @@ module RubyLLM
       # Raises ArgumentError when called without a schema or a block.
       def parameters(schema = nil, &block)
         if schema.nil? && block.nil?
-          raise ArgumentError, 'parameters requires a schema or a block; declare single arguments with parameter'
+          raise ArgumentError, 'parameters needs a schema or a block. Declare single arguments with parameter.'
         end
 
         @parameters_schema_definition = SchemaDefinition.new(schema:, block:)

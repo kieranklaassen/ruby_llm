@@ -16,7 +16,7 @@ module RubyLLM
         def render_embedding_payload(text, model:, dimensions:, task_type: nil, title: nil, with: [],
                                      provider_options: {})
           input = if with.any?
-                    raise ArgumentError, 'embed one text at a time when embedding attachments' if text.is_a?(Array)
+                    raise ArgumentError, 'Embed one text at a time when embedding attachments' if text.is_a?(Array)
 
                     [{ content: render_embedding_content(text, with) }]
                   else

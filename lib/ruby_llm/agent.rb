@@ -368,7 +368,7 @@ module RubyLLM
         return caching(**enabled.transform_keys(&:to_sym), **options, &block) if enabled.is_a?(Hash)
 
         raise ArgumentError, 'caching accepts true, false, or caching options' unless [true, false].include?(enabled)
-        raise ArgumentError, 'caching accepts options or a block, not both' if options.any? && block
+        raise ArgumentError, 'Pass caching options or a block, not both' if options.any? && block
         raise ArgumentError, 'caching false does not accept options or a block' if !enabled && (options.any? || block)
 
         @caching = block || (enabled ? options : false)
@@ -522,7 +522,7 @@ module RubyLLM
       # lookup until an exception is raised.
       def rescue_from(*exception_classes, with: nil, &block)
         raise ArgumentError, 'rescue_from needs a handler: pass with: or a block' unless with || block
-        raise ArgumentError, 'rescue_from takes with: or a block, not both' if with && block
+        raise ArgumentError, 'Pass with: or a block, not both' if with && block
 
         exception_classes.flatten.each do |exception_class|
           rescue_handlers << [rescue_handler_key(exception_class), with || block]

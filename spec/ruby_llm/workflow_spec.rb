@@ -137,8 +137,8 @@ RSpec.describe RubyLLM::Workflow do
     expect { context.workflow('') { :ok } }.to raise_error(ArgumentError, 'A workflow name cannot be empty')
 
     workflow = described_class.new('No block', config: context.config)
-    expect { workflow.run }.to raise_error(ArgumentError, 'A workflow block is required')
-    expect { workflow.step('No block') }.to raise_error(ArgumentError, 'A workflow step block is required')
+    expect { workflow.run }.to raise_error(ArgumentError, 'A workflow needs a block')
+    expect { workflow.step('No block') }.to raise_error(ArgumentError, 'A workflow step needs a block')
   end
 
   def event_payload(name)

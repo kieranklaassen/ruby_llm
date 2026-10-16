@@ -117,7 +117,7 @@ RSpec.describe RubyLLM::Providers::XAI::Videos do
 
     it 'rejects conflicting sources and invalid extension inputs before sending requests' do
       expect { protocol.animate_later('Continue', model:, with: image_path, extend: video) }
-        .to raise_error(ArgumentError, /cannot be combined/)
+        .to raise_error(ArgumentError, /with: or extend:, not both/)
       expect { protocol.animate_later('Continue', model:, extend: [video, video]) }
         .to raise_error(ArgumentError, /exactly one video/)
       expect { protocol.animate_later('Continue', model:, extend: image_path) }

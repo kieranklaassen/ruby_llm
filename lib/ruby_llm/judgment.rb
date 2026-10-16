@@ -82,7 +82,7 @@ module RubyLLM
       config = context&.config || RubyLLM.config
       attachments = Attachment.wrap(with, config:)
       validate_input(input, attachments)
-      raise ArgumentError, 'A judgment requires a model' unless model || config.default_judgment_model
+      raise ArgumentError, 'A judgment needs a model' unless model || config.default_judgment_model
 
       model, provider_instance = Models.resolve(model, provider:, assume_model_exists:, config:, operation: :judge,
                                                        default_model: config.default_judgment_model)

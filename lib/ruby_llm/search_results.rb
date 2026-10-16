@@ -35,7 +35,7 @@ module RubyLLM
     def initialize(*results, **result)
       results << result if result.any?
       @results = results.map { |entry| normalize(entry) }
-      raise ArgumentError, 'SearchResults requires at least one result' if @results.empty?
+      raise ArgumentError, 'Search results need at least one result' if @results.empty?
     end
 
     def self.from_content(content) # :nodoc:
@@ -62,7 +62,7 @@ module RubyLLM
 
     def normalize(entry)
       entry = Support::Utils.deep_symbolize_keys(entry.to_h)
-      raise ArgumentError, 'Search results require :title and :text' unless entry[:title] && entry[:text]
+      raise ArgumentError, 'A search result needs :title and :text' unless entry[:title] && entry[:text]
 
       entry.slice(:title, :url, :text)
     end
