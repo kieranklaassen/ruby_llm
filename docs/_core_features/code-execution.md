@@ -256,8 +256,8 @@ Hosted code execution needs no sandbox on your servers, but your files go to the
 
 ## Next Steps
 
-* [Sandboxes]({% link _core_features/sandboxes.md %}) - Define what the code can do, and let the model ask for more.
-* [Tools]({% link _core_features/tools.md %}) - Write your own tools in Ruby.
-* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - Approve calls, run them concurrently, and watch them with callbacks.
-* [Provider Tools]({% link _core_features/provider-tools.md %}) - Run code, search the web, and more on the provider's servers.
-* [Agents]({% link _advanced/agents.md %}) - Package code execution with instructions and tools.
+* [Sandboxes]({% link _core_features/sandboxes.md %}) - define what the code can do, and let the model ask for more.
+* [Tools]({% link _core_features/tools.md %}) - write your own tools in Ruby.
+* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - approve calls, run them concurrently, and watch them with callbacks.
+* [Provider Tools]({% link _core_features/provider-tools.md %}) - run code, search the web, and more on the provider's servers.
+* [Agents]({% link _advanced/agents.md %}) - package code execution with instructions and tools.

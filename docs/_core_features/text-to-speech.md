@@ -190,6 +190,6 @@ For retries and provider errors, see [Error Handling]({% link _advanced/error-ha
 
 ## Next Steps
 
-* [Audio Transcription]({% link _core_features/audio-transcription.md %}) - Convert speech back to text.
-* [Model Resolution]({% link _reference/model-resolution.md %}) - Learn how `model:` and `provider:` are resolved.
-* [Instrumentation and Observability]({% link _advanced/instrumentation.md %}) - Track speech generation events in production.
+* [Audio Transcription]({% link _core_features/audio-transcription.md %}) - convert speech back to text.
+* [Model Resolution]({% link _reference/model-resolution.md %}) - learn how `model:` and `provider:` are resolved.
+* [Instrumentation and Observability]({% link _advanced/instrumentation.md %}) - track speech generation events in production.

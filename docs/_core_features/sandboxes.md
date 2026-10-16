@@ -237,6 +237,6 @@ A sandbox on another machine copies the readable and writable paths in before th
 
 ## Next Steps
 
-* [Code Execution]({% link _core_features/code-execution.md %}) - Let the model run Ruby, Python, JavaScript, and shell code.
-* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - Approve calls, remember approvals, and run calls concurrently.
-* [Agents]({% link _advanced/agents.md %}) - Package code execution with instructions and tools.
+* [Code Execution]({% link _core_features/code-execution.md %}) - let the model run Ruby, Python, JavaScript, and shell code.
+* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - approve calls, remember approvals, and run calls concurrently.
+* [Agents]({% link _advanced/agents.md %}) - package code execution with instructions and tools.

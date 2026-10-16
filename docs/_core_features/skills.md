@@ -199,6 +199,6 @@ RubyLLM checks every skill when you give it to a chat, so a broken skill fails w
 
 ## Next Steps
 
-* [Code Execution]({% link _core_features/code-execution.md %}) - Configure the sandbox that runs skill scripts.
-* [Sandboxes]({% link _core_features/sandboxes.md %}) - Decide what skill scripts can read, write, and reach.
-* [Agents]({% link _advanced/agents.md %}) - Package skills with instructions and tools.
+* [Code Execution]({% link _core_features/code-execution.md %}) - configure the sandbox that runs skill scripts.
+* [Sandboxes]({% link _core_features/sandboxes.md %}) - decide what skill scripts can read, write, and reach.
+* [Agents]({% link _advanced/agents.md %}) - package skills with instructions and tools.

@@ -350,7 +350,7 @@ When the budget runs out the transcript is still valid, and calling `step` again
 
 ## Next Steps
 
-* [Tool Parameters]({% link _core_features/tool-parameters.md %}) - Declare flat arguments, structured schemas, and provider-specific metadata.
-* [Tools]({% link _core_features/tools.md %}) - The execution flow, error handling, and security overview.
-* [Agentic Workflows]({% link _advanced/agentic-workflows.md %}#driving-the-loop-yourself) - Drive the tool loop yourself for full control.
-* [Chat Event Handlers]({% link _core_features/chat-callbacks.md %}) - Other lifecycle callbacks on a chat.
+* [Tool Parameters]({% link _core_features/tool-parameters.md %}) - declare flat arguments, structured schemas, and provider-specific metadata.
+* [Tools]({% link _core_features/tools.md %}) - the execution flow, error handling, and security overview.
+* [Agentic Workflows]({% link _advanced/agentic-workflows.md %}#driving-the-loop-yourself) - drive the tool loop yourself for full control.
+* [Chat Event Handlers]({% link _core_features/chat-callbacks.md %}) - other lifecycle callbacks on a chat.

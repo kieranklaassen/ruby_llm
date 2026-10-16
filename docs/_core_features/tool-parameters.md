@@ -252,6 +252,6 @@ Strict mode requires every property in `required`; make optional parameters null
 
 ## Next Steps
 
-* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - Steer tool choice, call counts, concurrency, and callbacks.
-* [Tools]({% link _core_features/tools.md %}) - The execution flow, error handling, and security overview.
-* [Attachments]({% link _core_features/attachments.md %}) - How attachments returned from tools are consumed.
+* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - steer tool choice, call counts, concurrency, and callbacks.
+* [Tools]({% link _core_features/tools.md %}) - the execution flow, error handling, and security overview.
+* [Attachments]({% link _core_features/attachments.md %}) - how attachments returned from tools are consumed.

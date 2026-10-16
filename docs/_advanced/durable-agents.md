@@ -153,7 +153,7 @@ Claims keep two healthy processes from running the same tool call or asking the 
 
 ## Next Steps
 
-* [Agentic Workflows]({% link _advanced/agentic-workflows.md %}) - The loop verbs these jobs drive, and multi-agent patterns.
-* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - Approval, tool choice, and concurrency.
-* [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - The transcript persistence durability builds on.
-* [Batches]({% link _advanced/batches.md %}) - Deferred provider-side generation for many chats, with provider-specific pricing.
+* [Agentic Workflows]({% link _advanced/agentic-workflows.md %}) - the loop verbs these jobs drive, and multi-agent patterns.
+* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - approval, tool choice, and concurrency.
+* [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - the transcript persistence durability builds on.
+* [Batches]({% link _advanced/batches.md %}) - deferred provider-side generation for many chats, with provider-specific pricing.

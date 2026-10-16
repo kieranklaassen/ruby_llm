@@ -299,6 +299,6 @@ See [Error Handling]({% link _advanced/error-handling.md %}) for specific except
 
 ## Next Steps
 
-* [Image Generation]({% link _core_features/image-generation.md %}) - Generate the still images you can animate.
-* [Attachments]({% link _core_features/attachments.md %}) - Everything `with:` accepts across RubyLLM.
-* [Instrumentation and Observability]({% link _advanced/instrumentation.md %}) - Subscribe to the `video.ruby_llm` and `video_job.ruby_llm` events.
+* [Image Generation]({% link _core_features/image-generation.md %}) - generate the still images you can animate.
+* [Attachments]({% link _core_features/attachments.md %}) - everything `with:` accepts across RubyLLM.
+* [Instrumentation and Observability]({% link _advanced/instrumentation.md %}) - subscribe to the `video.ruby_llm` and `video_job.ruby_llm` events.

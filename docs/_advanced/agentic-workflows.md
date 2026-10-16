@@ -357,8 +357,8 @@ See the [Error Handling section in Tools]({% link _core_features/tools.md %}#err
 
 ## Next Steps
 
-* [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) - Ground answers in your own documents.
-* [Agents]({% link _advanced/agents.md %}) - Define reusable agent classes.
-* [Tools]({% link _core_features/tools.md %}) - Add capabilities and external actions.
-* [Scale with Async]({% link _advanced/async.md %}) - Run concurrent workflow steps.
-* [Error Handling]({% link _advanced/error-handling.md %}) - Build resilient systems.
+* [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) - ground answers in your own documents.
+* [Agents]({% link _advanced/agents.md %}) - define reusable agent classes.
+* [Tools]({% link _core_features/tools.md %}) - add capabilities and external actions.
+* [Scale with Async]({% link _advanced/async.md %}) - run concurrent workflow steps.
+* [Error Handling]({% link _advanced/error-handling.md %}) - build resilient systems.
