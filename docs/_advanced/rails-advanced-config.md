@@ -18,7 +18,7 @@ After reading this guide, you will know:
 * How to use per-tenant API keys with custom contexts.
 * How to create chats for models that aren't in the registry.
 * How to persist cache boundaries and adjust provider payloads per request.
-* How to run ActiveRecord safely inside fiber-based async workloads.
+* How to run Active Record safely inside fiber-based async workloads.
 
 Persisted chats use the same configuration methods as plain Ruby. Use them to select a provider, isolate tenant credentials, or set cache boundaries on a conversation.
 
@@ -182,7 +182,7 @@ See [Prompt Caching]({% link _core_features/prompt-caching.md %}) for provider b
 
 Message content is always text: what you persist is the conversation, not a provider's wire format. When a request needs provider-specific blocks RubyLLM has not wrapped, use a [`before_request` hook]({% link _core_features/chat-request-control.md %}#request-hooks); it adjusts the rendered payload per request and stores nothing.
 
-## Fiber-Safe ActiveRecord Connections for Async/Fiber Workloads
+## Fiber-Safe Active Record Connections for Async/Fiber Workloads
 {: .d-inline-block }
 
 Rails 7.2.1+ / 8.x

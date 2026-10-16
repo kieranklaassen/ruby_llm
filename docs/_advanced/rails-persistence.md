@@ -320,7 +320,7 @@ Internal usage and tool-call references are polymorphic, so custom names and pri
 
 ## Extending Your Models
 
-Chats and messages remain normal ActiveRecord models:
+Chats and messages remain normal Active Record models:
 
 ```ruby
 class Chat < ApplicationRecord

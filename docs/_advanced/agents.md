@@ -41,7 +41,7 @@ In other words, an agent is a named wrapper around the same configuration you wo
 Agents work in two modes:
 
 * Plain Ruby mode via `.chat` (returns `RubyLLM::Chat`)
-* Rails mode via `.create/.create!/.find` when `chat_model` is configured (returns your ActiveRecord chat model)
+* Rails mode via `.create/.create!/.find` when `chat_model` is configured (returns your Active Record chat model)
 
 Example of Rails mode:
 
@@ -446,7 +446,7 @@ Handlers apply to agent instances. `WorkAssistant.chat` returns a plain `RubyLLM
 
 ## Rails-Backed Agents
 
-Set `chat_model` to use your ActiveRecord chat model. `bin/rails generate ruby_llm:install` puts it in `ApplicationAgent`, the place for settings every agent in your app shares:
+Set `chat_model` to use your Active Record chat model. `bin/rails generate ruby_llm:install` puts it in `ApplicationAgent`, the place for settings every agent in your app shares:
 
 ```ruby
 class ApplicationAgent < RubyLLM::Agent
