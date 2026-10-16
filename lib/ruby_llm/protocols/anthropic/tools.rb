@@ -22,22 +22,22 @@ module RubyLLM
           block['type'] == 'server_tool_use' && block['name'].to_s.start_with?('tool_search_tool_')
         end
 
-        def format_tool_result(msg)
+        def render_tool_result(msg)
           {
             role: 'user',
-            content: [format_tool_result_block(msg)]
+            content: [render_tool_result_block(msg)]
           }
         end
 
-        def format_tool_result_block(msg)
+        def render_tool_result_block(msg)
           {
             type: 'tool_result',
             tool_use_id: msg.provider_call_id,
-            content: format_tool_result_content(msg)
+            content: render_tool_result_content(msg)
           }
         end
 
-        def format_tool_result_content(msg)
+        def render_tool_result_content(msg)
           search_results = RubyLLM::SearchResults.from_content(msg.content)
           return search_results.results.map { |result| search_result_block(result) } if search_results
 
@@ -45,7 +45,7 @@ module RubyLLM
           content = nil if content && content.empty?
           content = '(no output)' if content.nil? && msg.attachments.empty?
 
-          Media.format_content(content, msg.attachments)
+          Media.render_content(content, msg.attachments)
         end
 
         def search_result_block(result)

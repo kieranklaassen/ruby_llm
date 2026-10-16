@@ -63,7 +63,7 @@ module RubyLLM
 
           raise ArgumentError, 'embed one text at a time when embedding attachments' if text.is_a?(Array)
 
-          { inputs: [{ content: Media.format_content(text, attachments) }] }
+          { inputs: [{ content: Media.render_content(text, attachments) }] }
         end
       end
     end

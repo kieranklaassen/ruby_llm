@@ -32,7 +32,7 @@ module RubyLLM
             normalize_conversation_choice(options)
             {
               model: model.id,
-              inputs: format_entries(messages),
+              inputs: render_entries(messages),
               instructions: messages.select { |message| message.role == :system }.map(&:content).join("\n\n"),
               completion_args: options.slice(:temperature, :max_tokens, :response_format, :reasoning_effort,
                                              :tool_choice),
@@ -51,14 +51,14 @@ module RubyLLM
             options[:tool_choice] = 'any' if choice == 'required'
           end
 
-          def format_entries(messages)
+          def render_entries(messages)
             entries = messages.reject { |message| message.role == :system }.flat_map do |message|
               if message.raw_content
                 Array(message.raw_content)
               elsif message.tool_result?
                 [{ type: 'function.result', tool_call_id: message.provider_call_id, result: message.content.to_s }]
               else
-                format_conversation_message(message)
+                render_conversation_message(message)
               end
             end
             entries.each_with_index.flat_map { |entry, index| replay_conversation_entry(entry, index) }
@@ -91,12 +91,12 @@ module RubyLLM
             ]
           end
 
-          def format_conversation_message(message)
+          def render_conversation_message(message)
             entries = []
             if message.content || message.attachments.any?
               entries << {
                 type: 'message.input', role: message.role.to_s,
-                content: format_message_content(message)
+                content: render_message_content(message)
               }
             end
             message.tool_calls&.each_value do |call|

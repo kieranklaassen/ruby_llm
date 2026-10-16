@@ -30,7 +30,7 @@ module RubyLLM
         def render_transcription_payload(attachment, language:, format: nil, provider_options: {}, prompt: nil,
                                          temperature: nil)
           prompt = build_prompt(prompt, language)
-          audio_part = format_audio_part(attachment)
+          audio_part = render_audio_part(attachment)
 
           raise UnsupportedAttachmentError, attachment.mime_type unless attachment.audio?
 
@@ -63,7 +63,7 @@ module RubyLLM
           prompt
         end
 
-        def format_audio_part(attachment)
+        def render_audio_part(attachment)
           {
             inline_data: {
               mime_type: attachment.mime_type,

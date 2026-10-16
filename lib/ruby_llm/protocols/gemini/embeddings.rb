@@ -52,7 +52,7 @@ module RubyLLM
         end
 
         def media_embedding_payload(text, attachments, model:, dimensions:, task_type: nil, title: nil)
-          embedding_payload(Media.format_content(text, attachments), model:, dimensions:, task_type:, title:)
+          embedding_payload(Media.render_content(text, attachments), model:, dimensions:, task_type:, title:)
         end
 
         def embedding_payload(parts, model:, dimensions:, task_type:, title:)

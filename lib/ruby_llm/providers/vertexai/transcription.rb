@@ -23,7 +23,7 @@ module RubyLLM
         def render_transcription_payload(attachment, language:, speaker_names:, provider_options:, prompt:, **)
           config = { languageCodes: language && Array(language), customVocabulary: prompt && Array(prompt),
                      diarization: speaker_names && true }.compact
-          payload = { contents: [{ role: 'user', parts: [format_audio_part(attachment)] }],
+          payload = { contents: [{ role: 'user', parts: [render_audio_part(attachment)] }],
                       generationConfig: { audioTranscriptionConfig: config } }
           Support::Utils.deep_merge(payload, provider_options)
         end

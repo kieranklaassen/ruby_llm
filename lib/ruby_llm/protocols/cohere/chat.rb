@@ -30,7 +30,7 @@ module RubyLLM
 
           payload = {
             model: model.id,
-            messages: format_messages(messages, citations: citations),
+            messages: render_messages(messages, citations: citations),
             stream: stream
           }
 
@@ -43,7 +43,7 @@ module RubyLLM
         def add_optional_fields(payload, messages, temperature:, max_output_tokens:, citations:, schema:)
           payload[:temperature] = temperature unless temperature.nil?
           payload[:max_tokens] = max_output_tokens unless max_output_tokens.nil?
-          payload[:documents] = Media.format_documents(messages) if citations && Media.documents?(messages)
+          payload[:documents] = Media.render_documents(messages) if citations && Media.documents?(messages)
           payload[:response_format] = build_response_format(schema) if schema
         end
 
@@ -81,28 +81,28 @@ module RubyLLM
           payload[:thinking] = { type: 'enabled', token_budget: thinking.budget }.compact
         end
 
-        def format_messages(messages, citations: false)
-          messages.map { |msg| format_message(msg, citations: citations) }
+        def render_messages(messages, citations: false)
+          messages.map { |msg| render_message(msg, citations: citations) }
         end
 
-        def format_message(msg, citations: false)
-          return Tools.format_tool_result(msg) if msg.tool_result?
-          return format_assistant_message(msg) if msg.role == :assistant
+        def render_message(msg, citations: false)
+          return Tools.render_tool_result(msg) if msg.tool_result?
+          return render_assistant_message(msg) if msg.role == :assistant
 
           {
             role: msg.role.to_s,
-            content: Media.format_content(msg.content, msg.attachments, citations: citations)
+            content: Media.render_content(msg.content, msg.attachments, citations: citations)
           }
         end
 
         # Cohere returns tool_plan alongside tool calls, and RubyLLM surfaces
         # it as thinking, but the newer models reject it on the way back in.
         # It is optional in a request, so the plan stays out of the history.
-        def format_assistant_message(msg)
+        def render_assistant_message(msg)
           message = { role: 'assistant' }
-          content = Media.format_content(msg.content, msg.attachments)
+          content = Media.render_content(msg.content, msg.attachments)
           message[:content] = content unless content.empty?
-          message[:tool_calls] = Tools.format_tool_calls(msg.tool_calls) if msg.tool_call?
+          message[:tool_calls] = Tools.render_tool_calls(msg.tool_calls) if msg.tool_call?
           message
         end
 

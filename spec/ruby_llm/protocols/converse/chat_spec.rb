@@ -150,10 +150,10 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
     end
   end
 
-  describe '.format_tool_result_content' do
+  describe '.render_tool_result_content' do
     it 'uses a placeholder when the tool returns no content' do
       msg = instance_double(RubyLLM::Message, content: '', attachments: [])
-      result = described_class.format_tool_result_content(msg)
+      result = described_class.render_tool_result_content(msg)
 
       expect(result).to eq([{ text: '(no output)' }])
     end
@@ -503,7 +503,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
     end
   end
 
-  describe '.format_tool_config' do
+  describe '.render_tool_config' do
     def tool(name: 'lookup', description: 'Looks things up', schema: nil, provider_options: {})
       instance_double(
         RubyLLM::Tool,
@@ -513,11 +513,11 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
     end
 
     it 'is nil without tools' do
-      expect(described_class.format_tool_config({}, nil)).to be_nil
+      expect(described_class.render_tool_config({}, nil)).to be_nil
     end
 
     it 'renders a tool spec with a default input schema' do
-      config = described_class.format_tool_config({ 'lookup' => tool }, nil)
+      config = described_class.render_tool_config({ 'lookup' => tool }, nil)
 
       expect(config[:tools].first[:toolSpec]).to include(name: 'lookup', description: 'Looks things up')
       expect(config[:tools].first[:toolSpec][:inputSchema][:json]).to include('type' => 'object')
@@ -525,28 +525,28 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
     end
 
     it 'leaves toolChoice alone when the request states no preference' do
-      config = described_class.format_tool_config({ 'lookup' => tool }, { choice: nil })
+      config = described_class.render_tool_config({ 'lookup' => tool }, { choice: nil })
 
       expect(config).not_to have_key(:toolChoice)
     end
 
     it 'maps every tool choice Bedrock understands' do
-      expect(described_class.format_tool_config({ 'lookup' => tool }, { choice: :auto })[:toolChoice]).to eq(auto: {})
-      expect(described_class.format_tool_config({ 'lookup' => tool },
+      expect(described_class.render_tool_config({ 'lookup' => tool }, { choice: :auto })[:toolChoice]).to eq(auto: {})
+      expect(described_class.render_tool_config({ 'lookup' => tool },
                                                 { choice: :required })[:toolChoice]).to eq(any: {})
-      expect(described_class.format_tool_config({ 'lookup' => tool }, { choice: 'lookup' })[:toolChoice]).to eq(
+      expect(described_class.render_tool_config({ 'lookup' => tool }, { choice: 'lookup' })[:toolChoice]).to eq(
         tool: { name: 'lookup' }
       )
     end
 
     it 'omits toolChoice when the request asks for no tool' do
-      config = described_class.format_tool_config({ 'lookup' => tool }, { choice: :none })
+      config = described_class.render_tool_config({ 'lookup' => tool }, { choice: :none })
 
       expect(config).not_to have_key(:toolChoice)
     end
 
     it 'merges the tool provider options into the spec' do
-      config = described_class.format_tool_config(
+      config = described_class.render_tool_config(
         { 'lookup' => tool(provider_options: { cachePoint: { type: 'default' } }) }, nil
       )
 
@@ -554,27 +554,27 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
     end
   end
 
-  describe '.format_thinking_block' do
+  describe '.render_thinking_block' do
     it 'is nil without thinking' do
-      expect(described_class.format_thinking_block(nil)).to be_nil
+      expect(described_class.render_thinking_block(nil)).to be_nil
     end
 
     it 'sends reasoning text with its signature' do
       thinking = RubyLLM::Thinking.new(text: 'because', signature: 'sig')
 
-      expect(described_class.format_thinking_block(thinking)).to eq(
+      expect(described_class.render_thinking_block(thinking)).to eq(
         reasoningContent: { reasoningText: { text: 'because', signature: 'sig' } }
       )
     end
 
     it 'omits a missing signature' do
-      expect(described_class.format_thinking_block(RubyLLM::Thinking.new(text: 'because'))).to eq(
+      expect(described_class.render_thinking_block(RubyLLM::Thinking.new(text: 'because'))).to eq(
         reasoningContent: { reasoningText: { text: 'because' } }
       )
     end
 
     it 'sends a signature-only block as redacted content' do
-      expect(described_class.format_thinking_block(RubyLLM::Thinking.new(signature: 'sig'))).to eq(
+      expect(described_class.render_thinking_block(RubyLLM::Thinking.new(signature: 'sig'))).to eq(
         reasoningContent: { redactedContent: 'sig' }
       )
     end
@@ -601,7 +601,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
       text, signature = described_class.parse_thinking(blocks)
       thinking = RubyLLM::Thinking.build(text:, signature:)
 
-      expect(described_class.format_thinking_block(thinking)).to eq(
+      expect(described_class.render_thinking_block(thinking)).to eq(
         reasoningContent: { reasoningText: { text: '', signature: 'sig' } }
       )
     end
@@ -616,7 +616,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
     end
   end
 
-  describe '.format_messages' do
+  describe '.render_messages' do
     it 'groups consecutive tool results into one user message' do
       call_a = RubyLLM::ToolCall.new(id: 'call_a', name: 'lookup', arguments: {})
       call_b = RubyLLM::ToolCall.new(id: 'call_b', name: 'lookup', arguments: {})
@@ -628,7 +628,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
         RubyLLM::Message.new(role: :user, content: 'thanks')
       ]
 
-      rendered = described_class.format_messages(messages)
+      rendered = described_class.render_messages(messages)
 
       expect(rendered.map { |message| message[:role] }).to eq(%w[assistant user user])
       expect(rendered[1][:content].length).to eq(2)
@@ -637,7 +637,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
     it 'drops a message that renders to nothing' do
       messages = [RubyLLM::Message.new(role: :user, content: '')]
 
-      expect(described_class.format_messages(messages)).to eq([])
+      expect(described_class.render_messages(messages)).to eq([])
     end
 
     it 'closes with the trailing tool results' do
@@ -647,7 +647,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
         RubyLLM::Message.new(role: :tool, content: 'result', tool_call_id: 'call_a')
       ]
 
-      rendered = described_class.format_messages(messages)
+      rendered = described_class.render_messages(messages)
 
       expect(rendered.last[:role]).to eq('user')
       expect(rendered.last[:content].first[:toolResult][:toolUseId]).to eq('call_a')
@@ -829,7 +829,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
       )
       msg = instance_double(RubyLLM::Message, content: results.to_json, attachments: [])
 
-      expect(described_class.format_tool_result_content(msg)).to eq(
+      expect(described_class.render_tool_result_content(msg)).to eq(
         [
           {
             searchResult: {

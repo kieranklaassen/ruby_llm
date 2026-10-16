@@ -213,13 +213,13 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
     end
   end
 
-  describe '#format_messages' do
+  describe '#render_messages' do
     it 'opts OpenRouter into native file parts for PDF attachments' do
       attachment = RubyLLM::Attachment.new(StringIO.new('pdf bytes'), filename: 'proposal.pdf')
 
       messages = [RubyLLM::Message.new(role: :user, content: 'Summarize this file', attachments: [attachment])]
 
-      formatted = provider.send(:format_messages, messages)
+      formatted = provider.send(:render_messages, messages)
 
       expect(formatted.dig(0, :content, 1, :type)).to eq('file')
       expect(formatted.dig(0, :content, 1, :file, :filename)).to eq('proposal.pdf')
@@ -230,7 +230,7 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
       message = RubyLLM::Message.new(role: :user, content: 'Summarize this file', attachments: [attachment])
 
       expect do
-        provider.send(:format_messages, [message])
+        provider.send(:render_messages, [message])
       end.to raise_error(
         RubyLLM::UnsupportedAttachmentError,
         %r{Unsupported attachment type: application/vnd.openxmlformats-officedocument.wordprocessingml.document}
@@ -240,7 +240,7 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
     it 'adds cache_control to a message marked as a cache boundary' do
       message = RubyLLM::Message.new(role: :user, content: 'Long context').cache_until_here
 
-      formatted = provider.send(:format_messages, [message])
+      formatted = provider.send(:render_messages, [message])
 
       expect(formatted.dig(0, :content, -1)).to include(cache_control: { type: 'ephemeral' })
     end
@@ -248,7 +248,7 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
     it 'uses configured cache_control for a cache boundary' do
       message = RubyLLM::Message.new(role: :user, content: 'Long context').cache_until_here
 
-      formatted = provider.send(:format_messages, [message], caching: { ttl: '1h' })
+      formatted = provider.send(:render_messages, [message], caching: { ttl: '1h' })
 
       expect(formatted.dig(0, :content, -1, :cache_control)).to eq(type: 'ephemeral', ttl: '1h')
     end
@@ -256,7 +256,7 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
     it 'uses a boundary lifetime ahead of the configured ttl' do
       message = RubyLLM::Message.new(role: :user, content: 'Long context').cache_until_here(ttl: '1h')
 
-      formatted = provider.send(:format_messages, [message], caching: { ttl: '5m' })
+      formatted = provider.send(:render_messages, [message], caching: { ttl: '5m' })
 
       expect(formatted.dig(0, :content, -1, :cache_control)).to eq(type: 'ephemeral', ttl: '1h')
     end
@@ -267,7 +267,7 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
     let(:messages) { [RubyLLM::Message.new(role: :user, content: 'Hello')] }
 
     before do
-      allow(provider).to receive(:format_messages).and_return([{ role: 'user', content: 'Hello' }])
+      allow(provider).to receive(:render_messages).and_return([{ role: 'user', content: 'Hello' }])
     end
 
     it 'omits disabled function definitions while preserving the tool choice' do
@@ -358,7 +358,7 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
     end
 
     it 'adds top-level cache_control alongside an explicit boundary' do
-      allow(provider).to receive(:format_messages).and_call_original
+      allow(provider).to receive(:render_messages).and_call_original
       messages = [
         RubyLLM::Message.new(role: :user, content: 'Long context').cache_until_here,
         RubyLLM::Message.new(role: :user, content: 'Latest question')
@@ -414,7 +414,7 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
     end
   end
 
-  describe '#format_thinking' do
+  describe '#render_thinking' do
     before { provider.instance_variable_set(:@provider, RubyLLM::Providers::OpenRouter.allocate) }
 
     def answer(thinking, producer: 'openrouter')
@@ -429,18 +429,18 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
         raw_reasoning: { 'anthropic' => [{ 'type' => 'redacted_thinking', 'data' => 'encrypted' }] }
       )
 
-      expect(provider.send(:format_thinking, message)).to eq({})
+      expect(provider.send(:render_thinking, message)).to eq({})
     end
 
     it 'is empty for a user message or one without thinking' do
-      expect(provider.send(:format_thinking, RubyLLM::Message.new(role: :user, content: 'hi'))).to eq({})
-      expect(provider.send(:format_thinking, RubyLLM::Message.new(role: :assistant, content: 'hi'))).to eq({})
+      expect(provider.send(:render_thinking, RubyLLM::Message.new(role: :user, content: 'hi'))).to eq({})
+      expect(provider.send(:render_thinking, RubyLLM::Message.new(role: :assistant, content: 'hi'))).to eq({})
     end
 
     it 'sends reasoning text with its signature' do
       message = answer(RubyLLM::Thinking.new(text: 'why', signature: 'sig'))
 
-      expect(provider.send(:format_thinking, message)).to eq(
+      expect(provider.send(:render_thinking, message)).to eq(
         reasoning_details: [{ type: 'reasoning.text', text: 'why', signature: 'sig' }]
       )
     end
@@ -448,7 +448,7 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
     it 'sends a signature-only block as encrypted reasoning' do
       message = answer(RubyLLM::Thinking.new(signature: 'sig'))
 
-      expect(provider.send(:format_thinking, message)).to eq(
+      expect(provider.send(:render_thinking, message)).to eq(
         reasoning_details: [{ type: 'reasoning.encrypted', data: 'sig' }]
       )
     end
@@ -456,14 +456,14 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
     it 'sends no reasoning whose producer is unknown' do
       message = answer(RubyLLM::Thinking.new(text: 'why', signature: 'gemini-signature'), producer: nil)
 
-      expect(provider.send(:format_thinking, message)).to eq({})
+      expect(provider.send(:render_thinking, message)).to eq({})
     end
 
     it 'sends the reasoning details OpenRouter returned whoever is known to have produced them' do
       details = [{ 'type' => 'reasoning.text', 'text' => 'why', 'signature' => 'sig', 'index' => 0 }]
       message = RubyLLM::Message.new(role: :assistant, content: 'done', raw_reasoning: details)
 
-      expect(provider.send(:format_thinking, message)).to eq(reasoning_details: details)
+      expect(provider.send(:render_thinking, message)).to eq(reasoning_details: details)
     end
   end
 

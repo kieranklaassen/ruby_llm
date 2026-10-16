@@ -44,7 +44,7 @@ module RubyLLM
           RubyLLM::Support::Utils.deep_merge(definition, tool.provider_options)
         end
 
-        def format_tool_calls(tool_calls)
+        def render_tool_calls(tool_calls)
           return nil unless tool_calls&.any?
 
           tool_calls.map do |_, tc|

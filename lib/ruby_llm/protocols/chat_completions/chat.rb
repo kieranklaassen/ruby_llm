@@ -59,7 +59,7 @@ module RubyLLM
           tool_prefs ||= {}
           payload = {
             model: model.id,
-            messages: format_messages(messages, caching: caching),
+            messages: render_messages(messages, caching: caching),
             stream: stream
           }
 
@@ -305,35 +305,35 @@ module RubyLLM
           keys.map { |key| ":#{key}" }.join(', ')
         end
 
-        def format_messages(messages, caching: nil)
+        def render_messages(messages, caching: nil)
           messages_for_provider(messages)
             .chunk_while { |previous, current| previous.tool_result? && current.tool_result? }
-            .flat_map { |group| format_message_group(group, caching: caching) }
+            .flat_map { |group| render_message_group(group, caching: caching) }
         end
 
         # An assistant turn's tool results must stay consecutive, so the
         # attachment carriers of a parallel round follow the whole run.
-        def format_message_group(group, caching: nil)
-          formatted = group.map { |msg| format_message(msg, caching: caching) }
+        def render_message_group(group, caching: nil)
+          formatted = group.map { |msg| render_message(msg, caching: caching) }
           carriers = group.select { |msg| msg.tool_result? && msg.attachments.any? }
 
           formatted + carriers.map { |msg| tool_attachment_message(msg) }
         end
 
-        def format_message(msg, caching: nil)
+        def render_message(msg, caching: nil)
           {
-            role: format_role(msg.role),
-            content: format_message_content(msg, caching: caching),
-            tool_calls: format_tool_calls(msg.tool_calls),
+            role: render_role(msg.role),
+            content: render_message_content(msg, caching: caching),
+            tool_calls: render_tool_calls(msg.tool_calls),
             tool_call_id: msg.provider_call_id
-          }.compact.merge(format_thinking(msg))
+          }.compact.merge(render_thinking(msg))
         end
 
         # Chat Completions tool messages are text-only on the wire, so tool
         # attachments ride a user message spliced in after the results.
         def tool_attachment_message(msg)
-          parts = [Media.format_text("Attachments from tool call #{msg.provider_call_id}:")]
-          parts.concat(format_content(nil, msg.attachments))
+          parts = [Media.render_text("Attachments from tool call #{msg.provider_call_id}:")]
+          parts.concat(render_content(nil, msg.attachments))
           { role: 'user', content: parts }
         end
 
@@ -342,8 +342,8 @@ module RubyLLM
           system_messages + other_messages
         end
 
-        def format_message_content(msg, caching: nil, **)
-          content = format_content(msg.content, msg.tool_result? ? [] : msg.attachments)
+        def render_message_content(msg, caching: nil, **)
+          content = render_content(msg.content, msg.tool_result? ? [] : msg.attachments)
           return '' if content.nil? && thinking_only_assistant_message?(msg)
           return inject_cache_breakpoint(content) if caching != false && msg.cache_until_here? && openai_prompt_caching?
 
@@ -361,7 +361,7 @@ module RubyLLM
         def cache_breakpoint_parts(content)
           case content
           when Array then content.dup
-          when String then [Media.format_text(content)] unless content.empty?
+          when String then [Media.render_text(content)] unless content.empty?
           end
         end
 
@@ -369,11 +369,11 @@ module RubyLLM
           msg.role == :assistant && msg.thinking && !msg.tool_call?
         end
 
-        def format_content(content, attachments = [])
-          Media.format_content(content, attachments)
+        def render_content(content, attachments = [])
+          Media.render_content(content, attachments)
         end
 
-        def format_role(role)
+        def render_role(role)
           case role
           when :system
             @config.openai_use_system_role ? 'system' : 'developer'
@@ -414,7 +414,7 @@ module RubyLLM
           { purpose: 'user_data' }
         end
 
-        def format_thinking(msg)
+        def render_thinking(msg)
           return {} unless msg.role == :assistant
 
           thinking = msg.thinking

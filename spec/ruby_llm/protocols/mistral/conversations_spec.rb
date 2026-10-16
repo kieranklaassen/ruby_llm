@@ -121,7 +121,7 @@ RSpec.describe RubyLLM::Protocols::Mistral::Conversations do
       ] }
     ]
     message = RubyLLM::Message.new(role: :assistant, content: nil, raw_content: entries)
-    rendered = protocol.send(:format_entries, [message])
+    rendered = protocol.send(:render_entries, [message])
     expect(rendered.filter_map { |entry| entry['result'] if entry['type'] == 'function.result' })
       .to eq(['false', '{"answer":42}'])
     expect(rendered.first['tool_call_id']).not_to eq(rendered[2]['tool_call_id'])

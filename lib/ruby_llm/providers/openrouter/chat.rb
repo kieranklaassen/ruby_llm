@@ -38,8 +38,8 @@ module RubyLLM
           OpenRouter::Media.supported_attachment?(attachment)
         end
 
-        def format_content(content, attachments = [])
-          OpenRouter::Media.format_content(content, attachments)
+        def render_content(content, attachments = [])
+          OpenRouter::Media.render_content(content, attachments)
         end
 
         def render_payload(messages, tools:, temperature:, model:, stream: false, max_output_tokens: nil, schema: nil,
@@ -85,7 +85,7 @@ module RubyLLM
           reasoning[:enabled] = thinking.enabled
         end
 
-        def format_thinking(msg)
+        def render_thinking(msg)
           return {} unless msg.role == :assistant
           return { reasoning_details: msg.raw_reasoning } if msg.raw_reasoning.is_a?(Array)
 
@@ -103,7 +103,7 @@ module RubyLLM
           end
         end
 
-        def format_message_content(msg, caching: nil)
+        def render_message_content(msg, caching: nil)
           content = super
           return content unless caching != false && msg.cache_until_here?
 

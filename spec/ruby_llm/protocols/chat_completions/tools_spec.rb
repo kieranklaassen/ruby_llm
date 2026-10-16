@@ -107,7 +107,7 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Tools do
     end
   end
 
-  describe '.format_tool_calls' do
+  describe '.render_tool_calls' do
     it 'formats tool calls without thought signatures' do
       tool_call = RubyLLM::ToolCall.new(
         id: 'call_123',
@@ -115,7 +115,7 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Tools do
         arguments: { 'location' => 'Berlin' }
       )
 
-      result = described_class.format_tool_calls({ 'call_123' => tool_call })
+      result = described_class.render_tool_calls({ 'call_123' => tool_call })
 
       expect(result).to eq([
                              {
@@ -137,7 +137,7 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Tools do
         thought_signature: 'sig_xyz789'
       )
 
-      result = described_class.format_tool_calls({ 'call_456' => tool_call })
+      result = described_class.render_tool_calls({ 'call_456' => tool_call })
 
       expect(result).to eq([
                              {
@@ -169,7 +169,7 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Tools do
         )
       }
 
-      result = described_class.format_tool_calls(tool_calls)
+      result = described_class.render_tool_calls(tool_calls)
 
       first_call = result.find { |c| c[:id] == 'call_1' }
       second_call = result.find { |c| c[:id] == 'call_2' }
@@ -179,8 +179,8 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Tools do
     end
 
     it 'returns nil for empty or nil input' do
-      expect(described_class.format_tool_calls(nil)).to be_nil
-      expect(described_class.format_tool_calls({})).to be_nil
+      expect(described_class.render_tool_calls(nil)).to be_nil
+      expect(described_class.render_tool_calls({})).to be_nil
     end
   end
 
