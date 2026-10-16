@@ -90,10 +90,10 @@ module RubyLLM
     #
     def self.moderate(input = nil,
                       model: nil,
-                      with: nil,
                       provider: nil,
                       assume_model_exists: false,
                       context: nil,
+                      with: nil,
                       provider_options: {},
                       metadata: nil,
                       owner: nil)

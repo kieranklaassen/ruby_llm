@@ -81,7 +81,7 @@ module RubyLLM
     # <tt>"300s"</tt>. When +provider:+ is omitted, the model's default
     # provider is used. The content must exceed the model's minimum
     # cacheable token count.
-    def self.create(content, model:, ttl: nil, instructions: nil, provider: nil, context: nil, with: nil)
+    def self.create(content, model:, provider: nil, context: nil, ttl: nil, instructions: nil, with: nil)
       config = context&.config || RubyLLM.config
       model_instance, provider_instance = Models.resolve(model, provider: provider, config: config)
 

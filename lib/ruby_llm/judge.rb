@@ -145,14 +145,14 @@ module RubyLLM
     #   RubyLLM.judge("Please help today",
     #     questions: { urgent: { type: :probability, instructions: "Is this urgent?" } })
     #   Receipt.judge(with: "receipt.png")
-    def judge(input = nil, questions: {}, with: nil, context: nil, metadata: nil, owner: nil, **options, &block)
+    def judge(input = nil, questions: {}, context: nil, with: nil, metadata: nil, owner: nil, **options, &block)
       raise ArgumentError, 'Pass judgment input or a block, not both' if !input.nil? && block
 
       data = resolve_data(block || input)
       definitions = resolve_questions(questions)
       settings = self.class.model.merge(provider_options: self.class.provider_options).merge(options)
       settings = settings.transform_values { |value| resolve_data(value) }
-      Judgment.judge(data, questions: definitions, with:, context:, metadata:, owner:, **settings)
+      Judgment.judge(data, questions: definitions, context:, with:, metadata:, owner:, **settings)
     end
 
     private

@@ -119,10 +119,10 @@ module RubyLLM
     # stream transcriptions.
     def self.transcribe(audio_file,
                         model: nil,
-                        language: nil,
                         provider: nil,
                         assume_model_exists: false,
                         context: nil,
+                        language: nil,
                         prompt: nil,
                         temperature: nil,
                         format: nil,

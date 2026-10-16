@@ -65,8 +65,8 @@ module RubyLLM
       { model:, answers: answers.transform_values(&:to_h), tokens: tokens.to_h, cost: cost.to_h }
     end
 
-    def self.judge(input, questions:, with: nil, model: nil, provider: nil, context: nil, # :nodoc:
-                   assume_model_exists: false, provider_options: {}, metadata: nil, owner: nil)
+    def self.judge(input, questions:, model: nil, provider: nil, assume_model_exists: false, # :nodoc:
+                   context: nil, with: nil, provider_options: {}, metadata: nil, owner: nil)
       config = context&.config || RubyLLM.config
       attachments = Attachment.wrap(with, config:)
       validate_input!(input, attachments)
