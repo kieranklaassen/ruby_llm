@@ -121,7 +121,7 @@ RubyLLM.configure do |config|
 end
 ```
 
-> Attempting to use an unconfigured provider will raise `RubyLLM::ConfigurationError`. Only configure what you need.
+> Using an unconfigured provider raises `RubyLLM::ConfigurationError`. Only configure what you need.
 {: .note }
 
 ## TypeSafe

@@ -198,7 +198,7 @@ parameter schema and `execute` signature stay together.
 
 ### Provider-Specific Parameters
 
-Some providers accept additional metadata alongside the JSON Schema, for example Anthropic's `cache_control` hints. Use `provider_options` to declare these once on the tool class and RubyLLM will merge them into the payload when the provider supports the keys.
+Some providers accept additional metadata alongside the JSON Schema, for example Anthropic's `cache_control` hints. Use `provider_options` to declare these once on the tool class and RubyLLM merges them into the payload when the provider supports the keys.
 
 ```ruby
 class TodoTool < RubyLLM::Tool

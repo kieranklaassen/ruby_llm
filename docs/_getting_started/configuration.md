@@ -46,7 +46,7 @@ end
 
 Each provider has its own key (and sometimes region or project settings). For the full list of providers, organization headers, Vertex AI authentication, and OpenAI-compatible custom endpoints, see [Provider Setup and Custom Endpoints]({% link _getting_started/configuration-providers.md %}).
 
-> Attempting to use an unconfigured provider will raise `RubyLLM::ConfigurationError`. Only configure what you need.
+> Using an unconfigured provider raises `RubyLLM::ConfigurationError`. Only configure what you need.
 {: .note }
 
 ## Default Models

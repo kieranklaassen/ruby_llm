@@ -29,7 +29,7 @@ So before you write anything, decide which case you are in:
 * **The service speaks an API RubyLLM already knows** (almost always OpenAI Chat Completions). Write only a provider. This is the common case, and it is a few dozen lines.
 * **The service speaks a new wire format or a dialect that differs in payload or parsing.** Write a protocol (or a thin subclass of an existing one) and a provider that declares it.
 
-We will build a fictional provider, `Acme`, that exposes an OpenAI-compatible Chat Completions API at `https://api.acme.ai/v1`, then show how to override the wire format when a dialect diverges.
+This guide builds a fictional provider, `Acme`, that exposes an OpenAI-compatible Chat Completions API at `https://api.acme.ai/v1`, then shows how to override the wire format when a dialect diverges.
 
 ## Generate the Starting Point
 
@@ -97,7 +97,7 @@ That is the real shape of a RubyLLM provider - DeepSeek, Perplexity, and Mistral
 * **`models_url`** names the model-listing endpoint. Change it when the provider does not expose models at `/models`.
 * **`configuration_options`** lists the config keys your provider contributes. **`configuration_requirements`** is the subset that must be present before the provider is usable.
 
-`@config` is a `RubyLLM::Configuration` instance, and `@config.acme_api_key` works only because you listed `acme_api_key` in `configuration_options` - registering the provider materializes those accessors. We will register it below.
+`@config` is a `RubyLLM::Configuration` instance, and `@config.acme_api_key` works only because you listed `acme_api_key` in `configuration_options`: registering the provider materializes those accessors. You register it below.
 
 ### Reusing a Wire Format Against a Different Host
 
@@ -273,7 +273,7 @@ ruby_llm-providers-acme/
 └── ruby_llm-providers-acme.gemspec
 ```
 
-RubyLLM's own autoloader (`Zeitwerk::Loader.for_gem`) is scoped to the RubyLLM gem and will not discover files in your gem. Make the provider file self-registering so requiring that one file loads the complete integration:
+RubyLLM's own autoloader (`Zeitwerk::Loader.for_gem`) is scoped to the RubyLLM gem and does not discover files in your gem. Make the provider file self-registering so requiring that one file loads the complete integration:
 
 ```ruby
 # lib/ruby_llm/providers/acme.rb
