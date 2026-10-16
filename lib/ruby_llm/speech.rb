@@ -144,7 +144,10 @@ module RubyLLM
 
     attr_writer :model_info # :nodoc:
 
-    def model_info # :nodoc:
+    # Returns the speech's Model from its provider's registry, falling
+    # back to the requested model when the response ID is unknown.
+    # Returns +nil+ if the model is unknown.
+    def model_info
       @model_info ||= RubyLLM.models.find(model)
     rescue ModelNotFoundError
       nil
