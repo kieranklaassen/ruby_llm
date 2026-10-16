@@ -340,7 +340,7 @@ RSpec.describe RubyLLM::Agent do
 
     it 'resolves a context block from agent inputs before building the chat' do
       agent = Class.new(described_class) do
-        model 'gpt-4.1-nano', provider: :openai
+        model model_for(:openai, :temperature), provider: :openai
         inputs :timeout
 
         send(:context) { RubyLLM.context { |config| config.request_timeout = timeout } }
@@ -353,7 +353,7 @@ RSpec.describe RubyLLM::Agent do
 
     it 'resolves a context block for agent instances' do
       agent = Class.new(described_class) do
-        model 'gpt-4.1-nano', provider: :openai
+        model model_for(:openai, :temperature), provider: :openai
         inputs :timeout
 
         send(:context) { RubyLLM.context { |config| config.request_timeout = timeout } }
@@ -365,7 +365,7 @@ RSpec.describe RubyLLM::Agent do
     it 'evaluates a context block once when building an agent chat' do
       evaluations = 0
       agent = Class.new(described_class) do
-        model 'gpt-4.1-nano', provider: :openai
+        model model_for(:openai, :temperature), provider: :openai
         send(:context) do
           evaluations += 1
           RubyLLM.context

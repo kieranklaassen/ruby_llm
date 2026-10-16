@@ -66,7 +66,7 @@ RSpec.describe RubyLLM::Providers::XAI::Videos do
         .to_return(status: 200, body: { request_id: 'request-1' }.to_json,
                    headers: { 'Content-Type' => 'application/json' })
 
-      job = context.animate_later('a calm ocean wave', model: 'grok-imagine-video', provider: :xai,
+      job = context.animate_later('a calm ocean wave', model:, provider: :xai,
                                                        provider_options: { 'duration' => 5, resolution: '720p' })
 
       expect(job).to have_attributes(id: 'request-1', duration: 5, resolution: '720p')
