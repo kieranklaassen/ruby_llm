@@ -146,7 +146,7 @@ module RubyLLM
 
       # Models remain a UI resource even though RubyLLM owns their persistence.
       # Keep that resource beside a namespaced chat without implying that the
-      # application has a corresponding ActiveRecord model.
+      # application has a corresponding Active Record model.
       def model_model_name
         return 'Model' unless chat_model_name.include?('::')
 
@@ -272,8 +272,6 @@ module RubyLLM
       def ui_template(template_path)
         return template_path unless ui_variant == :tailwind
 
-        # Keep Tailwind templates as a separate set so we can mirror Rails/Tailwind
-        # scaffold conventions without complicating scaffold templates.
         tailwind_template = "tailwind/#{template_path}"
         File.exist?(File.join(self.class.source_root, "#{tailwind_template}.tt")) ? tailwind_template : template_path
       end
@@ -384,9 +382,6 @@ module RubyLLM
         "#{owner_table.singularize}_id"
       end
 
-      # Rails default inference:
-      # belongs_to :assoc    -> assoc_id
-      # has_many/has_one     -> owner demodulized model name + _id
       def default_inferred_foreign_key(association_name, owner_model_name, collection_association)
         return "#{association_name}_id" unless collection_association
 
@@ -397,21 +392,14 @@ module RubyLLM
         values.map { |value| "'#{value}'" }.join(', ')
       end
 
-      # Convert namespaced model names to proper table names
-      # e.g., "Assistant::Chat" -> "assistant_chats" (not "assistant/chats")
       def table_name_for(model_name)
         model_name.underscore.pluralize.tr('/', '_')
       end
 
-      # Convert model name to instance variable name
-      # e.g., "LLM::Chat" -> "llm_chat" (not "llm/chat")
       def variable_name_for(model_name)
         model_name.underscore.tr('/', '_')
       end
 
-      # Convert model name to controller class name
-      # For namespaced models, use Rails convention: "Llm::Chat" -> "Llm::ChatsController"
-      # For regular models: "Chat" -> "ChatsController"
       def controller_class_name_for(model_name)
         if model_name.include?('::')
           parts = model_name.split('::')

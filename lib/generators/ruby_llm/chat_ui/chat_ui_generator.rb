@@ -41,10 +41,6 @@ module RubyLLM
       end
 
       def create_views
-        # Design contract:
-        # - `scaffold` should stay close to Rails scaffold ERB output.
-        # - `tailwind` should stay close to tailwindcss-rails scaffold output.
-        # - Only small chat-specific affordances should be layered on top.
         chat_view_path = chat_model_name.underscore.pluralize
         message_view_path = message_model_name.underscore.pluralize
         model_view_path = model_model_name.underscore.pluralize
