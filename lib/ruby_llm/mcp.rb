@@ -697,7 +697,7 @@ module RubyLLM
       until task.done?
         ask_for_task_input(task) if task.status == :input_required
         remaining = deadline - Process.clock_gettime(Process::CLOCK_MONOTONIC)
-        raise Error, "Task #{task.id} did not finish in #{limit} seconds" unless remaining.positive?
+        raise Error, "Task #{task.id} timed out after #{limit} seconds" unless remaining.positive?
 
         Support::Cancellation.pause([interval || poll_interval(task), remaining].min)
         task.refresh

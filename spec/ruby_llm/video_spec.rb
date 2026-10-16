@@ -62,7 +62,10 @@ RSpec.describe RubyLLM::Video, :live do
       allow(protocol).to receive(:refresh_video_job).and_return({ status: :pending })
       job = described_class.new(id: 'operations/op-1', protocol: protocol)
 
-      expect { job.wait(timeout: 0, interval: 0) }.to raise_error(RubyLLM::Error, /timed out after 0 seconds/)
+      expect { job.wait(timeout: 0, interval: 0) }
+        .to raise_error(described_class::TimeoutError, /timed out after 0 seconds \(job operations/) do |error|
+          expect(error.job).to equal(job)
+        end
     end
 
     it 'does not sleep past the timeout deadline' do
@@ -81,8 +84,10 @@ RSpec.describe RubyLLM::Video, :live do
         .and_return({ status: :failed, error: 'flagged by moderation' })
       job = described_class.new(id: 'operations/op-1', protocol: protocol)
 
-      expect { job.wait(timeout: 10, interval: 0) }.to raise_error(RubyLLM::Error, /flagged by moderation/)
-      expect { job.video }.to raise_error(RubyLLM::Error, /flagged by moderation/)
+      expect { job.wait(timeout: 10, interval: 0) }.to raise_error(described_class::Error, /flagged by moderation/)
+      expect { job.video }.to raise_error(described_class::Error, /flagged by moderation/) do |error|
+        expect(error.job).to equal(job)
+      end
     end
 
     it 'returns no video while pending and stops refreshing once done' do

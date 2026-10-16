@@ -45,6 +45,7 @@ RubyLLM::Error                    # Base error class for provider-operation issu
     RubyLLM::OverloadedError      # 529: Service overloaded (Specific providers)
     RubyLLM::MCP::Error           # MCP server answered with an error, an unexpected status, or not at all
     RubyLLM::ResearchJob::Error   # Hosted research job failed; keeps the job for inspection
+    RubyLLM::VideoJob::Error      # Video job failed or timed out; keeps the job for inspection
 
 # Local Errors (inherit from StandardError)
 RubyLLM::ConfigurationError   # Missing required configuration (e.g., API key)

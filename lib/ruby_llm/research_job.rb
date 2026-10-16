@@ -168,7 +168,9 @@ module RubyLLM
       deadline = monotonic_time + timeout
       until done?
         remaining = deadline - monotonic_time
-        raise TimeoutError.new("Research timed out (job #{id})", job: self) unless remaining.positive?
+        unless remaining.positive?
+          raise TimeoutError.new("Research timed out after #{timeout} seconds (job #{id})", job: self)
+        end
 
         refresh(timeout: remaining)
         sleep [interval, deadline - monotonic_time].min if pending? && monotonic_time < deadline

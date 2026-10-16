@@ -55,7 +55,7 @@ video = job.video
 video.save("hummingbird.mp4")
 ```
 
-`refresh` updates the job state and does nothing after completion. Read `job.video` when `job.succeeded?` is true. It is `nil` while pending and raises `RubyLLM::Error` if rendering failed. Use `job.wait` when you want RubyLLM to handle polling.
+`refresh` updates the job state and does nothing after completion. Read `job.video` when `job.succeeded?` is true. It is `nil` while pending and raises `RubyLLM::VideoJob::Error` if rendering failed. Use `job.wait` when you want RubyLLM to handle polling.
 
 A finished job carries the cost the provider billed for it:
 
@@ -233,7 +233,7 @@ RubyLLM.configure do |config|
 end
 ```
 
-When the timeout elapses, `animate` raises `RubyLLM::Error`. The provider keeps rendering; only the wait stops. Video jobs have no cancellation method. `animate` and `wait` also accept both values per call:
+When the timeout elapses, `animate` raises `RubyLLM::VideoJob::TimeoutError`. The provider keeps rendering; only the wait stops. The exception retains the job as `error.job`, so you can save its ID and poll again later. Video jobs have no cancellation method. `animate` and `wait` also accept both values per call:
 
 ```ruby
 RubyLLM.animate("A rocket launch seen from orbit", timeout: 900, interval: 10)
@@ -284,7 +284,7 @@ end
 
 ## Error Handling
 
-Video generation fails for the same reasons image generation does, plus one of its own: the job itself can fail after it was accepted, for example when the content filter blocks the prompt mid-render. RubyLLM surfaces both as `RubyLLM::Error`:
+Video generation fails for the same reasons image generation does, plus one of its own: the job itself can fail after it was accepted, for example when the content filter blocks the prompt mid-render. RubyLLM surfaces both as `RubyLLM::Error`. A job that fails or times out raises `RubyLLM::VideoJob::Error`, which keeps the job:
 
 ```ruby
 begin
@@ -292,9 +292,9 @@ begin
 rescue RubyLLM::BadRequestError => e
   # The provider rejected the request up front
   puts "Request failed: #{e.message}"
-rescue RubyLLM::Error => e
+rescue RubyLLM::VideoJob::Error => e
   # The job failed while rendering, or the wait timed out
-  puts "Generation failed: #{e.message}"
+  puts "Generation failed: #{e.message} (job #{e.job.id})"
 end
 ```
 

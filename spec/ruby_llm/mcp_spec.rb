@@ -950,7 +950,7 @@ RSpec.describe RubyLLM::MCP do
 
       expect do
         task.wait(timeout: 0.05)
-      end.to raise_error(RubyLLM::MCP::Error, 'Task task-1 did not finish in 0.05 seconds')
+      end.to raise_error(RubyLLM::MCP::Error, 'Task task-1 timed out after 0.05 seconds')
       expect(server_tasks['cancelled']).to be_empty
     end
 
