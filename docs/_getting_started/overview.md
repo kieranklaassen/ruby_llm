@@ -73,6 +73,8 @@ For search, `embed` creates [vectors]({% link _core_features/embeddings.md %}) a
 
 Use `judge` to ask typed questions about application data and receive [probabilities, choices, and scores]({% link _core_features/judgments.md %}). Define reusable questions in a `RubyLLM::Judge` class.
 
+Use `tokenize` to turn [plain text into token IDs]({% link _core_features/tokenization.md %}) and `research` to run a [hosted research task]({% link _advanced/hosted-research.md %}) and read its report.
+
 Each result has readers for its output, such as `transcription.text`, `document.markdown`, or `embedding.vectors`. Generated images, video, and speech have a `save` method.
 
 An individual operation may involve several requests. `animate` submits a job and waits for the video; `animate_later` returns a `VideoJob` immediately. Transcription can stream. You use the same operation API while RubyLLM handles that lifecycle.
@@ -202,7 +204,7 @@ Individual operations such as `paint`, `transcribe`, and `ocr` also work directl
 | Part | In practice |
 | --- | --- |
 | Ruby API: conversations | Chats, messages, tools, agents, structured output, and streaming. |
-| Ruby API: individual operations | Images, video, speech, transcription, OCR, moderation, embeddings, reranking, and judgments. |
+| Ruby API: individual operations | Images, video, speech, transcription, OCR, moderation, embeddings, reranking, judgments, tokenization, and hosted research. |
 | Providers and protocols | Providers choose the service and its settings; protocols translate the API format. |
 | Shared services | Model selection, configuration, usage and costs, instrumentation, batches, and provider resources. |
 | Rails integration | The same API with Active Record, Active Storage, Hotwire, jobs, and generators. |

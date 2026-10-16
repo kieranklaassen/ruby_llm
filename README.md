@@ -73,7 +73,8 @@ More than a client for model APIs. RubyLLM gives your application the convention
 * **Citations:** Normalized source citations from documents, search, and grounding
 * **Batches:** Provider-side batch processing with provider-specific discounts via `RubyLLM.batch`
 * **Compaction:** Let providers condense long conversations with `with_compaction`
-* **Token counting:** Count a request before you send it with `count_tokens`
+* **Token counting:** Count a request before you send it with `count_tokens`, or tokenize plain text with `RubyLLM.tokenize`
+* **Hosted research:** Run a provider's research agent and read its report with `RubyLLM.research`
 * **Providers:** OpenAI, Azure, xAI, Anthropic, Gemini, VertexAI, Bedrock, Cohere, DeepSeek, Hetzner, Mistral, Ollama, Ollama Cloud, OpenRouter, Perplexity, GPUStack, ElevenLabs, Deepgram, TypeSafe, and any OpenAI-compatible API
 
 ## Evaluate your agents
