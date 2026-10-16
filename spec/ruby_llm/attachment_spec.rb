@@ -277,7 +277,7 @@ RSpec.describe RubyLLM::Attachment do
 
   it 'rejects unknown media resolutions' do
     expect { described_class.new(StringIO.new('png'), filename: 'page.png', resolution: 'high') }
-      .to raise_error(ArgumentError, /resolution must be one of/)
+      .to raise_error(ArgumentError, /Unknown resolution/)
   end
 
   it 'accepts a video processing mode' do
@@ -298,7 +298,7 @@ RSpec.describe RubyLLM::Attachment do
 
   it 'rejects unknown video processing modes' do
     expect { described_class.new(StringIO.new('mp4'), filename: 'lecture.mp4', processing: 'agentic') }
-      .to raise_error(ArgumentError, 'processing must be one of static, agentic, got "agentic"')
+      .to raise_error(ArgumentError, 'Unknown processing: "agentic". Valid values: static, agentic.')
   end
 
   describe 'serialized attributes' do

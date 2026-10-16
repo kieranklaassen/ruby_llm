@@ -366,7 +366,9 @@ module RubyLLM
     end
 
     def ensure_valid_role
-      raise InvalidRoleError, "Expected role to be one of: #{ROLES.join(', ')}" unless ROLES.include?(role)
+      return if ROLES.include?(role)
+
+      raise InvalidRoleError, "Unknown role: #{role.inspect}. Valid roles: #{ROLES.join(', ')}."
     end
 
     def inspect_attributes # :nodoc:

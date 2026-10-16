@@ -776,7 +776,7 @@ RSpec.describe RubyLLM::MCP do
 
     it 'refuses names of extensions it does not know' do
       expect { Class.new(described_class) { extension :widgets } }
-        .to raise_error(ArgumentError, 'Unknown MCP extension: widgets')
+        .to raise_error(ArgumentError, 'Unknown MCP extension: :widgets. Valid extensions: apps, tasks.')
     end
 
     it 'passes extensions to subclasses without sharing them' do
@@ -1000,7 +1000,7 @@ RSpec.describe RubyLLM::MCP do
 
     it 'refuses levels the protocol does not define' do
       expect { Class.new(described_class) { log_level :verbose } }
-        .to raise_error(ArgumentError, 'Unknown MCP log level: verbose')
+        .to raise_error(ArgumentError, /Unknown MCP log level: :verbose\. Valid levels: debug, info/)
     end
 
     it 'takes a level inline' do

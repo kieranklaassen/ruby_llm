@@ -991,6 +991,6 @@ RSpec.describe RubyLLM::MCP::OAuth do
 
   it 'refuses grants it does not know' do
     expect { Class.new(RubyLLM::MCP) { oauth grant: :password } }
-      .to raise_error(ArgumentError, 'Unknown OAuth grant: password')
+      .to raise_error(ArgumentError, /Unknown OAuth grant: :password\. Valid grants: authorization_code/)
   end
 end

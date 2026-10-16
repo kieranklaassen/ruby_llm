@@ -138,8 +138,13 @@ module RubyLLM
         private
 
         def validate
-          raise ArgumentError, "Unknown usage operation: #{operation.inspect}" unless OPERATIONS.include?(operation)
-          raise ArgumentError, "Unknown usage status: #{status.inspect}" unless STATUSES.include?(status)
+          unless OPERATIONS.include?(operation)
+            raise ArgumentError,
+                  "Unknown usage operation: #{operation.inspect}. Valid operations: #{OPERATIONS.join(', ')}."
+          end
+          return if STATUSES.include?(status)
+
+          raise ArgumentError, "Unknown usage status: #{status.inspect}. Valid statuses: #{STATUSES.join(', ')}."
         end
 
         def inspect_attributes # :nodoc:

@@ -215,7 +215,9 @@ module RubyLLM
       #                              client_secret: ENV["OKTA_CLIENT_SECRET"], id_token: -> { user.id_token } }
       def oauth(owner: nil, scopes: nil, client_id: nil, client_secret: nil, grant: nil, private_key: nil,
                 assertion: nil, identity_provider: nil)
-        raise ArgumentError, "Unknown OAuth grant: #{grant}" unless grant.nil? || OAuth::GRANTS.include?(grant)
+        unless grant.nil? || OAuth::GRANTS.include?(grant)
+          raise ArgumentError, "Unknown OAuth grant: #{grant.inspect}. Valid grants: #{OAuth::GRANTS.join(', ')}."
+        end
 
         @oauth = { owner:, scopes:, client_id:, client_secret:, grant:, private_key:, assertion:, identity_provider: }
       end
@@ -454,7 +456,9 @@ module RubyLLM
       # Raises ArgumentError for a level the protocol does not define.
       def log_level(level = nil)
         return @log_level if level.nil?
-        raise ArgumentError, "Unknown MCP log level: #{level}" unless LOG_LEVELS.key?(level.to_sym)
+        unless LOG_LEVELS.key?(level.to_sym)
+          raise ArgumentError, "Unknown MCP log level: #{level.inspect}. Valid levels: #{LOG_LEVELS.keys.join(', ')}."
+        end
 
         @log_level = level.to_sym
       end
@@ -493,7 +497,12 @@ module RubyLLM
       end
 
       def extension_identifier(name)
-        return EXTENSIONS.fetch(name) { raise ArgumentError, "Unknown MCP extension: #{name}" } if name.is_a?(Symbol)
+        if name.is_a?(Symbol)
+          return EXTENSIONS.fetch(name) do
+            raise ArgumentError,
+                  "Unknown MCP extension: #{name.inspect}. Valid extensions: #{EXTENSIONS.keys.join(', ')}."
+          end
+        end
         return [name.to_s, {}] if name.to_s.include?('/')
 
         raise ArgumentError, "MCP extensions are named with a vendor prefix, such as com.example/#{name}"

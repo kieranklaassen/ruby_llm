@@ -607,7 +607,7 @@ module RubyLLM
 
       def resolve!(name) # :nodoc:
         providers[name.to_sym] ||
-          raise(Error, "Unknown provider: #{name.inspect}. Available providers: #{providers.keys.join(', ')}")
+          raise(Error, "Unknown provider: #{name.inspect}. Valid providers: #{providers.keys.join(', ')}.")
       end
 
       # Resolves +model_id+ to the id the registry stores it under for this
@@ -712,7 +712,8 @@ module RubyLLM
 
     def fetch_protocol(name)
       protocols.fetch(name.to_sym) do
-        raise Error, "#{name} is not a protocol of #{self.class.display_name}. Available: #{protocols.keys.join(', ')}"
+        raise Error, "Unknown #{self.class.display_name} protocol: #{name.inspect}. " \
+                     "Valid protocols: #{protocols.keys.join(', ')}."
       end
     end
 

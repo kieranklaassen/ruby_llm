@@ -278,7 +278,7 @@ module RubyLLM
     def check_option(name, value, allowed)
       return if value.nil? || allowed.include?(value)
 
-      raise ArgumentError, "#{name} must be one of #{allowed.join(', ')}, got #{value.inspect}"
+      raise ArgumentError, "Unknown #{name}: #{value.inspect}. Valid values: #{allowed.join(', ')}."
     end
 
     def data_uri

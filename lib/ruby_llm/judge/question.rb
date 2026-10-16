@@ -9,7 +9,9 @@ module RubyLLM
 
       def initialize(name, type:, instructions: nil, criteria: nil, &block)
         validate_name(name)
-        raise ArgumentError, "Unknown judgment type: #{type.inspect}" unless CRITERIA_KEYS.key?(type)
+        unless CRITERIA_KEYS.key?(type)
+          raise ArgumentError, "Unknown judgment type: #{type.inspect}. Valid types: #{CRITERIA_KEYS.keys.join(', ')}."
+        end
         raise ArgumentError, 'Pass question criteria or a block, not both' if !criteria.nil? && block
 
         @name = name.is_a?(String) ? name.dup.freeze : name

@@ -359,11 +359,11 @@ RSpec.describe 'RubyLLM::Accounting::Usage::Tracker' do
   it 'refuses an unknown operation or status' do
     expect do
       RubyLLM::Accounting::Usage::Entry.new(operation: :telepathy, provider: 'openai', model: 'm')
-    end.to raise_error(ArgumentError, 'Unknown usage operation: :telepathy')
+    end.to raise_error(ArgumentError, /Unknown usage operation: :telepathy\. Valid operations: chat, /)
 
     expect do
       RubyLLM::Accounting::Usage::Entry.new(operation: :chat, provider: 'openai', model: 'm', status: :maybe)
-    end.to raise_error(ArgumentError, 'Unknown usage status: :maybe')
+    end.to raise_error(ArgumentError, /Unknown usage status: :maybe\. Valid statuses: pending, succeeded/)
   end
 
   it 'summarizes an entry for inspection' do

@@ -609,7 +609,7 @@ RSpec.describe RubyLLM::Provider do
     it 'raises on protocols the provider does not speak' do
       expect do
         provider.send(:resolve_protocol, :gemini, model)
-      end.to raise_error(RubyLLM::Error, /gemini is not a protocol of OpenAI\. Available: responses, chat_completions/)
+      end.to raise_error(RubyLLM::Error, /Unknown OpenAI protocol: :gemini\. Valid protocols: responses, chat_/)
     end
 
     it 'uses Responses as the default batch protocol' do

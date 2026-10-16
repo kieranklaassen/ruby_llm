@@ -1981,7 +1981,7 @@ module RubyLLM
         valid_tool_choices = %i[auto none required] + tools.keys
         unless valid_tool_choices.include?(normalized_choice)
           raise InvalidToolChoiceError,
-                "Invalid tool choice: #{choice}. Valid choices are: #{valid_tool_choices.join(', ')}"
+                "Unknown tool choice: #{choice.inspect}. Valid choices: #{valid_tool_choices.join(', ')}."
         end
 
         @tool_prefs[:choice] = normalized_choice
@@ -1997,7 +1997,7 @@ module RubyLLM
 
       raise ArgumentError,
             "Unknown tool concurrency: #{concurrency.inspect}. " \
-            "Available modes: #{ToolConcurrency::MODES.join(', ')}"
+            "Valid modes: #{ToolConcurrency::MODES.join(', ')}."
     end
 
     def normalize_calls(calls)
@@ -2007,7 +2007,7 @@ module RubyLLM
       when :one, 'one', 1
         :one
       else
-        raise ArgumentError, "Invalid calls value: #{calls.inspect}. Valid values are: :many, :one, or 1"
+        raise ArgumentError, "Unknown calls value: #{calls.inspect}. Valid values: many, one, 1."
       end
     end
 

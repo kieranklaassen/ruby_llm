@@ -77,7 +77,7 @@ RSpec.describe RubyLLM::Chat do
 
     it 'rejects a tool the chat does not carry' do
       expect { chat.with_tool_options(choice: :missing) }.to raise_error(
-        RubyLLM::InvalidToolChoiceError, /Invalid tool choice: missing/
+        RubyLLM::InvalidToolChoiceError, /Unknown tool choice: :missing/
       )
     end
 
@@ -88,7 +88,7 @@ RSpec.describe RubyLLM::Chat do
       chat.with_tools(lookup_tool)
 
       expect { chat.with_tool_options(choice: Support::LookupTool) }.to raise_error(
-        RubyLLM::InvalidToolChoiceError, /Invalid tool choice: Support::LookupTool/
+        RubyLLM::InvalidToolChoiceError, /Unknown tool choice: Support::LookupTool/
       )
     end
   end
@@ -303,7 +303,7 @@ RSpec.describe RubyLLM::Chat do
       stub_const('WeatherTool2', other)
 
       expect { chat.with_tool_options(choice: WeatherTool2) }.to raise_error(
-        RubyLLM::InvalidToolChoiceError, /Invalid tool choice/
+        RubyLLM::InvalidToolChoiceError, /Unknown tool choice/
       )
     end
   end
