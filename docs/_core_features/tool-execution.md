@@ -3,7 +3,7 @@ layout: default
 title: Controlling Tool Execution
 parent: "Tools"
 nav_order: 2
-description: Choose tools, require approval, run calls concurrently, and observe their results
+description: Choose tools, require approval, run calls concurrently, and observe their results.
 ---
 
 # {{ page.title }}

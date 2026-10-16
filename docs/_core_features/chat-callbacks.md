@@ -3,7 +3,7 @@ layout: default
 title: Chat Event Handlers
 parent: "Chat"
 nav_order: 10
-description: Hook into the chat lifecycle with additive callbacks for UI updates, logging, and analytics
+description: Hook into the chat lifecycle with additive callbacks for UI updates, logging, and analytics.
 ---
 
 # {{ page.title }}

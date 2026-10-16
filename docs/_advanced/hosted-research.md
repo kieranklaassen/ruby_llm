@@ -2,7 +2,7 @@
 layout: default
 title: Hosted Research
 nav_order: 8
-description: Run a hosted research agent with remote tools and collect its report through a durable job ID
+description: Run a hosted research agent with remote tools and collect its report through a durable job ID.
 ---
 
 # {{ page.title }}

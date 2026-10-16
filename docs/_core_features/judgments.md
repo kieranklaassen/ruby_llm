@@ -2,7 +2,7 @@
 layout: default
 title: Judgments
 nav_order: 5
-description: Ask typed questions about your application data and receive probabilities, choices, and scores
+description: Ask typed questions about your application data and receive probabilities, choices, and scores.
 ---
 
 # {{ page.title }}

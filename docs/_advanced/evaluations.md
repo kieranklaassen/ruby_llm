@@ -3,7 +3,7 @@ layout: default
 title: Evaluations
 nav_order: 14
 has_children: true
-description: Measure how well your agents answer, with reusable datasets, model grading, and Ruby assertions
+description: Measure how well your agents answer, with reusable datasets, model grading, and Ruby assertions.
 ---
 
 # {{ page.title }}

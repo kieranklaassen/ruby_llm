@@ -2,7 +2,7 @@
 layout: default
 title: Document OCR
 nav_order: 9
-description: Extract text, tables, and images from PDFs and scans as clean markdown
+description: Extract text, tables, and images from PDFs and scans as clean markdown.
 ---
 
 # {{ page.title }}

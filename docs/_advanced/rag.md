@@ -3,7 +3,7 @@ layout: default
 title: Retrieval-Augmented Generation (RAG)
 parent: "Agents"
 nav_order: 2
-description: Retrieve relevant context from your own documents, then answer with that context
+description: Retrieve relevant context from your own documents, then answer with that context.
 ---
 
 # {{ page.title }}

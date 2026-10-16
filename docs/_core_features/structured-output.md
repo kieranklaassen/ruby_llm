@@ -3,7 +3,7 @@ layout: default
 title: Structured Output
 parent: "Chat"
 nav_order: 3
-description: Get AI responses that match an exact JSON schema with required fields and types
+description: Get AI responses that match an exact JSON schema with required fields and types.
 ---
 
 # {{ page.title }}

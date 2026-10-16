@@ -3,7 +3,7 @@ layout: default
 title: Running Evaluations
 parent: Evaluations
 nav_order: 4
-description: Run evaluations from Rake, RSpec, Minitest, or Ruby and read their results, tokens, and costs
+description: Run evaluations from Rake, RSpec, Minitest, or Ruby and read their results, tokens, and costs.
 ---
 
 # {{ page.title }}

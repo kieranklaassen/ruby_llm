@@ -2,7 +2,7 @@
 layout: default
 title: Error Handling
 nav_order: 7
-description: Rescue provider errors, fall back to other models, and let automatic retries absorb transient failures
+description: Rescue provider errors, fall back to other models, and let automatic retries absorb transient failures.
 redirect_from:
   - /guides/error-handling
 ---

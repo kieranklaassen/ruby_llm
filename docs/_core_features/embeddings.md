@@ -2,7 +2,7 @@
 layout: default
 title: Embeddings
 nav_order: 3
-description: Create vectors from text, images, audio, video, and documents for search and similarity
+description: Create vectors from text, images, audio, video, and documents for search and similarity.
 redirect_from:
   - /guides/embeddings
 ---
