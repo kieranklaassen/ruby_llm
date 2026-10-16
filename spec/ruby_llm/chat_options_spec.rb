@@ -7,6 +7,14 @@ RSpec.describe RubyLLM::Chat do
 
   include_context 'with configured RubyLLM'
 
+  describe '#initialize' do
+    it 'requires a provider when assuming the model exists' do
+      expect { described_class.new(model: 'my-custom-model', assume_model_exists: true) }.to raise_error(
+        ArgumentError, 'Provider must be specified if assume_model_exists is true'
+      )
+    end
+  end
+
   describe '#with_tool_options' do
     it 'rejects an option it does not know' do
       expect { chat.with_tool_options(retries: 3) }.to raise_error(
