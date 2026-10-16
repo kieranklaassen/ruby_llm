@@ -49,11 +49,17 @@ module RubyLLM
     end
 
     # Generates speech for +input+ and returns a Speech holding the audio.
-    # Uses <tt>config.default_speech_model</tt> unless +model:+ is given.
-    # Pass +provider:+ and <tt>assume_model_exists: true</tt> to use a model
-    # that is not in the registry. +provider_options:+ takes options in the
-    # provider's request vocabulary, such as +instructions:+ and +speed:+
-    # for OpenAI, and merges them into the request as-is.
+    # Most code calls this through RubyLLM.speak.
+    #
+    # +model:+ selects the speech model and defaults to the configured
+    # +default_speech_model+. +provider:+ forces a specific provider, and
+    # +assume_model_exists:+ skips the registry lookup. +context:+ supplies
+    # a Context whose configuration replaces the global one. +voice:+
+    # selects one of the provider's voices, and +format:+ sets the audio
+    # format, such as <tt>"wav"</tt>. +provider_options:+ takes options in
+    # the provider's request vocabulary, such as +instructions:+ and
+    # +speed:+ for OpenAI, and merges them into the request as-is.
+    # +metadata:+ is included in the instrumentation payload.
     # +owner:+ attributes the usage to a record, such as a user, and wins
     # over RubyLLM.with_usage_owner.
     #

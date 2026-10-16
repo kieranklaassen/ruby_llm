@@ -39,17 +39,17 @@ module RubyLLM
     #
     # +model:+ selects the video model and defaults to the configured
     # +default_video_model+. +provider:+ forces a specific provider, and
-    # +assume_model_exists:+ skips the registry lookup. +with:+ passes a
-    # reference image or a video to edit on models that support it. Models
+    # +assume_model_exists:+ skips the registry lookup. +context:+ supplies
+    # a Context whose configuration replaces the global one. +with:+ passes
+    # a reference image or a video to edit on models that support it. Models
     # driven by image and audio input can omit the prompt and pass both
     # attachments through +with:+.
     # +extend:+ continues a source video instead. It accepts a Video,
     # file path, URL, or Attachment and cannot be combined with +with:+.
     # +provider_options:+ takes options in the provider's request
     # vocabulary, such as durations and resolutions, and merges them into
-    # the request as-is. +context:+ supplies a Context whose configuration
-    # replaces the global one. +metadata:+ is included in the
-    # instrumentation payload. +owner:+ attributes the usage to a record,
+    # the request as-is. +metadata:+ is included in the instrumentation
+    # payload. +owner:+ attributes the usage to a record,
     # such as a user, and wins over RubyLLM.with_usage_owner.
     #
     #   video = RubyLLM.animate("a hummingbird in slow motion", model: "veo-3.1-fast-generate-preview")

@@ -34,15 +34,15 @@ module RubyLLM
     #
     # +model:+ selects the image model and defaults to the configured
     # +default_image_model+. +provider:+ forces a specific provider, and
-    # +assume_model_exists:+ skips the registry lookup, which is useful
-    # for custom endpoints. +size:+ requests dimensions on models that
-    # support it. +count:+ asks for several images in one request, returning
-    # an Array of Images instead of one. +with:+ passes one or more source
-    # images for editing, and +mask:+ constrains which parts of the image
-    # may change. +provider_options:+ takes options in the provider's
-    # request vocabulary and merges them into the request as-is.
-    # +context:+ supplies a Context whose configuration replaces the
-    # global one. +metadata:+ is included in the instrumentation payload.
+    # +assume_model_exists:+ skips the registry lookup. +context:+ supplies
+    # a Context whose configuration replaces the global one. +size:+
+    # requests dimensions on models that support it. +count:+ asks for
+    # several images in one request, returning an Array of Images instead
+    # of one. +with:+ passes one or more source images for editing, and
+    # +mask:+ constrains which parts of the image may change.
+    # +provider_options:+ takes options in the provider's request
+    # vocabulary and merges them into the request as-is. +metadata:+ is
+    # included in the instrumentation payload.
     # +owner:+ attributes the usage to a record, such as a user, and wins
     # over RubyLLM.with_usage_owner.
     #

@@ -36,11 +36,11 @@ module RubyLLM
     # +model:+ selects the OCR model and defaults to the configured
     # +default_ocr_model+. +provider:+ forces a specific provider, and
     # +assume_model_exists:+ skips the registry lookup. +context:+ supplies
-    # a Context whose configuration replaces the global one. +metadata:+ is
-    # included in the instrumentation payload. +pages:+ limits the read to
-    # the given zero-based page indexes. +provider_options:+ merges options
-    # into the request in the provider's own vocabulary, such as Mistral's
-    # +include_image_base64:+ or +table_format:+.
+    # a Context whose configuration replaces the global one. +pages:+ limits
+    # the read to the given zero-based page indexes. +provider_options:+
+    # takes options in the provider's request vocabulary, such as Mistral's
+    # +include_image_base64:+ or +table_format:+, and merges them into the
+    # request as-is. +metadata:+ is included in the instrumentation payload.
     # +owner:+ attributes the usage to a record, such as a user, and wins
     # over RubyLLM.with_usage_owner.
     #
