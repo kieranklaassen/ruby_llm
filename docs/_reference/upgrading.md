@@ -147,6 +147,46 @@ In 2.1, `message.raw` and `error.response` still carried the request headers, in
 rename_column :chats, :code_execution, :runs_code
 ```
 
+## Provider Gems Rename Their Protocol Overrides
+
+Applications need no change. A provider gem or a custom protocol that overrides protocol methods renames its overrides, because RubyLLM no longer calls the old names. In 2.2 every method that builds part of a request starts with `render_`, every method that reads part of a response starts with `parse_`, and the two capability predicates drop `supports_`:
+
+```ruby
+# 2.1
+def format_role(role)
+  role.to_s
+end
+
+def extract_thinking_text(message_data)
+  message_data["reasoning"]
+end
+
+def supports_provider_file_references?
+  false
+end
+
+# 2.2
+def render_role(role)
+  role.to_s
+end
+
+def parse_thinking_text(message_data)
+  message_data["reasoning"]
+end
+
+def provider_file_references?
+  false
+end
+```
+
+* `format_*` is now `render_*`, for example `render_messages`, `render_content`, and `render_tool_calls`.
+* `extract_*` is now `parse_*`, for example `parse_usage`, `parse_content_delta`, and `parse_thinking_signature`.
+* `supports_embedding_media?` is now `embedding_media?`, and `supports_provider_file_references?` is now `provider_file_references?`.
+
+Calls to the shared modules change the same way, so `Protocols::ChatCompletions::Media.format_content` becomes `Protocols::ChatCompletions::Media.render_content`.
+
+A few methods keep their names: `format_cache_option_keys`, `extract_citations` in Chat Completions, and `extract_tool_calls` in the Anthropic, Cohere, and Converse streams.
+
 ## Deploy Without Mixing Versions
 
 Workers on 2.1 do not claim chats, so they can still overlap with workers on 2.2 while a deploy rolls out. Run the schema upgrade first, then let the new version replace every worker before you rely on claims. Chats that run once all workers are on 2.2 are covered.
