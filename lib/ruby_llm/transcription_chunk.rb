@@ -49,16 +49,16 @@ module RubyLLM
       @raw = raw
     end
 
-    # Whether this event carries a text delta.
+    # Returns whether this event carries a text delta.
     def delta? = !delta.nil?
 
-    # Whether this is a tentative transcript, replacing the previous partial.
+    # Returns whether this is a tentative transcript, replacing the previous partial.
     def partial? = type == PARTIAL
 
-    # Whether this event completed a segment.
+    # Returns whether this event completed a segment.
     def segment? = !segment.nil?
 
-    # Whether this is the final event of the transcription.
+    # Returns whether this is the final event of the transcription.
     def done? = type == DONE
 
     private

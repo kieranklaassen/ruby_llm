@@ -116,7 +116,7 @@ module RubyLLM
     end
 
     # Re-fetches the job from the provider, updating #status, #error, and
-    # #raw. Does nothing once the job is #done?. Returns self.
+    # #raw. Does nothing once the job is #done?. Returns +self+.
     def refresh
       return self if done?
 
@@ -140,7 +140,7 @@ module RubyLLM
       Cost.new(tokens: Tokens.new(reported_cost: @reported_cost))
     end
 
-    # Polls the job until it finishes, then returns self. Raises Error
+    # Polls the job until it finishes, then returns +self+. Raises Error
     # when the job fails or +timeout+ elapses first. +timeout+ and
     # +interval+ are seconds and default to the configured
     # +video_generation_timeout+ and +video_generation_poll_interval+.
