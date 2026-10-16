@@ -233,6 +233,11 @@ RubyLLM.configure do |config|
   config.sandbox = "ApplicationSandbox" # The name of an MXC::Sandbox class or your own sandbox; defaults to nil
   config.package_cache_dir = String # Declared gems and Python packages; defaults to the OS user cache directory
 
+  # MCP
+  config.mcp_credential_store = Object # Responds to read(key), write(key, data, owner:), and delete(key)
+  config.mcp_client_name = String # Defaults to "RubyLLM"
+  config.mcp_client_id = String # URL of your client ID metadata document
+
   # Logging
   config.logger = Logger
   config.instrumenter = Object # Responds to instrument(name, payload) { ... }
@@ -243,6 +248,8 @@ RubyLLM.configure do |config|
   config.log_regexp_timeout = Numeric
 end
 ```
+
+See [MCP Client]({% link _core_features/mcp.md %}#storing-credentials) for the MCP options.
 
 ## Next Steps
 
