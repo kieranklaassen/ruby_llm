@@ -65,7 +65,7 @@ bin/rails ruby_llm:load_models
 
 The install generator uses the default database's adapter when generating migrations. If the secondary database uses another adapter, adjust the generated column types and indexes for that adapter before migrating. Configuring the record connection does not move existing tables or data, or redirect install and upgrade migrations automatically.
 
-Keep chats, messages, and all four `ruby_llm_` tables in the same database. The generated chat table has a foreign key to `ruby_llm_models`. Sharing the connection pool also makes writes to these records participate in the same transaction. Calling `connects_to` separately on two abstract classes creates separate pools, even when both point to the same database.
+Keep chats, messages, and all six `ruby_llm_` tables in the same database. The generated chat table has a foreign key to `ruby_llm_models`. Sharing the connection pool also makes writes to these records participate in the same transaction. Calling `connects_to` separately on two abstract classes creates separate pools, even when both point to the same database.
 
 You can also call `RubyLLM::ActiveRecord::Record.connects_to database: { writing: :llm }` directly when your chat and message classes inherit from `RubyLLM::ActiveRecord::Record`. This gives them and RubyLLM's supporting records one shared pool. Use the application-owned base above when you need to retain behavior from `ApplicationRecord`.
 
