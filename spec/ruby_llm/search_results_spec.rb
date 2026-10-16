@@ -9,6 +9,12 @@ RSpec.describe RubyLLM::SearchResults do
     expect(results.results).to eq([{ title: 'Doc', url: 'https://example.com', text: 'Hello' }])
   end
 
+  it 'inspects as its result count' do
+    results = described_class.new({ title: 'A', text: 'one' }, { title: 'B', text: 'two' })
+
+    expect(results.inspect).to eq('#<RubyLLM::SearchResults results: 2>')
+  end
+
   it 'accepts multiple results' do
     results = described_class.new({ title: 'A', text: 'one' }, { title: 'B', text: 'two' })
 

@@ -46,7 +46,7 @@ config.active_job.queue_adapter = :solid_queue
 config.active_support.isolation_level = :fiber
 ```
 
-The isolation setting keeps Rails execution state separate for each fiber. It applies to the whole application and is required for Solid Queue fiber workers.
+Solid Queue requires the isolation setting before it starts fiber workers. See [Fiber-Safe Active Record Connections]({% link _advanced/rails-advanced-config.md %}#fiber-safe-active-record-connections-for-asyncfiber-workloads) for what it changes.
 
 In `config/queue.yml`, replace `threads:` with `fibers:` for the worker that handles AI jobs. You can keep thread workers for your other queues:
 
@@ -93,9 +93,9 @@ With the default supervisor mode, `processes: 2` creates two worker processes wi
 
 ### Database Connections
 
-On Rails 7.2+, Solid Queue recommends starting with 3–5 queue database connections per fiber worker process. The pool does not need to match the number of jobs waiting on provider I/O. Size application database pools for the database work your jobs actually perform, and avoid holding a transaction or leased connection open across an AI call. Rails 7.1 needs more conservative pool sizing.
+On Rails 7.2+, Solid Queue recommends starting with 3 to 5 queue database connections per fiber worker process. The pool does not need to match the number of jobs waiting on provider I/O. Size application database pools for the database work your jobs actually perform, and avoid holding a transaction or leased connection open across an AI call. Rails 7.1 needs more conservative pool sizing.
 
-See Solid Queue's [worker configuration](https://github.com/rails/solid_queue#configuration) and [Fiber-Safe ActiveRecord Connections]({% link _advanced/rails-advanced-config.md %}#fiber-safe-activerecord-connections-for-asyncfiber-workloads) for details.
+See Solid Queue's [worker configuration](https://github.com/rails/solid_queue#configuration) and [Fiber-Safe Active Record Connections]({% link _advanced/rails-advanced-config.md %}#fiber-safe-active-record-connections-for-asyncfiber-workloads) for details.
 
 Fiber mode was contributed by RubyLLM's author, Carmine Paolino, and shipped in [Solid Queue 1.6.0](https://github.com/rails/solid_queue/releases/tag/v1.6.0). His post, [Making the Rails Default Job Queue Fiber-Based](https://paolino.me/solid-queue-doesnt-need-a-thread-per-job/), explains the implementation and tradeoffs.
 
@@ -256,12 +256,12 @@ end.wait
 
 At most five calls run at once. That limits concurrency, but does not enforce a requests-per-minute or tokens-per-minute quota. Keep [retry and rate-limit handling]({% link _advanced/error-handling.md %}#automatic-retries) in place. See the [Semaphore reference](https://socketry.github.io/async/source/Async/Semaphore/index.html).
 
-For Active Record work inside fibers, follow [Fiber-Safe ActiveRecord Connections]({% link _advanced/rails-advanced-config.md %}#fiber-safe-activerecord-connections-for-asyncfiber-workloads).
+For Active Record work inside fibers, follow [Fiber-Safe Active Record Connections]({% link _advanced/rails-advanced-config.md %}#fiber-safe-active-record-connections-for-asyncfiber-workloads).
 
 For more on fibers, threads, and processes, read [Ruby Concurrency: What Actually Happens](https://paolino.me/ruby-concurrency-what-actually-happens/).
 
 ## Next Steps
 
-* [Batches]({% link _advanced/batches.md %}) - Provider-side batching at a discount when nobody is waiting.
-* [Streaming Responses]({% link _core_features/streaming.md %})
-* [Rails Integration]({% link _advanced/rails.md %})
+* [Batches]({% link _advanced/batches.md %}) - provider-side batching at a discount when nobody is waiting.
+* [Stream Responses]({% link _core_features/streaming.md %}) - stream chunks to your users as they arrive.
+* [Rails Integration]({% link _advanced/rails.md %}) - persist chats and run them in background jobs.

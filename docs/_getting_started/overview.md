@@ -73,6 +73,8 @@ For search, `embed` creates [vectors]({% link _core_features/embeddings.md %}) a
 
 Use `judge` to ask typed questions about application data and receive [probabilities, choices, and scores]({% link _core_features/judgments.md %}). Define reusable questions in a `RubyLLM::Judge` class.
 
+Use `tokenize` to turn [plain text into token IDs]({% link _core_features/tokenization.md %}) and `research` to run a [hosted research task]({% link _advanced/hosted-research.md %}) and read its report.
+
 Each result has readers for its output, such as `transcription.text`, `document.markdown`, or `embedding.vectors`. Generated images, video, and speech have a `save` method.
 
 An individual operation may involve several requests. `animate` submits a job and waits for the video; `animate_later` returns a `VideoJob` immediately. Transcription can stream. You use the same operation API while RubyLLM handles that lifecycle.
@@ -156,9 +158,9 @@ response.tokens.output
 response.cost.total
 ```
 
-The accounting follows provider attempts, so a successful answer can include the cost of earlier failed attempts. Unknown costs stay unknown. In Rails, the usage ledger keeps those attempts separately from messages. See [Cost and Usage Tracking]({% link _core_features/cost-and-usage-tracking.md %}).
+The accounting follows provider attempts, so a successful answer can include the cost of earlier failed attempts. Unknown costs stay unknown. In Rails, the usage ledger keeps those attempts separately from messages. See [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}).
 
-[Instrumentation]({% link _advanced/instrumentation.md %}) lets you observe calls across chats, tools, and individual operations. `RubyLLM.workflow` groups events from ordinary Ruby code into a named workflow.
+[Instrumentation and Observability]({% link _advanced/instrumentation.md %}) lets you observe calls across chats, tools, and individual operations. `RubyLLM.workflow` groups events from ordinary Ruby code into a named workflow.
 
 [OpenTelemetry]({% link _advanced/opentelemetry.md %}) sends those calls to your tracing backend as spans. [Evaluations]({% link _advanced/evaluations.md %}) run your agents against a dataset of cases and grade each answer, from Rake, RSpec, or Minitest.
 
@@ -166,7 +168,7 @@ The accounting follows provider attempts, so a successful answer can include the
 
 [Batches]({% link _advanced/batches.md %}) submit chats or embedding requests for provider-side processing. Stage them with `ask_later` or `embed_later` and submit them with `RubyLLM.batch`.
 
-[File Storage]({% link _core_features/files.md %}) handles provider uploads and downloads with `RubyLLM.upload` and `RubyLLM.download`. [Prompt Caching]({% link _core_features/prompt-caching.md %}) supports reusing prompt content, including provider-managed caches through `RubyLLM.cache`.
+[Files]({% link _core_features/files.md %}) handles provider uploads and downloads with `RubyLLM.upload` and `RubyLLM.download`. [Prompt Caching]({% link _core_features/prompt-caching.md %}) supports reusing prompt content, including provider-managed caches through `RubyLLM.cache`.
 
 [Error Handling]({% link _advanced/error-handling.md %}) provides common exceptions, retries, and model fallbacks. These services support the public API without requiring you to manage each provider's request format.
 
@@ -202,7 +204,7 @@ Individual operations such as `paint`, `transcribe`, and `ocr` also work directl
 | Part | In practice |
 | --- | --- |
 | Ruby API: conversations | Chats, messages, tools, agents, structured output, and streaming. |
-| Ruby API: individual operations | Images, video, speech, transcription, OCR, moderation, embeddings, and reranking. |
+| Ruby API: individual operations | Images, video, speech, transcription, OCR, moderation, embeddings, reranking, judgments, tokenization, and hosted research. |
 | Providers and protocols | Providers choose the service and its settings; protocols translate the API format. |
 | Shared services | Model selection, configuration, usage and costs, instrumentation, batches, and provider resources. |
 | Rails integration | The same API with Active Record, Active Storage, Hotwire, jobs, and generators. |

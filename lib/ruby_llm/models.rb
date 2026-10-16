@@ -185,7 +185,7 @@ module RubyLLM
         result
       end
 
-      def resolve(model_id, provider: nil, assume_model_exists: false, config: nil,
+      def resolve(model_id, provider: nil, assume_model_exists: false, config: nil, # :nodoc:
                   operation: nil, default_model: nil) # rubocop:disable Metrics/PerceivedComplexity
         config ||= RubyLLM.config
         provider_class = provider ? Provider.providers[provider.to_sym] : nil
@@ -600,15 +600,17 @@ module RubyLLM
 
     # Returns the Model matching +model_id+, resolving aliases along the
     # way. Without +provider+, picks the preferred provider that carries
-    # the model, first-party providers before aggregators. Raises
+    # the model, first-party providers before aggregators. +context:+
+    # supplies a Context whose configuration resolves the provider's
+    # model ids in place of the global one. Raises
     # RubyLLM::ModelNotFoundError if no model matches.
     #
     #   RubyLLM.models.find 'gpt-6.1-sol'
     #   RubyLLM.models.find 'claude-sonnet-5', provider: :bedrock
     #
-    def find(model_id, provider: nil, config: nil)
+    def find(model_id, provider: nil, context: nil, config: nil)
       if provider
-        find_with_provider(model_id, provider, config)
+        find_with_provider(model_id, provider, context&.config || config)
       else
         find_without_provider(model_id)
       end
@@ -634,6 +636,15 @@ module RubyLLM
     # output.
     def image_models
       select_models { |m| m.type == :image || m.modalities.output.include?('image') }
+    end
+
+    # Returns a new Models registry containing only models whose
+    # Model#type is +type+. Accepts a symbol or a string.
+    #
+    #   RubyLLM.models.by_type(:video)
+    #
+    def by_type(type)
+      select_models { |m| m.type == type.to_sym }
     end
 
     # Returns a new Models registry containing only models in +family+.

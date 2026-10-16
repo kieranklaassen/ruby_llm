@@ -127,9 +127,11 @@ RSpec.describe RubyLLM::ActiveRecord::Model do # rubocop:disable RSpec/SpecFileP
 
   it 'falls back to an empty registry when reading blows up' do
     allow(described_class).to receive(:all).and_raise(ActiveRecord::StatementInvalid, 'no such column')
-    allow(RubyLLM.logger).to receive(:debug)
+    messages = []
+    allow(RubyLLM.logger).to receive(:debug) { |&message| messages << message.call }
 
     expect(described_class.read).to eq([])
+    expect(messages).to include(/RubyLLM could not load models from the database.*no such column/)
   end
 
   it 'describes itself by table name' do
@@ -142,13 +144,6 @@ RSpec.describe RubyLLM::ActiveRecord::Model do # rubocop:disable RSpec/SpecFileP
     described_class.refresh
 
     expect(RubyLLM.models).to have_received(:refresh)
-  end
-
-  it 'builds an unsaved record from a public model' do
-    record = described_class.from_llm(model_info)
-
-    expect(record).not_to be_persisted
-    expect(record.model_id).to eq('test-model')
   end
 
   context 'when a refresh replaces the registry' do

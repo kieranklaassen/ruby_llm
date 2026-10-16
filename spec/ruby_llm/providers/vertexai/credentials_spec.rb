@@ -93,4 +93,11 @@ RSpec.describe RubyLLM::Providers::VertexAI::Credentials do
     expect(authorization(key)).to eq('Bearer token-2')
     expect(endpoint).to have_been_requested.twice
   end
+
+  it 'explains how to install googleauth when the gem is missing' do
+    credentials = described_class.allocate
+    allow(credentials).to receive(:require).with('googleauth').and_raise(LoadError)
+
+    expect { credentials.send(:build, nil) }.to raise_error(LoadError, /requires the googleauth gem/)
+  end
 end

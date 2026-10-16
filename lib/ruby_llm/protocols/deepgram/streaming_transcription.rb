@@ -30,7 +30,7 @@ module RubyLLM
             raise Error, 'Deepgram transcription ended before its completion metadata' unless metadata
 
             result = build_live_transcription(segments, metadata, model:, language:)
-            block.call(TranscriptionChunk.new(type: TranscriptionChunk::DONE, text: result.text, raw: metadata))
+            block.call(TranscriptionChunk.new(type: :done, text: result.text, raw: metadata))
             result
           end
         end
@@ -61,7 +61,7 @@ module RubyLLM
           return if text.empty?
 
           unless event['is_final']
-            yield TranscriptionChunk.new(type: TranscriptionChunk::PARTIAL, text:, raw: event)
+            yield TranscriptionChunk.new(type: :partial, text:, raw: event)
             return
           end
 
@@ -74,7 +74,7 @@ module RubyLLM
             'words' => alternative['words']
           }.compact
           segments << segment
-          yield TranscriptionChunk.new(type: TranscriptionChunk::SEGMENT, delta:, segment:, raw: event)
+          yield TranscriptionChunk.new(type: :segment, delta:, segment:, raw: event)
         end
 
         def build_live_transcription(segments, metadata, model:, language:)

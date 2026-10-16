@@ -18,7 +18,7 @@ module RubyLLM
         end
         nil
       rescue LoadError
-        raise LoadError, "OpenTelemetry tracing requires the 'opentelemetry-api' gem. Add it to your Gemfile."
+        raise LoadError, 'OpenTelemetry tracing requires the opentelemetry-api gem. Add it to your Gemfile.'
       end
 
       # Disables tracing for new operations without shutting down the SDK.

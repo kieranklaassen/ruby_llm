@@ -38,7 +38,7 @@ class Message < ApplicationRecord
 end
 ```
 
-That is the complete application-facing persistence setup. There is no `Model`, `ToolCall`, `UsageEntry`, or `Batch` model to add to `app/models`.
+That is the complete application-facing persistence setup. There are no supporting models to add to `app/models`.
 
 RubyLLM owns six supporting tables under the `ruby_llm_` prefix:
 
@@ -49,7 +49,7 @@ RubyLLM owns six supporting tables under the `ruby_llm_` prefix:
 * `ruby_llm_mcp_credentials` for encrypted MCP OAuth credentials.
 * `ruby_llm_provider_files` for the provider uploads of stored attachments.
 
-They are regular tables installed by migrations, not a Rails engine. Their record classes are implementation details; use the public RubyLLM APIs described below.
+They are regular tables installed by migrations, not a Rails engine. Use the public RubyLLM APIs described below instead of their record classes. The exception is `RubyLLM::ActiveRecord::Usage`, the record your `ruby_llm_usages` associations return.
 
 Their shared abstract base, `RubyLLM::ActiveRecord::Record`, inherits the default database connection. If your chats and messages use a secondary database, [configure the shared connection]({% link _advanced/rails-advanced-config.md %}#using-a-secondary-database) so all related tables stay together.
 
@@ -136,7 +136,7 @@ If your message table has a `finish_reason` column, the record also exposes `sto
 response.reload.max_tokens? # => true if a token limit stopped the response
 ```
 
-## Cost and Usage Tracking
+## Tokens and Costs
 
 Usage belongs to provider work, not to the transcript. RubyLLM therefore persists one normalized entry for every physical attempt, including automatic retries and cancelled streams that never produced a message.
 
@@ -152,7 +152,7 @@ chat.cost.total           # includes retries and cancelled attempts
 
 An entry links to the message it produced when there is one. A failed retry or a cancelled generation links only to the chat. Destroying a chat or a message keeps its entries and clears the link, so spend you sum from the ledger stays the same. `acts_as_chat` and `acts_as_message` add a `ruby_llm_usages` association over those rows, with `provider`, `model`, `status`, the token buckets, and `total_cost`, so you can sum spend in SQL. Each attempt also fires a `usage.ruby_llm` event. `chat.tokens` and `chat.cost` remain the value objects.
 
-Token buckets and cost components are numeric columns in `ruby_llm_usages`; cost details are not stored as JSON. This freezes the price calculated when an attempt finishes and keeps the ledger suitable for database aggregation. The 2.0 runtime reads this ledger only; the 2.0 upgrade moves 1.16 message tokens into it before removing the old columns.
+Token buckets and cost components are numeric columns in `ruby_llm_usages`; cost details are not stored as JSON. This freezes the price calculated when an attempt finishes and keeps the ledger suitable for database aggregation. RubyLLM reads this ledger only; the 2.0 upgrade moves 1.16 message tokens into it before removing the old columns.
 
 Attribute each chat attempt to a record with `RubyLLM.with_usage_owner`. Its usage rows keep both the chat and owner associations. One-shot operations write to the same ledger, with no chat, and also accept `owner:`. Query an owner's spend through its own association:
 
@@ -170,7 +170,7 @@ end
 current_user.ruby_llm_usages.sum(:total_cost)
 ```
 
-See [Cost and Usage Tracking]({% link _core_features/cost-and-usage-tracking.md %}) for owner rules, entry statuses, incomplete totals, cancellation behavior, and instrumentation.
+See [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) for owner rules, entry statuses, incomplete totals, cancellation behavior, and instrumentation.
 
 ## Tools
 
@@ -202,7 +202,7 @@ tool_call.arguments
 message.tool_results
 ```
 
-The tool result itself is an application-owned message with the `tool` role. The internal tool-call row only preserves the provider request and links it to that result message.
+The tool result itself is an application-owned message with the `tool` role. The internal tool-call row only preserves the provider request and links it to that result message. Read the link from the result with `parent_tool_call`, or `tool_call_id` for its id alone.
 
 ## Batches
 
@@ -228,7 +228,7 @@ if batch.complete?
 end
 ```
 
-No application `Batch` model is required. See [Batch Processing]({% link _advanced/batches.md %}) for polling and multi-round tool workflows.
+No application `Batch` model is required. See [Batches]({% link _advanced/batches.md %}) for polling and multi-round tool workflows.
 
 ## Attachments and Structured Output
 
@@ -320,7 +320,7 @@ Internal usage and tool-call references are polymorphic, so custom names and pri
 
 ## Extending Your Models
 
-Chats and messages remain normal ActiveRecord models:
+Chats and messages remain normal Active Record models:
 
 ```ruby
 class Chat < ApplicationRecord
@@ -341,7 +341,7 @@ Keep transcript content and application relationships in these models. Observe p
 
 ## Next Steps
 
-* [Cost and Usage Tracking]({% link _core_features/cost-and-usage-tracking.md %}) - understand attempts, retries, cancellations, and incomplete totals.
+* [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) - understand attempts, retries, cancellations, and incomplete totals.
 * [Streaming with Hotwire/Turbo]({% link _advanced/rails-streaming.md %}) - broadcast persisted responses in real time.
 * [Generators and App Conventions]({% link _advanced/rails-generators.md %}) - see exactly what installation creates.
 * [Model Registry]({% link _reference/models.md %}) - inspect and refresh the internal registry through the public API.

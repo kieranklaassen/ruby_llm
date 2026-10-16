@@ -13,11 +13,11 @@ description: Scaffold chats, a chat UI, agents, tools, and schemas with RubyLLM'
 
 After reading this guide, you will know:
 
-*   What the `ruby_llm:install` and `ruby_llm:chat_ui` generators create for you.
-*   How RubyLLM's conventional app directory structure is organized.
-*   How to generate agents, tools, schemas, MCP servers, skills, sandboxes, evaluations, and judges.
-*   How the generated chat UI renders messages, tool calls, tool results, approvals, and attachments.
-*   How to customize model names and set up ActiveStorage.
+* What the `ruby_llm:install` and `ruby_llm:chat_ui` generators create for you.
+* How RubyLLM's conventional app directory structure is organized.
+* How to generate agents, tools, schemas, MCP servers, skills, sandboxes, evaluations, and judges.
+* How the generated chat UI renders messages, tool calls, tool results, approvals, and attachments.
+* How to customize model names and set up Active Storage.
 
 RubyLLM's generators write models, migrations, controllers, jobs, and views into your application. Start with persistence, then add the chat UI or generate individual agents, tools, and schemas as you need them.
 
@@ -31,13 +31,13 @@ bin/rails generate ruby_llm:install
 
 The generator:
 
-- Creates application migrations and models for Chat and Message
-- Creates one migration for RubyLLM's internal model, tool-call, usage, and batch tables
-- Adds the `acts_as_chat` and `acts_as_message` declarations
-- Installs Active Storage, which `acts_as_message` uses for attachments
-- Creates an initializer for provider configuration
-- Creates the conventional AI app directories: `app/agents`, `app/tools`, `app/schemas`, `app/prompts`, `app/skills`, `app/sandboxes`, `app/mcp`, `app/evals`, and `app/judges`
-- Creates `app/agents/application_agent.rb`, the parent of your agents, pointed at your chat model
+* Creates application migrations and models for Chat and Message
+* Creates one migration for [RubyLLM's supporting tables]({% link _advanced/rails-persistence.md %}#two-application-models)
+* Adds the `acts_as_chat` and `acts_as_message` declarations
+* Installs Active Storage, which `acts_as_message` uses for attachments
+* Creates an initializer for provider configuration
+* Creates the conventional AI app directories: `app/agents`, `app/tools`, `app/schemas`, `app/prompts`, `app/skills`, `app/sandboxes`, `app/mcp`, `app/evals`, and `app/judges`
+* Creates `app/agents/application_agent.rb`, the parent of your agents, pointed at your chat model
 
 After running the generator:
 
@@ -48,7 +48,7 @@ bin/rails ruby_llm:load_models
 
 You can now create a persisted chat with `Chat.create!` and send a message with `chat.ask`.
 
-### Install Generator Options
+### Custom Model Names
 
 The generator uses Rails-like syntax for custom model names:
 
@@ -60,7 +60,7 @@ bin/rails generate ruby_llm:install chat:Conversation message:ChatMessage
 bin/rails generate ruby_llm:install chat:Discussion message:DiscussionMessage
 ```
 
-The `name:ClassName` syntax follows Rails conventions - specify only what you want to customize.
+The `name:ClassName` syntax follows Rails conventions. Specify only what you want to customize.
 
 The generated models are one line each:
 
@@ -82,11 +82,11 @@ bin/rails generate ruby_llm:chat_ui
 
 The generator creates:
 
-- **Agent**: `ChatAgent`, which the controllers and job create and load chats through
-- **Controllers**: Create chats, enqueue message processing, and record approval decisions
-- **Views**: Render messages, their attachments, and approval cards, and update them with Turbo Streams
-- **Jobs**: Request AI responses in the background and continue the conversation after a decision
-- **Routes**: RESTful routes for chats, messages, and approvals
+* **Agent**: `ChatAgent`, which the controllers and job create and load chats through
+* **Controllers**: Create chats, enqueue message processing, and record approval decisions
+* **Views**: Render messages, their attachments, and approval cards, and update them with Turbo Streams
+* **Jobs**: Request AI responses in the background and continue the conversation after a decision
+* **Routes**: RESTful routes for chats, messages, and approvals
 
 Start your server and visit `http://localhost:3000/chats`.
 
@@ -101,7 +101,13 @@ class ChatResponseJob < ApplicationJob
 end
 ```
 
-Replies stream into the page chunk by chunk, and the finished message replaces the streamed text once when it is saved. New messages, approval cards, and the form appear through page refreshes, so the page always matches what a reload would show. A Stimulus controller, `app/javascript/controllers/chat_message_controller.js`, puts the chunks in order and renders assistant replies as Markdown, sanitized with DOMPurify. Images in a reply show as text, so a prompt injection cannot make the browser fetch a URL that leaks the chat, while attachments still show. The generator pins its two dependencies, `marked` and `dompurify`, with `bin/importmap pin` at exact versions. In an app that bundles its JavaScript, it prints the `yarn add` command and `bin/rails stimulus:manifest:update` instead. Without JavaScript, replies show as plain text. See [Message Ordering Issues]({% link _advanced/rails-streaming.md %}#message-ordering-issues). While the job runs the chat, an empty reply shows "Thinking…" and the message form gives way to "Replying…". The page refreshes when the job finishes, which brings the form back. `MessagesController` refuses a message sent in the meantime. It reads `chat.running?`, so a job that dies frees the chat once its claim expires.
+Replies stream into the page chunk by chunk, and the finished message replaces the streamed text once when it is saved. New messages, approval cards, and the form appear through page refreshes, so the page always matches what a reload would show.
+
+A Stimulus controller, `app/javascript/controllers/chat_message_controller.js`, puts the chunks in order and renders assistant replies as Markdown, sanitized with DOMPurify. Images in a reply show as text, so a prompt injection cannot make the browser fetch a URL that leaks the chat, while attachments still show.
+
+The generator pins its two dependencies, `marked` and `dompurify`, with `bin/importmap pin` at exact versions. In an app that bundles its JavaScript, it prints the `yarn add` command and `bin/rails stimulus:manifest:update` instead. Without JavaScript, replies show as plain text. See [Message Ordering Issues]({% link _advanced/rails-streaming.md %}#message-ordering-issues).
+
+While the job runs the chat, an empty reply shows "Thinking…" and the message form gives way to "Replying…". The page refreshes when the job finishes, which brings the form back. `MessagesController` refuses a message sent in the meantime. It reads `chat.running?`, so a job that dies frees the chat once its claim expires.
 
 The UI generator also supports custom model names:
 
@@ -156,15 +162,15 @@ The install generator creates these directories with `.gitkeep` files so teams s
 
 These are conventions, not hard requirements:
 
-- Agents, tools, schemas, sandboxes, MCP servers, and judges can live anywhere in your app autoload paths.
-- `with_skills` and the `skills` macro find skills in `app/skills` unless you add other roots.
-- Evaluations find their dataset next to the class in `app/evals`.
-- Prompt lookup convention: named agents automatically resolve `instructions.txt.erb` from the agent class name when the file exists.
+* Agents, tools, schemas, sandboxes, MCP servers, and judges can live anywhere in your app autoload paths.
+* `with_skills` and the `skills` macro find skills in `app/skills` unless you add other roots.
+* Evaluations find their dataset next to the class in `app/evals`.
+* Prompt lookup convention: named agents automatically resolve `instructions.txt.erb` from the agent class name when the file exists.
 
 For prompt lookup, RubyLLM uses class name conventions:
 
-- `WorkAssistant` -> `app/prompts/work_assistant/instructions.txt.erb`
-- `Admin::SupportAgent` -> `app/prompts/admin/support_agent/instructions.txt.erb`
+* `WorkAssistant` -> `app/prompts/work_assistant/instructions.txt.erb`
+* `Admin::SupportAgent` -> `app/prompts/admin/support_agent/instructions.txt.erb`
 
 See the [Agents guide]({% link _advanced/agents.md %}#default-instructions-prompt) for how agent instruction rendering works, or [Prompt Rendering]({% link _core_features/prompt-rendering.md %}) for direct `RubyLLM.render_prompt` usage.
 
@@ -185,14 +191,14 @@ bin/rails generate ruby_llm:judge Urgency
 
 What each generator creates:
 
-- `ruby_llm:agent`: `app/agents/support_agent.rb`, a subclass of `ApplicationAgent`, and `app/prompts/support_agent/instructions.txt.erb`. In an app without `ApplicationAgent`, the agent inherits from `RubyLLM::Agent` and names its chat model itself.
-- `ruby_llm:tool`: `app/tools/weather_tool.rb` plus tool-specific chat UI partials under `app/views/messages/tool_calls` and `app/views/messages/tool_results`
-- `ruby_llm:schema`: `app/schemas/product_schema.rb`
-- `ruby_llm:mcp`: `app/mcp/linear.rb`, connecting to the URL you give. For a server that runs on your machine, pass `--command` instead: `bin/rails generate ruby_llm:mcp Files --command "npx -y @modelcontextprotocol/server-filesystem ."`
-- `ruby_llm:skill`: `app/skills/invoices/SKILL.md` with the name and description. Names use lowercase letters, digits, and hyphens, as the Agent Skills format requires.
-- `ruby_llm:sandbox`: `app/sandboxes/workspace_sandbox.rb`, an `MXC::Sandbox` with a two-minute timeout, and `gem "mxc"` in your Gemfile when it is missing
-- `ruby_llm:evaluation`: `app/evals/support_evaluation.rb` and its dataset, `support_evaluation.yml`, with one case to fill in. It runs `SupportAgent` when you have one.
-- `ruby_llm:judge`: `app/judges/urgency_judge.rb`
+* `ruby_llm:agent`: `app/agents/support_agent.rb`, a subclass of `ApplicationAgent`, and `app/prompts/support_agent/instructions.txt.erb`. In an app without `ApplicationAgent`, the agent inherits from `RubyLLM::Agent` and names its chat model itself.
+* `ruby_llm:tool`: `app/tools/weather_tool.rb` plus tool-specific chat UI partials under `app/views/messages/tool_calls` and `app/views/messages/tool_results`
+* `ruby_llm:schema`: `app/schemas/product_schema.rb`
+* `ruby_llm:mcp`: `app/mcp/linear.rb`, connecting to the URL you give. For a server that runs on your machine, pass `--command` instead: `bin/rails generate ruby_llm:mcp Files --command "npx -y @modelcontextprotocol/server-filesystem ."`
+* `ruby_llm:skill`: `app/skills/invoices/SKILL.md` with the name and description. Names use lowercase letters, digits, and hyphens, as the Agent Skills format requires.
+* `ruby_llm:sandbox`: `app/sandboxes/workspace_sandbox.rb`, an `MXC::Sandbox` with a two-minute timeout, and `gem "mxc"` in your Gemfile when it is missing
+* `ruby_llm:evaluation`: `app/evals/support_evaluation.rb` and its dataset, `support_evaluation.yml`, with one case to fill in. It runs `SupportAgent` when you have one.
+* `ruby_llm:judge`: `app/judges/urgency_judge.rb`
 
 `ruby_llm:chat_ui` and `ruby_llm:tool` accept `--ui scaffold` or `--ui tailwind`. The default, `--ui auto`, picks Tailwind when your app has it. An existing app follows [Upgrading]({% link _reference/upgrading.md %}) instead of running `ruby_llm:install`.
 
@@ -206,15 +212,15 @@ bin/rails generate ruby_llm:tool Weather message:ChatMessage
 
 The generated chat UI follows one convention: each message partial uses the local that matches its partial name.
 
-- `messages/_user.html.erb` gets `user`
-- `messages/_assistant.html.erb` gets `assistant`
-- `messages/_system.html.erb` gets `system`
-- `messages/_tool.html.erb` gets `tool`
-- `messages/_tool_calls.html.erb` gets `tool_calls`
+* `messages/_user.html.erb` gets `user`
+* `messages/_assistant.html.erb` gets `assistant`
+* `messages/_system.html.erb` gets `system`
+* `messages/_tool.html.erb` gets `tool`
+* `messages/_tool_calls.html.erb` gets `tool_calls`
 
 This comes from Rails partial rendering: `render @chat.messages` calls `to_partial_path`, and Rails injects a local named after that partial.
 
-For compatibility with model broadcasts (`broadcasts_to`), generated message partials also accept a `message` local as a fallback.
+Turbo broadcasts pass the record as a `message` local, so generated message partials also accept `message` as a fallback.
 
 Shared partials take explicit locals: `messages/_attachments.html.erb` gets `message`, `chats/_approvals.html.erb` gets `chat`, and `approvals/_approval.html.erb` gets `approval` and `chat`.
 
@@ -234,8 +240,8 @@ app/views/messages/
 
 Locals passed to those partials:
 
-- `messages/tool_calls/_your_tool.html.erb` receives `message` and `tool_call`
-- `messages/tool_results/_your_tool.html.erb` receives `tool`
+* `messages/tool_calls/_your_tool.html.erb` receives `message` and `tool_call`
+* `messages/tool_results/_your_tool.html.erb` receives `tool`
 
 `ruby_llm:tool` creates `_your_tool.html.erb` files with the correct names so custom rendering hooks up automatically.
 
@@ -243,8 +249,8 @@ Using fixed locals keeps the templates dumb and predictable.
 
 Turbo Stream templates used by the generated chat UI:
 
-- `messages/create.turbo_stream.erb` resets the message form for `MessagesController#create`.
-- `approvals/create.turbo_stream.erb` replaces the approval cards for `ApprovalsController#create`.
+* `messages/create.turbo_stream.erb` resets the message form for `MessagesController#create`.
+* `approvals/create.turbo_stream.erb` replaces the approval cards for `ApprovalsController#create`.
 
 ## Setting Up Active Storage
 
@@ -255,11 +261,11 @@ bin/rails active_storage:install
 bin/rails db:migrate
 ```
 
-The ActiveStorage attachments you pass to `with:` from your own models can use any name.
+The Active Storage attachments you pass to `with:` from your own models can use any name.
 
 ## Next Steps
 
-*   [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - what the generated models do once they `acts_as_chat`.
-*   [Streaming with Hotwire/Turbo]({% link _advanced/rails-streaming.md %}) - the streaming flow behind the generated chat UI.
-*   [Agents]({% link _advanced/agents.md %}) - build on the generated agent and prompt conventions.
-*   [Advanced Rails Configuration]({% link _advanced/rails-advanced-config.md %}) - provider overrides and custom contexts for the generated app.
+* [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - what the generated models do once they `acts_as_chat`.
+* [Streaming with Hotwire/Turbo]({% link _advanced/rails-streaming.md %}) - the streaming flow behind the generated chat UI.
+* [Agents]({% link _advanced/agents.md %}) - build on the generated agent and prompt conventions.
+* [Advanced Rails Configuration]({% link _advanced/rails-advanced-config.md %}) - provider overrides and custom contexts for the generated app.

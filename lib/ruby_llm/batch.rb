@@ -50,9 +50,10 @@ module RubyLLM
 
     class << self
       # Submits chats or embedding requests to their shared provider as a
-      # batch and returns a new Batch. Accepts a single Chat or an array.
-      # Every chat must be awaiting the model (see Chat#ask_later), and all
-      # requests must use the same provider.
+      # batch and returns a new Batch. Most code calls this through
+      # RubyLLM.batch. Accepts a single Chat or an array. Every chat must
+      # be awaiting the model (see Chat#ask_later), and all requests must
+      # use the same provider.
       #
       #   chats = tickets.map do |ticket|
       #     RubyLLM.chat(model: "claude-haiku-4-5").ask_later(ticket.body)
@@ -64,8 +65,8 @@ module RubyLLM
       # Raises ArgumentError if the batch is empty, mixes providers, mixes
       # chats with embedding requests, or includes a chat that is not
       # awaiting the model.
-      def submit(chats)
-        records = wrap_records(chats)
+      def submit(requests)
+        records = wrap_records(requests)
         return submit_embeddings(records) if records.any?(EmbeddingRequest)
 
         submit_chats(records)
@@ -90,7 +91,7 @@ module RubyLLM
         end
 
         provider = Provider.resolve!(provider).new(config)
-        raise Error, "#{provider.slug} doesn't support batch requests" unless provider.batches?
+        raise Error, "#{provider.name} does not support batch requests" unless provider.batches?
 
         new(provider:, store: config.batch_store, **provider.find_batch(id))
       end
@@ -146,7 +147,7 @@ module RubyLLM
 
         unless normalized.all? { |chat| awaiting_model?(chat) }
           raise ArgumentError,
-                'Every chat in a batch must be awaiting the model; stage one with ask_later, or run_tools first'
+                'Every chat in a batch must be awaiting the model. Stage one with ask_later, or run_tools first.'
         end
 
         normalized
@@ -161,7 +162,7 @@ module RubyLLM
         raise ArgumentError, "A batch takes one provider per submission, got: #{slugs.join(', ')}" if slugs.size > 1
 
         provider = chats.first.provider
-        raise Error, "#{provider.slug} doesn't support batch requests" unless provider.batches?
+        raise Error, "#{provider.name} does not support batch requests" unless provider.batches?
 
         provider
       end
@@ -193,6 +194,17 @@ module RubyLLM
     #
     def complete?
       @completed
+    end
+
+    # Returns whether the batch has finished processing, like #complete?.
+    # Reads the same as VideoJob#done? and ResearchJob#done?.
+    def done?
+      complete?
+    end
+
+    # Returns whether the provider is still processing the batch.
+    def pending?
+      !complete?
     end
 
     # Returns whether the provider completed the batch successfully.
@@ -441,11 +453,11 @@ module RubyLLM
         end
       end
 
-      def single_batch_model!(requests, provider_name)
+      def single_batch_model(requests, provider_name)
         models = requests.map { |request| request.fetch(:model) }.uniq
         return models.first if models.one?
 
-        raise Error, "#{provider_name} batch requests must use one model per submission"
+        raise ArgumentError, "#{provider_name} batches take one model per submission"
       end
 
       def batch_payload(request, except: [])

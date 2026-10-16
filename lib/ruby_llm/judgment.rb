@@ -15,13 +15,13 @@ module RubyLLM
     include Support::Inspectable
     include Accounting::Usage::Result
 
-    # Returns the answers keyed by their declared String or Symbol names.
+    # The answers keyed by their declared String or Symbol names.
     attr_reader :answers
 
-    # Returns the actual model ID reported by the provider.
+    # The actual model ID reported by the provider, as a String.
     attr_reader :model
 
-    # Returns the original provider response.
+    # The original provider response.
     attr_reader :raw
 
     def initialize(answers:, model:, tokens: Tokens.new, raw: nil, model_info: nil) # :nodoc:
@@ -33,7 +33,7 @@ module RubyLLM
       @model_info = model_info
     end
 
-    # Returns the named answer, accepting a String or Symbol, or nil if absent.
+    # Returns the named answer, accepting a String or Symbol, or +nil+ if absent.
     def [](name)
       answers[@answer_keys[name.to_s]]
     end
@@ -48,16 +48,28 @@ module RubyLLM
       answers.each(&)
     end
 
-    # Returns token usage across all provider attempts.
+    # Returns usage aggregated across every provider attempt.
     def tokens
       ruby_llm_usage_entries.empty? ? @tokens : ruby_llm_usage_tokens
     end
 
-    # Returns cost across all provider attempts, preserving unknown amounts.
+    # Returns the judgment cost across every provider attempt, preserving
+    # unknown amounts.
     def cost
       return ruby_llm_usage_cost unless ruby_llm_usage_entries.empty?
 
       Cost.new(tokens:, model: @model_info)
+    end
+
+    attr_writer :model_info # :nodoc:
+
+    # Returns the judgment's Model from its provider's registry, falling
+    # back to the requested model when the response ID is unknown.
+    # Returns +nil+ if the model is unknown.
+    def model_info
+      @model_info ||= RubyLLM.models.find(model)
+    rescue ModelNotFoundError
+      nil
     end
 
     # Returns the model, typed answers, token usage, and cost as a Hash.
@@ -65,16 +77,12 @@ module RubyLLM
       { model:, answers: answers.transform_values(&:to_h), tokens: tokens.to_h, cost: cost.to_h }
     end
 
-    def inspect_attributes # :nodoc:
-      { model:, answers: answers.keys }
-    end
-
-    def self.judge(input, questions:, with: nil, model: nil, provider: nil, context: nil, # :nodoc:
-                   assume_model_exists: false, provider_options: {}, metadata: nil, owner: nil)
+    def self.judge(input, questions:, model: nil, provider: nil, assume_model_exists: false, # :nodoc:
+                   context: nil, with: nil, provider_options: {}, metadata: nil, owner: nil)
       config = context&.config || RubyLLM.config
       attachments = Attachment.wrap(with, config:)
-      validate_input!(input, attachments)
-      raise ArgumentError, 'A judgment requires a model' unless model || config.default_judgment_model
+      validate_input(input, attachments)
+      raise ArgumentError, 'A judgment needs a model' unless model || config.default_judgment_model
 
       model, provider_instance = Models.resolve(model, provider:, assume_model_exists:, config:, operation: :judge,
                                                        default_model: config.default_judgment_model)
@@ -103,12 +111,12 @@ module RubyLLM
       end
     end
 
-    def self.validate_input!(input, attachments)
+    def self.validate_input(input, attachments)
       return if input.is_a?(String) || input.is_a?(Hash) || input.is_a?(Array) || (input.nil? && attachments.any?)
 
       raise ArgumentError, 'Judgment input must be text, a Hash, or an Array'
     end
-    private_class_method :validate_input!
+    private_class_method :validate_input
 
     private
 
@@ -120,6 +128,10 @@ module RubyLLM
 
     def respond_to_missing?(name, include_private = nil)
       @answer_keys&.key?(name.to_s) || super
+    end
+
+    def inspect_attributes # :nodoc:
+      { model:, answers: answers.keys }
     end
   end
 end

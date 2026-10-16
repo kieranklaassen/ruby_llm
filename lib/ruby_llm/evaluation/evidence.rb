@@ -81,7 +81,7 @@ module RubyLLM
         end
         return serialize(value.to_h, parents) if value.respond_to?(:to_h)
 
-        raise ArgumentError, "Cannot evaluate #{value.class}; declare an adapter with adapt"
+        raise ArgumentError, "Cannot evaluate #{value.class}. Declare an adapter with adapt."
       end
 
       def primary_output(conversation, result)

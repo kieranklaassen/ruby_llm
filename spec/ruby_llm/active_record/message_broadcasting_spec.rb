@@ -66,6 +66,16 @@ RSpec.describe RubyLLM::ActiveRecord::MessageBroadcasting do
       expect(broadcasts.last).to eq([:broadcast_refresh_to, [chat], {}])
     end
 
+    it 'gives a chunk its message as a reader only' do
+      chat = BroadcastChat.create!(model: model_for(:openai))
+      message = chat.messages.create!(role: :assistant, content: '')
+
+      chunk = message.chunk('Hel', index: 0)
+
+      expect(chunk.message).to eq(message)
+      expect(chunk).not_to respond_to(:message=)
+    end
+
     it 'broadcasts a chunk a record builds for a test' do
       chat = BroadcastChat.create!(model: model_for(:openai))
       message = chat.messages.create!(role: :assistant, content: '')

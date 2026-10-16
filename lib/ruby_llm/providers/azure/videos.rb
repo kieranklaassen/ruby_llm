@@ -36,7 +36,7 @@ module RubyLLM
         def parse_video_job_status(response, job:) # rubocop:disable Lint/UnusedMethodArgument
           body = response.body
           case body['status']
-          when 'succeeded' then { status: :completed, raw: body }
+          when 'succeeded' then { status: :succeeded, raw: body }
           when 'failed', 'cancelled'
             { status: :failed, raw: body, error: body['failure_reason'] || body['status'] }
           else { status: :pending, raw: body }

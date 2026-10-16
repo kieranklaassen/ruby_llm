@@ -44,11 +44,11 @@ module RubyLLM
           require 'async'
           require 'async/queue'
         rescue LoadError
-          raise LoadError, "The 'async' gem is required for concurrent tool execution with fibers. " \
-                           "Add `gem 'async', '>= 2.0'` to your Gemfile or use `concurrency: :threads`."
+          raise LoadError, 'Concurrent tool execution with fibers requires the async gem. ' \
+                           'Add it to your Gemfile, or use concurrency: :threads.'
         end
         if Gem.loaded_specs.fetch('async').version < Gem::Version.new('2.0')
-          raise LoadError, "The 'async' gem version 2.0 or newer is required for concurrent tool execution with fibers."
+          raise LoadError, 'Concurrent tool execution with fibers requires the async gem, version 2.0 or newer'
         end
 
         caller_context = execution_context

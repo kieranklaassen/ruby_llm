@@ -17,6 +17,15 @@ RSpec.describe RubyLLM::OCR, :live do
       expect(result.markdown).to eq('# Ruby')
     end
 
+    it 'returns immutable pages that serialize and inspect in one line' do
+      page = described_class::Page.new(index: 0, markdown: '# Ruby', raw: { 'index' => 0 })
+
+      expect(page).to be_frozen
+      expect(page).not_to respond_to(:markdown=)
+      expect(page.to_h).to eq(index: 0, markdown: '# Ruby', images: nil, tables: nil, raw: { 'index' => 0 })
+      expect(page.inspect).to eq('#<RubyLLM::OCR::Page index: 0, markdown: "# Ruby">')
+    end
+
     it 'continues converting hash pages with their original metadata' do
       raw = { 'markdown' => '# Ruby', 'images' => [], 'tables' => [] }
       result = described_class.new(pages: [raw], model: model_for(:mistral, :ocr))
@@ -60,7 +69,7 @@ RSpec.describe RubyLLM::OCR, :live do
     it 'raises a clear error on providers without OCR support' do
       expect do
         RubyLLM.ocr(pdf_path, model: model_for(:openai), provider: :openai)
-      end.to raise_error(RubyLLM::Error, /doesn't support OCR/)
+      end.to raise_error(RubyLLM::Error, /does not support OCR/)
     end
 
     it 'validates model existence' do

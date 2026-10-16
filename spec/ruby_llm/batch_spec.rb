@@ -48,7 +48,7 @@ RSpec.describe RubyLLM::Batch, :live do
         RubyLLM.chat(model: model_for(:openai, :alternate_batch)).ask_later('Hi')
       ]
 
-      expect { RubyLLM.batch(chats) }.to raise_error(RubyLLM::Error, /one model/)
+      expect { RubyLLM.batch(chats) }.to raise_error(ArgumentError, /one model/)
     end
 
     it 'rejects providers without batch support' do

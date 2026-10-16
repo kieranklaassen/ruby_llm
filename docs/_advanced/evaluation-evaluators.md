@@ -3,7 +3,7 @@ layout: default
 title: Evaluators
 parent: Evaluations
 nav_order: 3
-description: Decide what a good answer means and which model, Agent, or Judge assesses it
+description: Decide what a good answer means and which model, Agent, or Judge assesses it.
 ---
 
 # {{ page.title }}

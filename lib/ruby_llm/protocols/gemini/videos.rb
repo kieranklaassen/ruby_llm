@@ -45,7 +45,7 @@ module RubyLLM
             { status: :failed, raw: body, error: body.dig('error', 'message') }
           elsif body['done']
             video = generated_video(body)
-            video ? { status: :completed, raw: body } : filtered_video_failure(body)
+            video ? { status: :succeeded, raw: body } : filtered_video_failure(body)
           else
             { status: :pending, raw: body }
           end
@@ -77,15 +77,15 @@ module RubyLLM
           return { uri: video.source.to_s } if video.url?
           return { uri: video.provider_file_uri } if video.provider_file?
 
-          raise ArgumentError, 'Gemini extends generated Veo videos; pass the returned Video or its URI'
+          raise ArgumentError, 'Gemini extends generated Veo videos. Pass the returned Video or its URI.'
         end
 
         def render_video_image(image)
           { inlineData: { mimeType: image.mime_type, data: image.encoded } }
         end
 
-        def validate_animate_inputs!(with:)
-          raise Error, 'Veo takes a single reference image' if with.size > 1
+        def validate_animate_inputs(with:)
+          raise ArgumentError, 'Veo takes a single reference image' if with.size > 1
 
           with.each do |attachment|
             raise UnsupportedAttachmentError, attachment.mime_type unless attachment.image?

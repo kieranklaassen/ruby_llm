@@ -7,29 +7,40 @@ require 'dotenv/load'
 
 require 'irb'
 
+CONSOLE_SETTINGS = {
+  anthropic_api_base: 'ANTHROPIC_API_BASE',
+  anthropic_api_key: 'ANTHROPIC_API_KEY',
+  azure_api_base: 'AZURE_API_BASE',
+  azure_api_key: 'AZURE_API_KEY',
+  bedrock_api_key: 'AWS_ACCESS_KEY_ID',
+  bedrock_region: 'AWS_REGION',
+  bedrock_secret_key: 'AWS_SECRET_ACCESS_KEY',
+  bedrock_session_token: 'AWS_SESSION_TOKEN',
+  cohere_api_key: 'COHERE_API_KEY',
+  deepgram_api_key: 'DEEPGRAM_API_KEY',
+  deepseek_api_key: 'DEEPSEEK_API_KEY',
+  elevenlabs_api_key: 'ELEVENLABS_API_KEY',
+  gemini_api_base: 'GEMINI_API_BASE',
+  gemini_api_key: 'GEMINI_API_KEY',
+  gpustack_api_base: 'GPUSTACK_API_BASE',
+  gpustack_api_key: 'GPUSTACK_API_KEY',
+  hetzner_api_key: 'HETZNER_API_KEY',
+  mistral_api_key: 'MISTRAL_API_KEY',
+  ollama_api_base: 'OLLAMA_API_BASE',
+  ollama_api_key: 'OLLAMA_API_KEY',
+  ollama_cloud_api_key: 'OLLAMA_CLOUD_API_KEY',
+  openai_api_base: 'OPENAI_API_BASE',
+  openai_api_key: 'OPENAI_API_KEY',
+  openrouter_api_key: 'OPENROUTER_API_KEY',
+  perplexity_api_key: 'PERPLEXITY_API_KEY',
+  typesafe_api_key: 'TYPESAFE_API_KEY',
+  vertexai_location: 'GOOGLE_CLOUD_LOCATION',
+  vertexai_project_id: 'GOOGLE_CLOUD_PROJECT',
+  xai_api_key: 'XAI_API_KEY'
+}.freeze
+
 RubyLLM.configure do |config|
-  config.anthropic_api_base = ENV.fetch('ANTHROPIC_BASE_URL', nil)
-  config.anthropic_api_key = ENV.fetch('ANTHROPIC_API_KEY', nil)
-  config.azure_api_base = ENV.fetch('AZURE_API_BASE', nil)
-  config.azure_api_key = ENV.fetch('AZURE_API_KEY', nil)
-  config.bedrock_api_key = ENV.fetch('AWS_ACCESS_KEY_ID', nil)
-  config.bedrock_region = ENV.fetch('AWS_REGION', nil)
-  config.bedrock_secret_key = ENV.fetch('AWS_SECRET_ACCESS_KEY', nil)
-  config.bedrock_session_token = ENV.fetch('AWS_SESSION_TOKEN', nil)
-  config.deepseek_api_key = ENV.fetch('DEEPSEEK_API_KEY', nil)
-  config.gemini_api_base = ENV.fetch('GEMINI_API_BASE', nil)
-  config.gemini_api_key = ENV.fetch('GEMINI_API_KEY', nil)
-  config.gpustack_api_base = ENV.fetch('GPUSTACK_API_BASE', nil)
-  config.gpustack_api_key = ENV.fetch('GPUSTACK_API_KEY', nil)
-  config.mistral_api_key = ENV.fetch('MISTRAL_API_KEY', nil)
-  config.ollama_api_base = ENV.fetch('OLLAMA_API_BASE', nil)
-  config.openai_api_base = ENV.fetch('OPENAI_API_BASE', nil)
-  config.openai_api_key = ENV.fetch('OPENAI_API_KEY', nil)
-  config.openrouter_api_key = ENV.fetch('OPENROUTER_API_KEY', nil)
-  config.perplexity_api_key = ENV.fetch('PERPLEXITY_API_KEY', nil)
-  config.vertexai_location = ENV.fetch('GOOGLE_CLOUD_LOCATION', nil)
-  config.vertexai_project_id = ENV.fetch('GOOGLE_CLOUD_PROJECT', nil)
-  config.xai_api_key = ENV.fetch('XAI_API_KEY', nil)
+  CONSOLE_SETTINGS.each { |setting, variable| config.public_send(:"#{setting}=", ENV.fetch(variable, nil)) }
 end
 
 IRB.start(__FILE__)

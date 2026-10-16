@@ -300,7 +300,7 @@ RubyLLM.workflow("Summarize meeting") do |workflow|
 end
 ```
 
-Use ordinary Ruby for branching, loops, and concurrency. Rails sends the events through `ActiveSupport::Notifications`; plain Ruby applications can configure an instrumenter. See [Instrumentation]({% link _advanced/instrumentation.md %}) for connecting your logs and tracing tools.
+Use ordinary Ruby for branching, loops, and concurrency. Rails sends the events through `ActiveSupport::Notifications`; plain Ruby applications can configure an instrumenter. See [Instrumentation and Observability]({% link _advanced/instrumentation.md %}) for connecting your logs and tracing tools.
 
 ## Rails Persistence and Durable Agents
 
@@ -345,7 +345,7 @@ The [upgrade guide](https://github.com/crmne/ruby_llm/blob/v2.0.0/docs/_referenc
 
 Install RubyLLM 2.0:
 
-```sh
+```bash
 bundle add ruby_llm --version 2.0.0
 ```
 

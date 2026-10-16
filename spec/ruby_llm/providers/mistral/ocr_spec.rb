@@ -3,12 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe RubyLLM::Providers::Mistral::OCR do
+  let(:model) { model_for(:mistral, :ocr) }
+
   describe '.render_ocr_payload' do
     it 'sends remote documents as document_url references' do
-      payload = described_class.render_ocr_payload('https://example.com/report.pdf', model: 'mistral-ocr-latest')
+      payload = described_class.render_ocr_payload('https://example.com/report.pdf', model:)
 
       expect(payload).to eq(
-        model: 'mistral-ocr-latest',
+        model:,
         document: { type: 'document_url', document_url: 'https://example.com/report.pdf' }
       )
     end
@@ -16,7 +18,7 @@ RSpec.describe RubyLLM::Providers::Mistral::OCR do
     it 'inlines local documents as base64 data URIs' do
       pdf_path = File.expand_path('../../../fixtures/sample.pdf', __dir__)
 
-      payload = described_class.render_ocr_payload(pdf_path, model: 'mistral-ocr-latest')
+      payload = described_class.render_ocr_payload(pdf_path, model:)
 
       expect(payload[:document][:type]).to eq('document_url')
       expect(payload[:document][:document_url]).to start_with('data:application/pdf;base64,')
@@ -25,7 +27,7 @@ RSpec.describe RubyLLM::Providers::Mistral::OCR do
     it 'sends images through the image_url variant' do
       image_path = File.expand_path('../../../fixtures/ruby.png', __dir__)
 
-      payload = described_class.render_ocr_payload(image_path, model: 'mistral-ocr-latest')
+      payload = described_class.render_ocr_payload(image_path, model:)
 
       expect(payload[:document][:type]).to eq('image_url')
       expect(payload[:document][:image_url]).to start_with('data:image/png;base64,')
@@ -34,7 +36,7 @@ RSpec.describe RubyLLM::Providers::Mistral::OCR do
     it 'inlines text files as base64 data URIs' do
       text_path = File.expand_path('../../../fixtures/ruby.txt', __dir__)
 
-      payload = described_class.render_ocr_payload(text_path, model: 'mistral-ocr-latest')
+      payload = described_class.render_ocr_payload(text_path, model:)
 
       expect(payload[:document][:type]).to eq('document_url')
       expect(payload[:document][:document_url]).to start_with('data:text/plain;base64,')
@@ -43,7 +45,7 @@ RSpec.describe RubyLLM::Providers::Mistral::OCR do
     it 'inlines XML documents as base64 data URIs' do
       xml_path = File.expand_path('../../../fixtures/ruby.xml', __dir__)
 
-      payload = described_class.render_ocr_payload(xml_path, model: 'mistral-ocr-latest')
+      payload = described_class.render_ocr_payload(xml_path, model:)
 
       expect(payload[:document][:type]).to eq('document_url')
       expect(payload[:document][:document_url]).to start_with('data:application/xml;base64,')
@@ -52,7 +54,7 @@ RSpec.describe RubyLLM::Providers::Mistral::OCR do
     it 'merges options into the payload in Mistral vocabulary' do
       payload = described_class.render_ocr_payload(
         'https://example.com/report.pdf',
-        model: 'mistral-ocr-latest',
+        model:,
         pages: [0],
         provider_options: { include_image_base64: true, table_format: 'html' }
       )
@@ -70,17 +72,17 @@ RSpec.describe RubyLLM::Providers::Mistral::OCR do
           { 'index' => 0, 'markdown' => '# Hello', 'images' => [], 'tables' => [] },
           { 'index' => 1, 'markdown' => 'World', 'images' => [], 'tables' => [] }
         ],
-        'model' => 'mistral-ocr-latest',
+        'model' => model,
         'usage_info' => { 'pages_processed' => 2, 'doc_size_bytes' => 123 }
       }
       response = instance_double(Faraday::Response, body: body)
 
-      ocr = described_class.parse_ocr_response(response, model: 'mistral-ocr-latest')
+      ocr = described_class.parse_ocr_response(response, model:)
 
       expect(ocr.pages.map(&:index)).to eq([0, 1])
       expect(ocr.pages.first.markdown).to eq('# Hello')
       expect(ocr.markdown).to eq("# Hello\n\nWorld")
-      expect(ocr.model).to eq('mistral-ocr-latest')
+      expect(ocr.model).to eq(model)
       expect(ocr.usage).to eq('pages_processed' => 2, 'doc_size_bytes' => 123)
       expect(ocr.raw).to eq(body)
     end

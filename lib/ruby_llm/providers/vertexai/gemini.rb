@@ -40,7 +40,7 @@ module RubyLLM
         end
 
         def cache_name(name)
-          name = name.name if name.is_a?(CachedContent)
+          name = name.id if name.is_a?(CachedContent)
           name.to_s.include?('/') ? name.to_s : "#{caches_url}/#{name}"
         end
 

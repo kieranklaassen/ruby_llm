@@ -477,7 +477,7 @@ RSpec.describe RubyLLM::MCP do
 
     it 'refuses kinds of input it does not know' do
       expect { Class.new(described_class) { input_requests :email } }
-        .to raise_error(ArgumentError, 'Unknown input requests: email')
+        .to raise_error(ArgumentError, 'input_requests accepts :form, :url, got :email')
     end
   end
 
@@ -776,7 +776,7 @@ RSpec.describe RubyLLM::MCP do
 
     it 'refuses names of extensions it does not know' do
       expect { Class.new(described_class) { extension :widgets } }
-        .to raise_error(ArgumentError, 'Unknown MCP extension: widgets')
+        .to raise_error(ArgumentError, 'Unknown MCP extension: :widgets. Valid extensions: apps, tasks.')
     end
 
     it 'passes extensions to subclasses without sharing them' do
@@ -950,7 +950,7 @@ RSpec.describe RubyLLM::MCP do
 
       expect do
         task.wait(timeout: 0.05)
-      end.to raise_error(RubyLLM::MCP::Error, 'Task task-1 did not finish in 0.05 seconds')
+      end.to raise_error(RubyLLM::MCP::Error, 'Task task-1 timed out after 0.05 seconds')
       expect(server_tasks['cancelled']).to be_empty
     end
 
@@ -1000,7 +1000,7 @@ RSpec.describe RubyLLM::MCP do
 
     it 'refuses levels the protocol does not define' do
       expect { Class.new(described_class) { log_level :verbose } }
-        .to raise_error(ArgumentError, 'Unknown MCP log level: verbose')
+        .to raise_error(ArgumentError, /Unknown MCP log level: :verbose\. Valid levels: debug, info/)
     end
 
     it 'takes a level inline' do
@@ -1062,8 +1062,17 @@ RSpec.describe RubyLLM::MCP do
     end
 
     it 'rejects unknown inputs' do
-      expect { mcp_class.new(account: 'acme') }.to raise_error(ArgumentError, 'Unknown MCP inputs: account')
+      expect { mcp_class.new(account: 'acme') }.to raise_error(ArgumentError, 'This MCP accepts :user, got :account')
     end
+  end
+
+  it 'adds several headers at once, as env adds several variables' do
+    mcp_class = Class.new(described_class) do
+      header 'X-Team', 'core'
+      headers 'X-Extra' => 'yes', 'X-Account' => :account_id
+    end
+
+    expect(mcp_class.headers).to eq('X-Team' => 'core', 'X-Extra' => 'yes', 'X-Account' => :account_id)
   end
 
   it 'passes its settings to subclasses' do
@@ -1232,7 +1241,7 @@ RSpec.describe RubyLLM::MCP do
 
     it 'refuses unknown settings' do
       expect { RubyLLM.mcp(url: 'https://mcp.linear.app/mcp', only: [:search]) }
-        .to raise_error(ArgumentError, 'Unknown MCP settings: only')
+        .to raise_error(ArgumentError, /An inline MCP accepts :name, .*:log_level, got :only/)
     end
 
     it 'accepts a name' do

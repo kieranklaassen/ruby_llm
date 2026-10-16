@@ -39,7 +39,7 @@ module RubyLLM
 
         private
 
-        def validate_paint_inputs!(with:, mask:)
+        def validate_paint_inputs(with:, mask:)
           if gemini_image_model?(@model)
             raise UnsupportedAttachmentError, 'image mask' if mask
 
@@ -76,7 +76,7 @@ module RubyLLM
             contents: [
               {
                 role: 'user',
-                parts: Media.format_content(prompt, image_attachments(with))
+                parts: Media.render_content(prompt, image_attachments(with))
               }
             ],
             generationConfig: generation_config

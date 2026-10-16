@@ -111,7 +111,7 @@ module RubyLLM
         names = requests.map { |request| batch_protocol_name_for(request.fetch(:payload)) }.uniq
         return batch_protocol_for_name(names.first) if names.one?
 
-        raise Error, 'openai batch requests must target one endpoint per submission'
+        raise ArgumentError, "#{name} batches take one endpoint per submission"
       end
 
       def batch_protocol_name_for(payload)
@@ -120,7 +120,7 @@ module RubyLLM
         return :responses if input
         return :chat_completions if payload.key?(:messages) || payload.key?('messages')
 
-        raise Error, 'openai batch requests only support chat, responses, or embedding payloads'
+        raise Error, "#{name} batch requests only support chat, responses, or embedding payloads"
       end
 
       # Responses payloads carry the conversation as an array of message hashes

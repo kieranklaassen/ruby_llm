@@ -322,10 +322,15 @@ module RubyLLM
     # without requesting a completion. Builds a minimal Chat and delegates
     # to Chat#count_tokens. Returns an Integer.
     #
+    # +model:+ selects the model and defaults to the configured
+    # +default_model+. +provider:+ forces a specific provider, and
+    # +assume_model_exists:+ skips the registry lookup. +context:+ supplies
+    # a Context whose configuration replaces the global one.
+    #
     #   RubyLLM.count_tokens("What is the capital of France?", model: 'claude-haiku-4-5')
     #
-    def count_tokens(text, model: nil, provider: nil)
-      chat(model: model, provider: provider).count_tokens(text)
+    def count_tokens(text, model: nil, provider: nil, assume_model_exists: false, context: nil)
+      chat(model:, provider:, assume_model_exists:, context:).count_tokens(text)
     end
 
     # Tokenizes plain text and returns a Tokenization with its token IDs
@@ -345,8 +350,8 @@ module RubyLLM
     #   end
     #   batch = RubyLLM.batch(chats)
     #
-    def batch(chats)
-      Batch.submit(chats)
+    def batch(requests)
+      Batch.submit(requests)
     end
 
     # Generates a vector embedding for a text, or one embedding per element
@@ -365,11 +370,17 @@ module RubyLLM
     # provider-side batch with ::batch; once the batch completes, each
     # request's EmbeddingRequest#result holds its Embedding.
     #
+    # +model:+ selects the embedding model and defaults to the configured
+    # +default_embedding_model+. +provider:+ forces a specific provider, and
+    # +assume_model_exists:+ skips the registry lookup. +context:+ supplies
+    # a Context whose configuration replaces the global one. +dimensions:+
+    # requests a specific vector size on models that support it.
+    #
     #   requests = texts.map { |text| RubyLLM.embed_later(text) }
     #   batch = RubyLLM.batch(requests)
     #
-    def embed_later(text, model: nil, provider: nil, dimensions: nil)
-      EmbeddingRequest.new(text, model:, provider:, dimensions:)
+    def embed_later(...)
+      EmbeddingRequest.new(...)
     end
 
     # Checks text or image attachments against the provider's moderation model and returns a

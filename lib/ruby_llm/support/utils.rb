@@ -32,6 +32,10 @@ module RubyLLM
         nil
       end
 
+      def option_list(keys)
+        keys.map { |key| ":#{key}" }.join(', ')
+      end
+
       def hash_get(hash, key)
         symbol_key = key.to_sym
         hash.key?(symbol_key) ? hash[symbol_key] : hash[key.to_s]

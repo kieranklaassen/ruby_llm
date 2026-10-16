@@ -44,7 +44,7 @@ RSpec.describe RubyLLM::Video, :live do
     it 'raises a clear error for providers without video generation' do
       expect do
         RubyLLM.animate_later('a cat', model: model_for(:anthropic))
-      end.to raise_error(RubyLLM::Error, /Anthropic doesn't support video generation/)
+      end.to raise_error(RubyLLM::Error, /Anthropic does not support video generation/)
     end
   end
 
@@ -62,7 +62,10 @@ RSpec.describe RubyLLM::Video, :live do
       allow(protocol).to receive(:refresh_video_job).and_return({ status: :pending })
       job = described_class.new(id: 'operations/op-1', protocol: protocol)
 
-      expect { job.wait(timeout: 0, interval: 0) }.to raise_error(RubyLLM::Error, /timed out after 0 seconds/)
+      expect { job.wait(timeout: 0, interval: 0) }
+        .to raise_error(described_class::TimeoutError, /timed out after 0 seconds \(job operations/) do |error|
+          expect(error.job).to equal(job)
+        end
     end
 
     it 'does not sleep past the timeout deadline' do
@@ -81,23 +84,25 @@ RSpec.describe RubyLLM::Video, :live do
         .and_return({ status: :failed, error: 'flagged by moderation' })
       job = described_class.new(id: 'operations/op-1', protocol: protocol)
 
-      expect { job.wait(timeout: 10, interval: 0) }.to raise_error(RubyLLM::Error, /flagged by moderation/)
-      expect { job.video }.to raise_error(RubyLLM::Error, /flagged by moderation/)
+      expect { job.wait(timeout: 10, interval: 0) }.to raise_error(described_class::Error, /flagged by moderation/)
+      expect { job.video }.to raise_error(described_class::Error, /flagged by moderation/) do |error|
+        expect(error.job).to equal(job)
+      end
     end
 
     it 'returns no video while pending and stops refreshing once done' do
-      allow(protocol).to receive(:refresh_video_job).and_return({ status: :completed, raw: {} })
+      allow(protocol).to receive(:refresh_video_job).and_return({ status: :succeeded, raw: {} })
       job = described_class.new(id: 'operations/op-1', protocol: protocol)
 
       expect(job.video).to be_nil
-      expect(job.refresh.status).to eq(:completed)
+      expect(job.refresh).to have_attributes(status: :succeeded, succeeded?: true, done?: true)
 
       job.refresh
       expect(protocol).to have_received(:refresh_video_job).once
     end
 
     it 'records its usage once when it finishes, attributed to the owner at submission' do
-      allow(protocol).to receive(:refresh_video_job).and_return({ status: :pending }, { status: :completed })
+      allow(protocol).to receive(:refresh_video_job).and_return({ status: :pending }, { status: :succeeded })
       job = RubyLLM.with_usage_owner('account-1') do
         described_class.new(id: 'operations/op-1', protocol:, model: 'veo-3.1-fast-generate-preview')
       end

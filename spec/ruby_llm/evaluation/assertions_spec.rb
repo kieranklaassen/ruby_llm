@@ -32,7 +32,7 @@ RSpec.describe RubyLLM::Evaluation::Assertions do
     allow(described_class).to receive(:available?).and_return(false)
 
     expect { evaluation { assert true }.run(dataset: cases) }
-      .to raise_error(LoadError, /require the 'minitest' gem/)
+      .to raise_error(LoadError, /require the minitest gem/)
   end
 
   it 'answers respond_to? for Minitest assertions only' do

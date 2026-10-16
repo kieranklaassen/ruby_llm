@@ -64,7 +64,7 @@ RSpec.describe RubyLLM::Chat do
       call = chat.pending_approvals.first
       approved ? chat.approve(call) : chat.deny(call)
 
-      expect { chat.run_tools }.to raise_error(RubyLLM::Error, /Anthropic doesn't support remote tool approvals/)
+      expect { chat.run_tools }.to raise_error(RubyLLM::Error, /Anthropic does not support remote tool approvals/)
     end
   end
 

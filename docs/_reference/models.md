@@ -15,11 +15,11 @@ redirect_from:
 
 After reading this guide, you will know:
 
-*   How RubyLLM discovers and registers models.
-*   How RubyLLM selects and refreshes the bundled, cached, or database registry.
-*   How to find and filter available models by provider, type, or capabilities.
-*   What `RubyLLM::Model` exposes about a model's capabilities and pricing.
-*   How to use model aliases and resolve the same alias across providers.
+* How RubyLLM discovers and registers models.
+* How RubyLLM selects and refreshes the bundled, cached, or database registry.
+* How to find and filter available models by provider, type, or capabilities.
+* What `RubyLLM::Model` exposes about a model's capabilities and pricing.
+* How to use model aliases and resolve the same alias across providers.
 
 ## The Model Registry
 
@@ -29,19 +29,19 @@ In plain Ruby, RubyLLM uses the valid registry in your operating system's user c
 
 Each registry entry describes the model:
 
-*   **`id`**: The unique identifier used by the provider (e.g., `gpt-6.1-sol`).
-*   **`provider`**: The source provider (`openai`, `anthropic`, etc.).
-*   **`type`**: The model's primary function as a Symbol (`:chat`, `:embedding`, and so on).
-*   **`name`**: A human-friendly name.
-*   **`context_window`**: Max input tokens (e.g., `128_000`).
-*   **`max_output_tokens`**: Max output tokens (e.g., `16_384`).
-*   **`supports?(:vision)`**: If it can process images and videos.
-*   **`supports?(:function_calling)`**: If it can use [Tools]({% link _core_features/tools.md %}).
-*   **`price(:input)`**: Cost in USD per 1 million input tokens.
-*   **`price(:output)`**: Cost in USD per 1 million output tokens.
-*   **`price(:cache_read)`**: Cost in USD per 1 million cache read tokens, when available.
-*   **`price(:cache_write)`**: Cost in USD per 1 million cache write tokens, when available.
-*   **`family`**: A broader classification (e.g., `claude-sonnet`).
+* **`id`**: The unique identifier used by the provider (e.g., `{{ site.models.default_chat }}`).
+* **`provider`**: The source provider (`openai`, `anthropic`, etc.).
+* **`type`**: The model's primary function as a Symbol (`:chat`, `:embedding`, and so on).
+* **`name`**: A human-friendly name.
+* **`context_window`**: Max input tokens (e.g., `128_000`).
+* **`max_output_tokens`**: Max output tokens (e.g., `16_384`).
+* **`supports?(:vision)`**: If it can process images and videos.
+* **`supports?(:function_calling)`**: If it can use [Tools]({% link _core_features/tools.md %}).
+* **`price(:input)`**: Cost in USD per 1 million input tokens.
+* **`price(:output)`**: Cost in USD per 1 million output tokens.
+* **`price(:cache_read)`**: Cost in USD per 1 million cache read tokens, when available.
+* **`price(:cache_write)`**: Cost in USD per 1 million cache write tokens, when available.
+* **`family`**: A broader classification (e.g., `claude-sonnet`).
 
 This registry allows RubyLLM to validate models, route requests correctly, provide capability information, and offer convenient filtering.
 
@@ -59,7 +59,7 @@ The call has the same meaning in every environment. It replaces the in-memory re
 
 RubyLLM does not refresh automatically. Network access and provider credentials remain explicit application concerns, and a missing-model lookup never triggers network I/O.
 
-### How refresh Works
+### How `refresh` Works
 
 The `refresh` method performs the following steps:
 
@@ -210,6 +210,8 @@ all_models = RubyLLM.models.all
 chat_models = RubyLLM.models.chat_models
 embedding_models = RubyLLM.models.embedding_models
 
+video_models = RubyLLM.models.by_type(:video) # any Model#type
+
 openai_models = RubyLLM.models.by_provider(:openai) # or 'openai'
 
 # Filter by model family (e.g., all Claude Sonnet variants)
@@ -259,10 +261,10 @@ model_anthropic = RubyLLM.models.find('{{ site.models.anthropic_current }}', pro
 model_bedrock = RubyLLM.models.find('{{ site.models.anthropic_current }}', provider: :bedrock)
 ```
 
-When you pass a provider, RubyLLM resolves aliases first. For Bedrock, it then applies region/inference-profile resolution (for example `us.` prefixes) before falling back to an exact ID match. See [Model Resolution]({% link _reference/model-resolution.md %}) for the exact order, step by step.
+When you pass a provider, RubyLLM resolves aliases first. For Bedrock, it then applies region/inference-profile resolution (for example `us.` prefixes) before falling back to an exact ID match. See [Model Resolution]({% link _reference/model-resolution.md %}) for the exact order, step by step. Pass `context:` to resolve with the configuration of a context, such as its Azure deployments.
 
 ## Next Steps
 
-*   [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) - turn token usage into a `RubyLLM::Cost` object and aggregate costs across messages.
-*   [Custom Endpoints and Unlisted Models]({% link _reference/custom-endpoints.md %}) - target OpenAI-compatible endpoints and use model IDs the registry doesn't list.
-*   [Models]({% link _reference/available-models.md %}) - browse every model currently registered with RubyLLM.
+* [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) - turn token usage into a `RubyLLM::Cost` object and aggregate costs across messages.
+* [Custom Endpoints and Unlisted Models]({% link _reference/custom-endpoints.md %}) - target OpenAI-compatible endpoints and use model IDs the registry doesn't list.
+* [Models]({% link _reference/available-models.md %}) - browse every model currently registered with RubyLLM.

@@ -78,8 +78,7 @@ module RubyLLM
 
           ::Aws::S3::Client.new(**s3_client_options)
         rescue LoadError
-          raise Error, 'The aws-sdk-s3 gem is required for Bedrock file uploads. ' \
-                       'Please add it to your Gemfile: gem "aws-sdk-s3"'
+          raise LoadError, 'Bedrock file uploads require the aws-sdk-s3 gem. Add it to your Gemfile.'
         end
 
         def s3_client_options

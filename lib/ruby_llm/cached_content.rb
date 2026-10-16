@@ -12,20 +12,16 @@ module RubyLLM
   #   chat.ask "What does the document conclude?"
   #   cache.delete
   #
-  # Cache names are provider-owned. Persist #provider alongside #name and
+  # Cache ids are provider-owned. Persist #provider alongside #id and
   # pass it back when finding the cache later.
   class CachedContent
     include Support::Inspectable
 
-    def inspect_attributes # :nodoc:
-      { name: name, model: model, provider: provider, expires_at: expires_at }
-    end
-
-    # The provider-assigned resource name, such as
+    # The provider's id for the cache, such as
     # <tt>"cachedContents/abc123"</tt>.
-    attr_reader :name
+    attr_reader :id
 
-    # The model the cache was created for.
+    # The id of the model the cache was created for, as a String.
     attr_reader :model
 
     # The slug of the provider that stores the cache.
@@ -41,22 +37,32 @@ module RubyLLM
     attr_reader :tokens
 
     # The raw provider response data for the cache, as a Hash.
-    attr_reader :metadata
+    attr_reader :raw
 
-    def initialize(name:, **attributes) # :nodoc:
-      @name = name
+    def metadata # :nodoc:
+      RubyLLM.deprecator.deprecate('CachedContent#metadata', replacement: 'CachedContent#raw', removal: '3.0')
+      raw
+    end
+
+    def name # :nodoc:
+      RubyLLM.deprecator.deprecate('CachedContent#name', replacement: 'CachedContent#id', removal: '3.0')
+      id
+    end
+
+    def initialize(id:, **attributes) # :nodoc:
+      @id = id
       @model = attributes[:model]
       @provider_instance = attributes[:provider_instance]
       @provider = attributes[:provider] || @provider_instance&.slug
       @created_at = attributes[:created_at]
       @expires_at = attributes[:expires_at]
       @tokens = attributes[:tokens]
-      @metadata = attributes[:metadata] || {}
+      @raw = attributes[:raw] || {}
     end
 
     # Deletes the cache resource from the provider. Returns +self+.
     def delete
-      @provider_instance.delete_cache(name)
+      @provider_instance.delete_cache(id)
       self
     end
 
@@ -67,38 +73,39 @@ module RubyLLM
     #   cache.renew(ttl: 3600)
     #
     def renew(ttl:)
-      refreshed = @provider_instance.extend_cache(name, ttl: ttl)
+      refreshed = @provider_instance.extend_cache(id, ttl: ttl)
       @expires_at = refreshed.expires_at
-      @metadata = refreshed.metadata
+      @raw = refreshed.raw
       self
     end
 
     # Creates a provider-side prompt cache from +content+ and returns a
-    # CachedContent. Also available as RubyLLM.cache.
+    # CachedContent. Most code calls this through RubyLLM.cache.
     #
     #   RubyLLM::CachedContent.create(big_document, model: 'gemini-3.7-flash')
     #
-    # +content+ is the text to cache; pass file attachments with +with:+
-    # the way Chat#ask accepts them. +instructions:+ caches a system
-    # prompt alongside the content, and +ttl:+ sets the cache lifetime in
-    # seconds (Integer) or as a provider duration string such as
-    # <tt>"300s"</tt>. When +provider:+ is omitted, the model's default
-    # provider is used. The content must exceed the model's minimum
-    # cacheable token count.
-    def self.create(content, model:, ttl: nil, instructions: nil, provider: nil, context: nil, with: nil)
+    # +content+ is the text to cache. +model:+ selects the model the cache
+    # is created for and is required. +provider:+ forces a specific
+    # provider. +context:+ supplies a Context whose configuration replaces
+    # the global one. +ttl:+ sets the cache lifetime in seconds (Integer) or
+    # as a provider duration string such as <tt>"300s"</tt>.
+    # +instructions:+ caches a system prompt alongside the content, and
+    # +with:+ passes file attachments the way Chat#ask accepts them. The
+    # content must exceed the model's minimum cacheable token count.
+    def self.create(content, model:, provider: nil, context: nil, ttl: nil, instructions: nil, with: nil)
       config = context&.config || RubyLLM.config
       model_instance, provider_instance = Models.resolve(model, provider: provider, config: config)
 
       provider_instance.cache_content(content, model: model_instance, ttl:, instructions:, with:)
     end
 
-    # Fetches an existing cache resource by +name+ and returns a
+    # Fetches an existing cache resource by +id+ and returns a
     # CachedContent. When +provider:+ is omitted, the provider of the
     # configured default model is used.
     #
     #   cache = RubyLLM::CachedContent.find("cachedContents/abc123", provider: :gemini)
     #
-    def self.find(name, provider: nil, context: nil)
+    def self.find(id, provider: nil, context: nil)
       config = context&.config || RubyLLM.config
 
       provider_instance = if provider
@@ -106,7 +113,13 @@ module RubyLLM
                           else
                             Models.resolve(config.default_model, config:).last
                           end
-      provider_instance.find_cache(name)
+      provider_instance.find_cache(id)
+    end
+
+    private
+
+    def inspect_attributes # :nodoc:
+      { id: id, model: model, provider: provider, expires_at: expires_at }
     end
   end
 end

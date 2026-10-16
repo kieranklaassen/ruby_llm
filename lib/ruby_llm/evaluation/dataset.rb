@@ -14,7 +14,9 @@ module RubyLLM
           row.is_a?(Case) ? row : Case.new(**row.transform_keys(&:to_sym))
         end
         raise ArgumentError, 'A dataset cannot be empty' if cases.empty?
-        raise ArgumentError, 'Dataset case names must be unique' unless cases.map(&:name).uniq.size == cases.size
+
+        repeated, count = cases.map(&:name).tally.max_by(&:last)
+        raise ArgumentError, "Two cases are named #{repeated}" if count > 1
 
         cases
       end
@@ -32,8 +34,8 @@ module RubyLLM
       def cases_from_hash(source)
         unknown = source.keys.map(&:to_s) - %w[name cases]
         if unknown.any?
-          raise ArgumentError,
-                "Unsupported dataset fields: #{unknown.join(', ')}; declare evaluators in Ruby"
+          raise ArgumentError, "A dataset accepts :name, :cases, got #{Support::Utils.option_list(unknown)}. " \
+                               'Declare evaluators in Ruby.'
         end
 
         source.fetch('cases') { source.fetch(:cases) }

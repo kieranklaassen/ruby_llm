@@ -20,7 +20,7 @@ module RubyLLM
     # The MIME type of the video, such as <tt>"video/mp4"</tt>.
     attr_reader :mime_type
 
-    # The id of the model that generated the video.
+    # The id of the model that generated the video, as a String.
     attr_reader :model
 
     # The clip length in seconds, when the provider reports one.
@@ -34,22 +34,23 @@ module RubyLLM
     # rendering it, and returns a Video. Most code calls this through
     # RubyLLM.animate. Video generation is asynchronous on every provider,
     # so this submits a job with VideoJob.animate_later and polls until it
-    # is done, honoring <tt>config.video_generation_timeout</tt> and
+    # is done. +timeout:+ and +interval:+ are seconds and default to
+    # <tt>config.video_generation_timeout</tt> and
     # <tt>config.video_generation_poll_interval</tt>.
     #
     # +model:+ selects the video model and defaults to the configured
     # +default_video_model+. +provider:+ forces a specific provider, and
-    # +assume_model_exists:+ skips the registry lookup. +with:+ passes a
-    # reference image or a video to edit on models that support it. Models
+    # +assume_model_exists:+ skips the registry lookup. +context:+ supplies
+    # a Context whose configuration replaces the global one. +with:+ passes
+    # a reference image or a video to edit on models that support it. Models
     # driven by image and audio input can omit the prompt and pass both
     # attachments through +with:+.
     # +extend:+ continues a source video instead. It accepts a Video,
     # file path, URL, or Attachment and cannot be combined with +with:+.
     # +provider_options:+ takes options in the provider's request
     # vocabulary, such as durations and resolutions, and merges them into
-    # the request as-is. +context:+ supplies a Context whose configuration
-    # replaces the global one. +metadata:+ is included in the
-    # instrumentation payload. +owner:+ attributes the usage to a record,
+    # the request as-is. +metadata:+ is included in the instrumentation
+    # payload. +owner:+ attributes the usage to a record,
     # such as a user, and wins over RubyLLM.with_usage_owner.
     #
     #   video = RubyLLM.animate("a hummingbird in slow motion", model: "veo-3.1-fast-generate-preview")
@@ -70,7 +71,9 @@ module RubyLLM
                      extend: nil,
                      provider_options: {},
                      metadata: nil,
-                     owner: nil)
+                     owner: nil,
+                     timeout: nil,
+                     interval: nil)
       config = context&.config || RubyLLM.config
       payload = { model:, prompt:, provider_options:, metadata: }
 
@@ -79,7 +82,7 @@ module RubyLLM
                                              context:, with:, extend:, provider_options:, metadata:, owner:)
         event[:model] = job.model
         event[:job_id] = job.id
-        job.wait
+        job.wait(timeout:, interval:)
         result = job.video
         event[:result] = result
         event[:response_model] = result.model
@@ -102,6 +105,17 @@ module RubyLLM
       @model = model
       @duration = duration
       @raw = raw
+    end
+
+    # Returns the video's Model from its provider's registry, falling
+    # back to the requested model when the response ID is unknown.
+    # Returns +nil+ if the model is unknown.
+    def model_info
+      return unless model
+
+      @model_info ||= RubyLLM.models.find(model)
+    rescue ModelNotFoundError
+      nil
     end
 
     # Returns the raw binary video bytes, downloading from #url when the

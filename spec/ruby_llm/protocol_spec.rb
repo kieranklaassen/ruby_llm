@@ -82,15 +82,15 @@ RSpec.describe RubyLLM::Protocol do
 
     it 'names the provider and the operation instead of leaking NotImplementedError' do
       expect { protocol.render([], tools: {}, temperature: nil) }
-        .to raise_error(RubyLLM::Error, "OpenAI doesn't support chat")
+        .to raise_error(RubyLLM::Error, 'OpenAI does not support chat')
       expect { protocol.complete([], tools: {}, temperature: nil) }
-        .to raise_error(RubyLLM::Error, "OpenAI doesn't support chat")
+        .to raise_error(RubyLLM::Error, 'OpenAI does not support chat')
       expect { protocol.embed('hi', model: 'x', dimensions: nil) }
-        .to raise_error(RubyLLM::Error, "OpenAI doesn't support embeddings")
+        .to raise_error(RubyLLM::Error, 'OpenAI does not support embeddings')
       expect { protocol.moderate('hi', model: 'x') }
-        .to raise_error(RubyLLM::Error, "OpenAI doesn't support moderation")
+        .to raise_error(RubyLLM::Error, 'OpenAI does not support moderation')
       expect { protocol.paint('a ruby', model: 'x', size: nil) }
-        .to raise_error(RubyLLM::Error, "OpenAI doesn't support image generation")
+        .to raise_error(RubyLLM::Error, 'OpenAI does not support image generation')
     end
   end
 
@@ -101,7 +101,7 @@ RSpec.describe RubyLLM::Protocol do
     end
 
     it 'never uploads attachments on its own' do
-      expect(protocol.send(:supports_provider_file_references?)).to be(false)
+      expect(protocol.send(:provider_file_references?)).to be(false)
       expect(protocol.send(:provider_file_attachable?, nil)).to be(false)
       expect(protocol.send(:provider_file_upload_options, nil)).to eq({})
       expect(protocol.send(:default_large_file_upload_threshold)).to eq(Float::INFINITY)
@@ -126,18 +126,18 @@ RSpec.describe RubyLLM::Protocol do
     end
   end
 
-  describe '#validate_paint_inputs!' do
+  describe '#validate_paint_inputs' do
     let(:protocol) do
       config = RubyLLM::Configuration.new.tap { |c| c.openai_api_key = 'test' }
       Class.new(described_class).new(RubyLLM::Providers::OpenAI.new(config))
     end
 
     it 'accepts a plain prompt' do
-      expect { protocol.send(:validate_paint_inputs!, with: nil, mask: nil) }.not_to raise_error
+      expect { protocol.send(:validate_paint_inputs, with: nil, mask: nil) }.not_to raise_error
     end
 
     it 'refuses image references the protocol cannot send' do
-      expect { protocol.send(:validate_paint_inputs!, with: 'ref.png', mask: nil) }.to raise_error(
+      expect { protocol.send(:validate_paint_inputs, with: 'ref.png', mask: nil) }.to raise_error(
         RubyLLM::UnsupportedAttachmentError, /image reference/
       )
     end

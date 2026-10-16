@@ -126,7 +126,7 @@ Memories are your application records. Scope access through `user.memories`, let
 
 ## Next Steps
 
-* [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) - The same embeddings pattern over imported documents.
-* [Agents]({% link _advanced/agents.md %}) - The runtime inputs and instructions used above.
-* [Chat]({% link _core_features/chat.md %}) - Transcript replacement for compaction.
-* [Embeddings]({% link _core_features/embeddings.md %}) - Turning text into vectors.
+* [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) - the same embeddings pattern over imported documents.
+* [Agents]({% link _advanced/agents.md %}) - the runtime inputs and instructions used above.
+* [Chat]({% link _core_features/chat.md %}) - transcript replacement for compaction.
+* [Embeddings]({% link _core_features/embeddings.md %}) - turning text into vectors.

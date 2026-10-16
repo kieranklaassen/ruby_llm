@@ -233,7 +233,7 @@ RSpec.describe RubyLLM::Cost do
   end
 
   describe 'cache writes by lifetime' do
-    let(:claude) { RubyLLM.models.find('claude-sonnet-4-6', provider: :anthropic) }
+    let(:claude) { RubyLLM.models.find(model_for(:anthropic, :compaction), provider: :anthropic) }
 
     it 'prices one-hour Anthropic cache writes at twice the input price' do
       tokens = RubyLLM::Tokens.new(input: 0, cache_write: 100_000, cache_write_by_ttl: { '1h' => 100_000 })
@@ -481,7 +481,7 @@ RSpec.describe RubyLLM::Cost do
 
   describe 'model resolution' do
     it 'prices against a model looked up by id' do
-      cost = described_class.new(tokens: RubyLLM::Tokens.new(input: 1_000_000), model: 'gpt-4.1-nano')
+      cost = described_class.new(tokens: RubyLLM::Tokens.new(input: 1_000_000), model: model_for(:openai, :temperature))
 
       expect(cost.input).to be_positive
     end

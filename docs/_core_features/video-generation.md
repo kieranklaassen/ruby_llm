@@ -2,7 +2,7 @@
 layout: default
 title: Video Generation
 nav_order: 6
-description: Generate, edit, and extend videos from prompts, images, and audio
+description: Generate, edit, and extend videos from prompts, images, and audio.
 ---
 
 # {{ page.title }}
@@ -12,14 +12,14 @@ description: Generate, edit, and extend videos from prompts, images, and audio
 
 After reading this guide, you will know:
 
-*   How to generate a video from a text prompt.
-*   How to start a video job and collect the result later.
-*   How to animate a still image into a video.
-*   How to edit a video or extend a generated clip.
-*   How to select video models and pass provider-specific options.
-*   How to control polling and timeouts.
-*   How to access and save generated video data.
-*   How to handle errors during video generation.
+* How to generate a video from a text prompt.
+* How to start a video job and collect the result later.
+* How to animate a still image into a video.
+* How to edit a video or extend a generated clip.
+* How to select video models and pass provider-specific options.
+* How to control polling and timeouts.
+* How to access and save generated video data.
+* How to handle errors during video generation.
 
 ## Basic Video Generation
 
@@ -49,13 +49,13 @@ Poll the job whenever it suits you, from a scheduled job or a retry loop:
 ```ruby
 job.refresh
 job.done?      # => true
-job.completed? # => true
+job.succeeded? # => true
 
 video = job.video
 video.save("hummingbird.mp4")
 ```
 
-`refresh` updates the job state and does nothing after completion. Read `job.video` when `job.completed?` is true. It is `nil` while pending and raises `RubyLLM::Error` if rendering failed. Use `job.wait` when you want RubyLLM to handle polling.
+`refresh` updates the job state and does nothing after completion. Read `job.video` when `job.succeeded?` is true. It is `nil` while pending and raises `RubyLLM::VideoJob::Error` if rendering failed. Use `job.wait` when you want RubyLLM to handle polling.
 
 A finished job carries the cost the provider billed for it:
 
@@ -233,23 +233,26 @@ RubyLLM.configure do |config|
 end
 ```
 
-When the timeout elapses, `animate` raises `RubyLLM::Error`. The provider keeps rendering; only the wait stops. Video jobs have no cancellation method. `wait` also accepts both values per call:
+When the timeout elapses, `animate` raises `RubyLLM::VideoJob::TimeoutError`. The provider keeps rendering; only the wait stops. The exception retains the job as `error.job`, so you can save its ID and poll again later. Video jobs have no cancellation method. `animate` and `wait` also accept both values per call:
 
 ```ruby
+RubyLLM.animate("A rocket launch seen from orbit", timeout: 900, interval: 10)
+
 job = RubyLLM.animate_later("A rocket launch seen from orbit")
 job.wait(timeout: 900, interval: 10)
+job.provider # => "gemini"
 ```
 
 ## Working with Generated Videos
 
 `RubyLLM::Video` mirrors `RubyLLM::Image`:
 
-*   `video.url`: the hosted video URL, for providers that return one. `nil` otherwise.
-*   `video.data`: the raw video bytes, returned inline or downloaded with your provider's credentials. `nil` for hosted URLs.
-*   `video.mime_type`: the MIME type, such as `"video/mp4"`.
-*   `video.duration`: the clip length in seconds, when the provider reports it.
-*   `video.model`: the id of the model that rendered the clip.
-*   `video.raw`: the provider's raw job response, for provider-specific fields.
+* `video.url`: the hosted video URL, for providers that return one. `nil` otherwise.
+* `video.data`: the raw video bytes, returned inline or downloaded with your provider's credentials. `nil` for hosted URLs.
+* `video.mime_type`: the MIME type, such as `"video/mp4"`.
+* `video.duration`: the clip length in seconds, when the provider reports it.
+* `video.model`: the id of the model that rendered the clip.
+* `video.raw`: the provider's raw job response, for provider-specific fields.
 
 Save hosted videos before their URLs expire. `save` and `to_blob` work with either URLs or inline data:
 
@@ -281,7 +284,7 @@ end
 
 ## Error Handling
 
-Video generation fails for the same reasons image generation does, plus one of its own: the job itself can fail after it was accepted, for example when the content filter blocks the prompt mid-render. RubyLLM surfaces both as `RubyLLM::Error`:
+Video generation fails for the same reasons image generation does, plus one of its own: the job itself can fail after it was accepted, for example when the content filter blocks the prompt mid-render. RubyLLM surfaces both as `RubyLLM::Error`. A job that fails or times out raises `RubyLLM::VideoJob::Error`, which keeps the job:
 
 ```ruby
 begin
@@ -289,9 +292,9 @@ begin
 rescue RubyLLM::BadRequestError => e
   # The provider rejected the request up front
   puts "Request failed: #{e.message}"
-rescue RubyLLM::Error => e
+rescue RubyLLM::VideoJob::Error => e
   # The job failed while rendering, or the wait timed out
-  puts "Generation failed: #{e.message}"
+  puts "Generation failed: #{e.message} (job #{e.job.id})"
 end
 ```
 
@@ -299,6 +302,6 @@ See [Error Handling]({% link _advanced/error-handling.md %}) for specific except
 
 ## Next Steps
 
-*   [Image Generation]({% link _core_features/image-generation.md %}) - Generate the still images you can animate.
-*   [Attachments]({% link _core_features/attachments.md %}) - Everything `with:` accepts across RubyLLM.
-*   [Instrumentation]({% link _advanced/instrumentation.md %}) - Subscribe to the `video.ruby_llm` and `video_job.ruby_llm` events.
+* [Image Generation]({% link _core_features/image-generation.md %}) - generate the still images you can animate.
+* [Attachments]({% link _core_features/attachments.md %}) - everything `with:` accepts across RubyLLM.
+* [Instrumentation and Observability]({% link _advanced/instrumentation.md %}) - subscribe to the `video.ruby_llm` and `video_job.ruby_llm` events.

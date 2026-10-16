@@ -2,7 +2,7 @@
 layout: default
 title: Audio Transcription
 nav_order: 7
-description: Convert speech to text with support for multiple languages and speaker diarization
+description: Convert speech to text with support for multiple languages and speaker diarization.
 redirect_from:
   - /guides/audio-transcription
   - /guides/transcription
@@ -15,12 +15,12 @@ redirect_from:
 
 After reading this guide, you will know:
 
-*   How to transcribe audio files to text.
-*   How to identify different speakers with diarization.
-*   How to improve accuracy with language hints and prompts.
-*   How to access segments and timestamps.
-*   How to stream a transcript as it is produced.
-*   How to handle a transcription the provider blocks.
+* How to transcribe audio files to text.
+* How to identify different speakers with diarization.
+* How to improve accuracy with language hints and prompts.
+* How to access segments and timestamps.
+* How to stream a transcript as it is produced.
+* How to handle a transcription the provider blocks.
 
 ## Basic Transcription
 
@@ -102,7 +102,7 @@ For Google's dedicated transcription model on Vertex AI, use `model: "{{ site.mo
 
 ### Identifying Known Speakers
 
-OpenAI's diarization models can match speakers against 2–10 second reference clips:
+OpenAI's diarization models can match speakers against 2 to 10 second reference clips:
 
 ```ruby
 transcription = RubyLLM.transcribe(
@@ -163,13 +163,13 @@ puts transcription.text
 ```
 
 | Predicate | What it carries |
-| :--- | :--- |
+| --- | --- |
 | `chunk.partial?` | `chunk.text`, tentative text that replaces the previous partial |
 | `chunk.delta?` | `chunk.delta`, committed text to append |
 | `chunk.segment?` | `chunk.segment`, a Hash with speaker and timing fields |
 | `chunk.done?` | `chunk.text`, the complete transcript when supplied by the endpoint |
 
-Read the final transcript from `transcription.text`. `chunk.raw` holds the original event when you need additional fields.
+Read the final transcript from `transcription.text`. `chunk.type` names the event as `:partial`, `:delta`, `:segment`, or `:done`, whichever provider sent it. `chunk.raw` holds the original event when you need additional fields.
 
 Diarization models can stream speaker segments:
 

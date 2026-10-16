@@ -5,6 +5,12 @@ module RubyLLM
     class ChatCompletions
       # Audio transcription methods for the OpenAI API integration
       module Transcription
+        TRANSCRIPTION_EVENT_TYPES = {
+          'transcript.text.delta' => :delta,
+          'transcript.text.segment' => :segment,
+          'transcript.text.done' => :done
+        }.freeze
+
         module_function
 
         def transcription_url
@@ -74,13 +80,13 @@ module RubyLLM
         end
 
         def build_transcription_chunk(data)
-          type = data['type']
+          type = TRANSCRIPTION_EVENT_TYPES[data['type']]
 
           RubyLLM::TranscriptionChunk.new(
             type: type,
             delta: data['delta'],
-            text: (data['text'] if type == RubyLLM::TranscriptionChunk::DONE),
-            segment: (data.except('type') if type == RubyLLM::TranscriptionChunk::SEGMENT),
+            text: (data['text'] if type == :done),
+            segment: (data.except('type') if type == :segment),
             raw: data
           )
         end

@@ -13,16 +13,16 @@ description: Broadcast AI responses token by token to the browser with Turbo Str
 
 After reading this guide, you will know:
 
-*   How to show user messages instantly while the AI responds in the background.
-*   How to stream assistant responses to the browser with Turbo Streams.
-*   How to wire a background job to `complete` and broadcast each chunk.
-*   How to handle out-of-order message delivery from Action Cable.
+* How to show user messages instantly while the AI responds in the background.
+* How to stream assistant responses to the browser with Turbo Streams.
+* How to wire a background job to `complete` and broadcast each chunk.
+* How to handle out-of-order message delivery from Action Cable.
 
 The default persistence flow is built for real-time UIs. Because RubyLLM creates the assistant message before streaming starts, you get a stable DOM target to append tokens into. This guide assembles a controller, a model, a background job, and views into a complete streaming chat, then covers the ordering quirks of Action Cable.
 
 ## Instant User Messages
 
-Show user messages immediately for better UX:
+Show user messages immediately:
 
 ```ruby
 # app/controllers/messages_controller.rb
@@ -88,7 +88,7 @@ Each chunk a persisted chat streams knows its record: `chunk.message` is the ass
 </div>
 ```
 
-The message broadcasts to the chat record's stream, so the view subscribes with `turbo_stream_from @chat`. Rails renders each message with its partial, chosen by `to_partial_path`: `messages/_user`, `messages/_assistant`, `messages/_tool`, and `messages/_tool_calls`. The [chat UI generator]({% link _advanced/rails-generators.md %}#adding-a-chat-ui) writes all of them.
+The message broadcasts to the chat record's stream, so the view subscribes with `turbo_stream_from @chat`. Rails renders each message with its partial, chosen by `to_partial_path`: `messages/_user`, `messages/_assistant`, `messages/_system`, `messages/_tool`, and `messages/_tool_calls`. The [chat UI generator]({% link _advanced/rails-generators.md %}#adding-a-chat-ui) writes all of them.
 
 A model's `broadcasts:` option overrides the configuration either way. An application that broadcasts some models itself turns RubyLLM's broadcasting off for them:
 
@@ -110,11 +110,13 @@ chunk.message   # => message
 chunk.broadcast # appends "Hello" to the message on the chat's page
 ```
 
-Stub the completion to stream it to your job:
+Stub the chat the job loads, and its completion, to stream the chunk to your job:
 
 ```ruby
-agent.stub(:complete, ->(&block) { block.call(message.chunk("Hel", index: 0)) }) do
-  ChatResponseJob.perform_now(chat.id)
+chat.stub(:complete, ->(&block) { block.call(message.chunk("Hel", index: 0)) }) do
+  Chat.stub(:find, chat) do
+    ChatStreamJob.perform_now(chat.id)
+  end
 end
 ```
 
@@ -147,7 +149,7 @@ end
 
 Action Cable processes messages concurrently, which can cause out-of-order delivery:
 
-#### Solution 1: Numbered Chunks and Page Refreshes
+### Solution 1: Numbered Chunks and Page Refreshes
 
 This is what `acts_as_message` and the [generated chat UI]({% link _advanced/rails-generators.md %}#adding-a-chat-ui) do. Each chunk is sent once, as a span numbered with `chunk.index` that also names the chunk before it:
 
@@ -161,7 +163,7 @@ Every other change, such as a new message or an approval card, broadcasts a page
 
 Morphing needs `<%= yield :head %>` in your layout. The chat UI generator adds it when your layout lacks it.
 
-#### Solution 2: Client-Side Reordering
+### Solution 2: Client-Side Reordering
 
 Use Stimulus to maintain chronological order:
 
@@ -232,35 +234,37 @@ Update your views to use the controller:
   <%= render @chat.messages %>
 </div>
 
-<%# app/views/messages/_message.html.erb %>
-<%= turbo_frame_tag message,
+<%# app/views/messages/_assistant.html.erb %>
+<%= turbo_frame_tag assistant,
     data: {
       message_ordering_target: "message",
-      created_at: message.created_at.iso8601
+      created_at: assistant.created_at.iso8601
     } do %>
   <!-- message content -->
 <% end %>
 ```
 
-#### Solution 3: Server-Side Ordering
+Wrap the other role partials the same way.
 
-[AnyCable](https://anycable.io) provides order guarantees at the server level through "sticky concurrency" - ensuring messages from the same stream are processed by the same worker. This eliminates the need for client-side reordering code.
+### Solution 3: Server-Side Ordering
 
-#### Why This Happens
+[AnyCable](https://anycable.io) provides order guarantees at the server level through "sticky concurrency", which ensures messages from the same stream are processed by the same worker. This eliminates the need for client-side reordering code.
+
+### Why This Happens
 
 Action Cable uses concurrent processing by design for performance.
 
 For strict ordering requirements, consider:
-- Server-sent events (SSE) for unidirectional streaming
-- WebSocket libraries with ordered stream support like [Lively](https://github.com/socketry/lively/tree/main/examples/chatbot)
-- AnyCable for server-side ordering guarantees
+* Server-sent events (SSE) for unidirectional streaming
+* WebSocket libraries with ordered stream support like [Lively](https://github.com/socketry/lively/tree/main/examples/chatbot)
+* AnyCable for server-side ordering guarantees
 
 The async Ruby stack (Falcon + async-cable) may improve behavior but doesn't guarantee ordering.
 {: .note }
 
 ## Next Steps
 
-*   [Generators and App Conventions]({% link _advanced/rails-generators.md %}) - generate a ready-made streaming chat UI with one command.
-*   [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - the persistence flow that makes streaming targets possible.
-*   [Streaming]({% link _core_features/streaming.md %}) - the underlying streaming API and chunk format.
-*   [Scale with Async]({% link _advanced/async.md %}) - run concurrent streams without blocking threads.
+* [Generators and App Conventions]({% link _advanced/rails-generators.md %}) - generate a ready-made streaming chat UI with one command.
+* [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - the persistence flow that makes streaming targets possible.
+* [Stream Responses]({% link _core_features/streaming.md %}) - the underlying streaming API and chunk format.
+* [Scale with Async]({% link _advanced/async.md %}) - run concurrent streams without blocking threads.

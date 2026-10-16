@@ -3,7 +3,7 @@ layout: default
 title: Evaluation Datasets
 parent: Evaluations
 nav_order: 1
-description: Define evaluation cases in YAML, JSON, JSONL, or application code
+description: Define evaluation cases in YAML, JSON, JSONL, or application code.
 ---
 
 # {{ page.title }}

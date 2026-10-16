@@ -54,7 +54,7 @@ module RubyLLM
         def video_options(options)
           options = Support::Utils.deep_symbolize_keys(options)
           if options[:num_outputs_per_prompt] && options[:num_outputs_per_prompt] != 1
-            raise ArgumentError, 'animate returns one video; num_outputs_per_prompt must be 1'
+            raise ArgumentError, 'animate returns one video, so num_outputs_per_prompt must be 1'
           end
 
           options
@@ -70,14 +70,14 @@ module RubyLLM
         def video_job_state(body)
           status = case body['status']
                    when 'queued', 'in_progress' then :pending
-                   when 'completed' then :completed
+                   when 'completed' then :succeeded
                    when 'failed' then :failed
                    else raise Error, "Unknown GPUStack video status: #{body['status'].inspect}"
                    end
           { status: status, raw: body, error: body.dig('error', 'message') }
         end
 
-        def validate_animate_inputs!(with:)
+        def validate_animate_inputs(with:)
           @provider.backend_api_base
           with.each do |attachment|
             if attachment.provider_file?

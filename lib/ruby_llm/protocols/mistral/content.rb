@@ -53,7 +53,7 @@ module RubyLLM
           format = part['file_type'].to_s
           mime_type = format.include?('/') ? format : RubyLLM::Files::MimeType.for(name: "file.#{format}")
           file = UploadedFile.new(id: part.fetch('file_id'), provider: @provider.slug,
-                                  filename: part['file_name'], mime_type: mime_type, downloadable: true, metadata: part)
+                                  filename: part['file_name'], mime_type: mime_type, downloadable: true, raw: part)
           Attachment.new(file, config: @config)
         end
       end

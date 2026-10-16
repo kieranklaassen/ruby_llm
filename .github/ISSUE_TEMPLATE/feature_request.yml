@@ -8,7 +8,7 @@ body:
       value: |
         **Read this first:** Our [Contributing Guide](https://github.com/crmne/ruby_llm/blob/main/CONTRIBUTING.md) explains what belongs in RubyLLM vs. your app.
 
-        We focus on **LLM communication**, not application architecture.
+        Before you propose a feature, ask: can this be built with what RubyLLM already offers? If so, it belongs in your application, not in the gem.
 
   - type: checkboxes
     id: scope_check
@@ -16,7 +16,7 @@ body:
       label: Scope check
       description: "Does this belong in RubyLLM?"
       options:
-        - label: This is **core LLM communication** (not application logic)
+        - label: This **belongs in an AI framework** (not application logic)
           required: true
         - label: This **benefits most users** (not just my use case)
           required: true
@@ -39,7 +39,7 @@ body:
     id: problem
     attributes:
       label: What problem does this solve?
-      description: Focus on LLM communication and developer experience
+      description: Focus on what RubyLLM is missing and on developer experience
     validations:
       required: true
 

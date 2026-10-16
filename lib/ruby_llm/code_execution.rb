@@ -57,16 +57,17 @@ module RubyLLM
       end
 
       # Returns the options +enabled+ and +options+ describe, +false+ when
-      # disabled. Raises ArgumentError for anything else.
-      def options(enabled, options) # :nodoc:
-        return options(true, enabled.transform_keys(&:to_sym).merge(options)) if enabled.is_a?(Hash)
+      # disabled. Raises ArgumentError for anything else, naming the
+      # caller's method +name+.
+      def options(enabled, options, name: :with_code_execution) # :nodoc:
+        return options(true, enabled.transform_keys(&:to_sym).merge(options), name:) if enabled.is_a?(Hash)
         unless [true, false].include?(enabled)
-          raise ArgumentError, 'code execution accepts false or code execution options'
+          raise ArgumentError, "#{name} accepts true, false, or code execution options"
         end
-        raise ArgumentError, 'disabled code execution does not accept options' if !enabled && options.any?
+        raise ArgumentError, "#{name}(false) does not accept options" if !enabled && options.any?
         return false unless enabled
 
-        validate_options(options)
+        validate_options(options, name)
         options.merge(languages: languages_for(options)).freeze
       end
 
@@ -139,10 +140,13 @@ module RubyLLM
         Array(escalate_to).map { |sandbox| [Sandbox.name_for(sandbox), sandbox] }
       end
 
-      def validate_options(options)
+      def validate_options(options, name)
         unknown = options.keys - OPTIONS
-        raise ArgumentError, "code execution accepts #{OPTIONS.join(', ')}, got #{unknown.join(', ')}" if unknown.any?
-        raise ArgumentError, 'code execution options cannot be nil' if options.value?(nil)
+        if unknown.any?
+          raise ArgumentError,
+                "#{name} accepts #{Support::Utils.option_list(OPTIONS)}, got #{Support::Utils.option_list(unknown)}"
+        end
+        raise ArgumentError, "#{name} options cannot be nil" if options.value?(nil)
 
         validate_packages(options)
         escalations(options[:escalate_to]) if options.key?(:escalate_to)
@@ -153,7 +157,7 @@ module RubyLLM
         { gems: :gem_home, python: :virtualenv, npm: :node_modules }.each do |declared, prebuilt|
           next unless options.key?(declared) && options.key?(prebuilt)
 
-          raise ArgumentError, "pass #{declared}: or #{prebuilt}:, not both"
+          raise ArgumentError, "Pass #{declared}: or #{prebuilt}:, not both"
         end
       end
 
@@ -170,9 +174,9 @@ module RubyLLM
         languages = Array(options.fetch(:languages, default)).map { |language| language.to_s.to_sym }.uniq
         unsupported = languages - LANGUAGES
         if unsupported.any?
-          raise ArgumentError, "code execution runs #{LANGUAGES.join(', ')}, got #{unsupported.join(', ')}"
+          raise ArgumentError, "Code execution runs #{LANGUAGES.join(', ')}, got #{unsupported.join(', ')}"
         end
-        raise ArgumentError, 'code execution needs at least one language' if languages.empty?
+        raise ArgumentError, 'Code execution needs at least one language' if languages.empty?
 
         languages.freeze
       end

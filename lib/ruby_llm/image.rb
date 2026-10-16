@@ -26,7 +26,7 @@ module RubyLLM
     # The provider's rewritten version of the prompt, when reported.
     attr_reader :revised_prompt
 
-    # The id of the model that generated the image.
+    # The id of the model that generated the image, as a String.
     attr_reader :model
 
     # Generates an image from +prompt+ and returns an Image. Most code
@@ -34,15 +34,15 @@ module RubyLLM
     #
     # +model:+ selects the image model and defaults to the configured
     # +default_image_model+. +provider:+ forces a specific provider, and
-    # +assume_model_exists:+ skips the registry lookup, which is useful
-    # for custom endpoints. +size:+ requests dimensions on models that
-    # support it. +count:+ asks for several images in one request, returning
-    # an Array of Images instead of one. +with:+ passes one or more source
-    # images for editing, and +mask:+ constrains which parts of the image
-    # may change. +provider_options:+ takes options in the provider's
-    # request vocabulary and merges them into the request as-is.
-    # +context:+ supplies a Context whose configuration replaces the
-    # global one. +metadata:+ is included in the instrumentation payload.
+    # +assume_model_exists:+ skips the registry lookup. +context:+ supplies
+    # a Context whose configuration replaces the global one. +size:+
+    # requests dimensions on models that support it. +count:+ asks for
+    # several images in one request, returning an Array of Images instead
+    # of one. +with:+ passes one or more source images for editing, and
+    # +mask:+ constrains which parts of the image may change.
+    # +provider_options:+ takes options in the provider's request
+    # vocabulary and merges them into the request as-is. +metadata:+ is
+    # included in the instrumentation payload.
     # +owner:+ attributes the usage to a record, such as a user, and wins
     # over RubyLLM.with_usage_owner.
     #
@@ -63,9 +63,9 @@ module RubyLLM
                    model: nil,
                    provider: nil,
                    assume_model_exists: false,
+                   context: nil,
                    size: nil,
                    count: nil,
-                   context: nil,
                    with: nil,
                    mask: nil,
                    provider_options: {},
@@ -152,8 +152,8 @@ module RubyLLM
       path
     end
 
-    # Returns a Tokens with usage across every provider attempt.
-    # Its fields are +nil+ when none were reported.
+    # Returns usage aggregated across every provider attempt. Its fields
+    # are +nil+ when the provider did not report any.
     #
     #   image.tokens.input
     #   image.tokens.output
@@ -168,8 +168,8 @@ module RubyLLM
       )
     end
 
-    # Returns a Cost across every provider attempt, using reported prices
-    # when available and registry pricing otherwise.
+    # Returns the image cost across every provider attempt, using reported
+    # prices when available and registry pricing otherwise.
     #
     #   image.cost.total
     #

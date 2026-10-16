@@ -15,7 +15,7 @@ module RubyLLM
           expected_commits = (audio.data.bytesize.to_f / transcription_segment_bytes(audio)).ceil
           transcripts = collect_transcription(url, audio, expected_commits, &block)
           result = build_streaming_transcription(transcripts, audio, model:)
-          block.call(TranscriptionChunk.new(type: TranscriptionChunk::DONE, text: result.text, raw: transcripts.last))
+          block.call(TranscriptionChunk.new(type: :done, text: result.text, raw: transcripts.last))
           result
         ensure
           payload[:file]&.io&.close
@@ -107,10 +107,10 @@ module RubyLLM
         def process_transcription_event(event, prefix: false)
           case event['message_type']
           when 'partial_transcript'
-            yield TranscriptionChunk.new(type: TranscriptionChunk::PARTIAL, text: event['text'], raw: event)
+            yield TranscriptionChunk.new(type: :partial, text: event['text'], raw: event)
           when 'committed_transcript'
             text = event['text']
-            yield TranscriptionChunk.new(type: TranscriptionChunk::DELTA, delta: prefix ? " #{text}" : text, raw: event)
+            yield TranscriptionChunk.new(type: :delta, delta: prefix ? " #{text}" : text, raw: event)
           when 'committed_transcript_with_timestamps'
             return event
           else

@@ -13,12 +13,12 @@ description: Give agents instructions, tools, and schemas in a Ruby class, then 
 
 After reading this guide, you will know:
 
-* How to define agents with a class-based DSL
-* How to use agents with plain Ruby chats and Rails-backed chats
-* How runtime context works (`chat`, `inputs`, and lazy evaluation)
-* How prompt conventions work in `app/prompts`
-* Which methods are available on agent instances
-* How to handle errors for a whole agent with `rescue_from`
+* How to define agents with a class-based DSL.
+* How to use agents with plain Ruby chats and Rails-backed chats.
+* How runtime context works (`chat`, `inputs`, and lazy evaluation).
+* How prompt conventions work in `app/prompts`.
+* Which methods are available on agent instances.
+* How to handle errors for a whole agent with `rescue_from`.
 
 ## What Are Agents?
 
@@ -41,7 +41,7 @@ In other words, an agent is a named wrapper around the same configuration you wo
 Agents work in two modes:
 
 * Plain Ruby mode via `.chat` (returns `RubyLLM::Chat`)
-* Rails mode via `.create/.create!/.find` when `chat_model` is configured (returns your ActiveRecord chat model)
+* Rails mode via `.create/.create!/.find` when `chat_model` is configured (returns your Active Record chat model)
 
 Example of Rails mode:
 
@@ -74,29 +74,31 @@ end
 
 Supported class macros:
 
-These macros use the same arguments you already know from `RubyLLM.chat(...)` and `Chat#with_*` methods.
-For example, `model` maps to `RubyLLM.chat(model:, provider:, ...)`, `tools` maps to `with_tools`, `tool_options` maps to `with_tool_options`, `instructions` maps to `with_instructions`, and so on.
+These macros use the same arguments you already know from `RubyLLM.chat(...)` and `Chat#with_*` methods. For example, `model` maps to `RubyLLM.chat(model:, provider:, ...)`, `tools` maps to `with_tools`, `tool_options` maps to `with_tool_options`, `instructions` maps to `with_instructions`, and so on.
 
-* `model`, and its `provider:` and `protocol:` options (see [Chat Basics]({% link _core_features/chat.md %}) and [Request Control]({% link _core_features/chat-request-control.md %}#choosing-the-wire-protocol))
+* `model`, and its `provider:` and `protocol:` options (see [Chat]({% link _core_features/chat.md %}) and [Advanced Request Control]({% link _core_features/chat-request-control.md %}#choosing-the-wire-protocol))
 * `tools` (see [Tools]({% link _core_features/tools.md %}))
+* `mcp` (see [MCP Client]({% link _core_features/mcp.md %}))
 * `tool_options` (see [Controlling Tool Execution]({% link _core_features/tool-execution.md %}))
 * `provider_tools` (see [Provider Tools]({% link _core_features/provider-tools.md %}))
-* `instructions` (see [Chat Basics]({% link _core_features/chat.md %}))
-* `temperature` (see [Chat Basics]({% link _core_features/chat.md %}))
-* `max_output_tokens` (see [Request Control]({% link _core_features/chat-request-control.md %}))
-* `thinking` (see [Thinking]({% link _core_features/thinking.md %}))
+* `instructions` (see [Chat]({% link _core_features/chat.md %}))
+* `temperature` (see [Chat]({% link _core_features/chat.md %}))
+* `max_output_tokens` (see [Advanced Request Control]({% link _core_features/chat-request-control.md %}))
+* `thinking` (see [Extended Thinking]({% link _core_features/thinking.md %}))
 * `citations` (see [Citations]({% link _core_features/citations.md %}))
 * `caching` (see [Prompt Caching]({% link _core_features/prompt-caching.md %}))
-* `end_user` (see [Request Control]({% link _core_features/chat-request-control.md %}#identifying-end-users))
-* `compaction` (see [Request Control]({% link _core_features/chat-request-control.md %}#compacting-long-conversations))
+* `end_user` (see [Advanced Request Control]({% link _core_features/chat-request-control.md %}#identifying-end-users))
+* `compaction` (see [Advanced Request Control]({% link _core_features/chat-request-control.md %}#compacting-long-conversations))
 * `code_execution` (see [Code Execution]({% link _core_features/code-execution.md %}))
-* `provider_options` (see [Request Control]({% link _core_features/chat-request-control.md %}))
-* `headers` (see [Chat Basics]({% link _core_features/chat.md %}))
-* `schema` (see [Chat Basics]({% link _core_features/chat.md %}))
+* `skills` (see [Skills]({% link _core_features/skills.md %}))
+* `provider_options` (see [Advanced Request Control]({% link _core_features/chat-request-control.md %}))
+* `headers` (see [Advanced Request Control]({% link _core_features/chat-request-control.md %}#custom-http-headers))
+* `schema` (see [Structured Output]({% link _core_features/structured-output.md %}))
 * `fallbacks` (see [Model Fallbacks]({% link _advanced/error-handling.md %}#model-fallbacks))
 * `context` (see [Configuration Contexts](#configuration-contexts))
 * `chat_model` (Rails-backed mode)
 * `inputs` (declared runtime inputs)
+* `rescue_from` (see [Handling Errors with `rescue_from`](#handling-errors-with-rescue_from))
 
 Call `caching` without options to use the provider's default prompt cache policy:
 
@@ -130,9 +132,9 @@ end
 
 `schema` supports:
 
-* A schema class (for example `PersonSchema`) - same as `with_schema`
-* A JSON schema hash - same as `with_schema`
-* An inline DSL block with `schema do ... end` - agent-specific convenience
+* A schema class (for example `PersonSchema`): same as `with_schema`
+* A JSON schema hash: same as `with_schema`
+* An inline DSL block with `schema do ... end`: agent-specific convenience
 
 Inline DSL example:
 
@@ -179,8 +181,7 @@ This works for both `WorkAssistant.chat` and Rails-backed agents configured with
 
 ## Configuration Contexts
 
-Use a configuration context to give an agent its own credentials, endpoint, or
-connection settings without changing global configuration.
+Use a configuration context to give an agent its own credentials, endpoint, or connection settings without changing global configuration.
 
 You can define a context elsewhere in your application and pass it to the agent:
 
@@ -211,13 +212,9 @@ class SupportAgent < RubyLLM::Agent
 end
 ```
 
-The block runs when the agent class is defined and receives a copy of the global
-configuration. Pass either a context object or a block. Both forms work with
-`SupportAgent.chat` and Rails-backed agents configured with `chat_model`.
-Call `SupportAgent.context` to read the configured context.
+The block runs when the agent class is defined and receives a copy of the global configuration. Pass either a context object or a block. Both forms work with `SupportAgent.chat` and Rails-backed agents configured with `chat_model`. Call `SupportAgent.context` to read the configured context.
 
-See [Contexts: Isolated Configurations]({% link _getting_started/configuration-connection.md %}#contexts-isolated-configurations)
-for more configuration examples.
+See [Contexts: Isolated Configurations]({% link _getting_started/configuration-connection.md %}#contexts-isolated-configurations) for more configuration examples.
 
 ## Runtime Context and Inputs
 
@@ -239,10 +236,7 @@ Most runtime blocks can use `chat` in their execution context:
 * In `.chat` mode, `chat` is a `RubyLLM::Chat`
 * In `.create/.create!/.find` mode, `chat` is your `chat_model` record
 
-The `model` block runs before the chat exists, so it can read `inputs` but not
-`chat`. A deferred `context` block follows the same timing in plain Ruby, so
-`chat` is `nil` there. In Rails mode, the context block runs while the
-`chat_model` record is being configured, so `chat` is available.
+The `model` block runs before the chat exists, so it can read `inputs` but not `chat`. A deferred `context` block follows the same timing in plain Ruby, so `chat` is `nil` there. In Rails mode, the context block runs while the `chat_model` record is being configured, so `chat` is available.
 
 This enables Rails-style usage:
 
@@ -268,7 +262,7 @@ end
 Values that depend on runtime `chat` must be lazy (blocks or lambdas), not eager class-load expressions.
 {: .important }
 
-### Choosing the model at runtime
+### Choosing the Model at Runtime
 
 `model` takes a block too, so an agent can route work to a cheaper or larger model based on its inputs:
 
@@ -288,7 +282,7 @@ Options stay alongside the block: `model(provider: :openai) { ... }`.
 
 Agents have prompt conventions built in. They use the same `app/prompts` templates as [Prompt Rendering]({% link _core_features/prompt-rendering.md %}), with class-based lookup layered on top.
 
-### Default instructions prompt
+### Default Instructions Prompt
 
 Named agents automatically use their conventional instructions prompt when it exists:
 
@@ -321,7 +315,7 @@ end
 
 If that file does not exist, RubyLLM raises `RubyLLM::PromptNotFoundError`.
 
-### Prompt shorthand with locals
+### Prompt Shorthand with Locals
 
 You can pass locals directly:
 
@@ -334,7 +328,7 @@ end
 
 This also renders `instructions.txt.erb` for that agent path.
 
-### Prompt helper in runtime blocks
+### Prompt Helper in Runtime Blocks
 
 Within execution context you can call:
 
@@ -342,7 +336,7 @@ Within execution context you can call:
 instructions { prompt("instructions", display_name: chat.user.display_name_or_email) }
 ```
 
-### Naming conventions
+### Naming Conventions
 
 Agent prompt path is derived from class name:
 
@@ -355,7 +349,7 @@ For rendering a prompt directly outside an agent, use `RubyLLM.render_prompt`. S
 
 ## Using an Agent
 
-### Plain Ruby chat
+### Plain Ruby Chat
 
 ```ruby
 chat = WorkAssistant.chat
@@ -378,28 +372,15 @@ response.cost.total
 agent.cost.total
 ```
 
-Agent instances delegate the conversation API from `RubyLLM::Chat` to the wrapped chat object.
-Direct transcript replacement with `messages=` stays on the wrapped chat because Rails-backed chat
-models own their message association.
+Agent instances delegate the conversation API from `RubyLLM::Chat` to the wrapped chat object. Direct transcript replacement with `messages=` stays on the wrapped chat because Rails-backed chat models own their message association.
 
-Delegated methods include:
-
-* `model`, `provider`, `messages`, `tools`, `provider_tools`, `provider_options`, `headers`, `schema`
-* `concurrency`, `caching`, `compaction`, `end_user`, `fallbacks`
-* `tokens`, `cost`, `count_tokens`, `render`
-* `ask`, `say`, `complete`, `complete?`, `ask_later`, `generate`, `run_tools`, `step`
-* `cancel`, `cancelled?`, `waiting?`, `approve`, `deny`, `awaiting_approval?`, `pending_approvals`
-* `add_message`, `each`
-* `cache_until_here`, `with_tools`, `with_provider_tools`, `with_tool_options`
-* `with_model`, `with_instructions`, `with_temperature`, `with_max_output_tokens`, `with_thinking`, `with_citations`, `with_end_user`, `with_compaction`, `with_context`
-* `with_caching`, `with_provider_options`, `with_headers`, `with_schema`, `with_fallbacks`
-* `before_request`, `before_message`, `after_message`, `before_tool_call`, `after_tool_result`, `after_tool_progress`, `before_fallback`, `after_fallback`
+Agents delegate the `with_*` setters and their readers, the callbacks, and the conversation methods such as `ask`, `complete`, `step`, `approve`, and `cancel`. The [Agent API reference]({{ '/api/RubyLLM/Agent.html' | relative_url }}) lists every delegated method, and each one behaves as documented on [Chat]({{ '/api/RubyLLM/Chat.html' | relative_url }}).
 
 You can always access the wrapped chat object directly via `agent.chat`.
 
 ## Handling Errors with `rescue_from`
 
-`rescue_from` declares how an agent handles exceptions raised by its chat operations: `ask`, `say`, `ask_later`, `complete`, `generate`, `run_tools`, `step`, and `count_tokens`.
+`rescue_from` declares how an agent handles exceptions raised by its chat operations: `ask`, `say`, `ask_later`, `complete`, `generate`, `run_tools`, `step`, `count_tokens`, and `compact`.
 
 ```ruby
 class ApplicationAgent < RubyLLM::Agent
@@ -446,7 +427,7 @@ Handlers apply to agent instances. `WorkAssistant.chat` returns a plain `RubyLLM
 
 ## Rails-Backed Agents
 
-Set `chat_model` to use your ActiveRecord chat model. `bin/rails generate ruby_llm:install` puts it in `ApplicationAgent`, the place for settings every agent in your app shares:
+Set `chat_model` to use your Active Record chat model. `bin/rails generate ruby_llm:install` puts it in `ApplicationAgent`, the place for settings every agent in your app shares:
 
 ```ruby
 class ApplicationAgent < RubyLLM::Agent
@@ -483,6 +464,7 @@ Instruction persistence contract in Rails mode:
 * `sync_instructions` explicitly persists the current agent instructions
 
 ### Using an Existing Chat Record
+
 If you already have a `Chat` record, pass it to `Agent.new(chat:)` instead of calling `Agent.find`. This applies all agent configuration (instructions, tools, etc.) without an extra database query:
 
 ```ruby
@@ -518,10 +500,10 @@ WorkAssistant.new.ask("Help me find docs about callbacks.")
 
 ## Next Steps
 
-* Compose agents with [Agentic Workflows]({% link _advanced/agentic-workflows.md %})
-* Resume them across jobs and deploys with [Durable Agents]({% link _advanced/durable-agents.md %})
-* Give them [Memory]({% link _advanced/memory.md %}) across conversations
-* Ground them in your documents with [RAG]({% link _advanced/rag.md %})
-* Learn about [Chat Basics]({% link _core_features/chat.md %})
-* Explore [Tools]({% link _core_features/tools.md %})
-* Review [Rails Integration]({% link _advanced/rails.md %})
+* [Agentic Workflows]({% link _advanced/agentic-workflows.md %}) - compose agents into larger workflows.
+* [Durable Agents]({% link _advanced/durable-agents.md %}) - resume agents across jobs and deploys.
+* [Memory]({% link _advanced/memory.md %}) - give agents memory across conversations.
+* [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) - ground agents in your documents.
+* [Chat]({% link _core_features/chat.md %}) - the conversation interface agents configure.
+* [Tools]({% link _core_features/tools.md %}) - write the tools your agents call.
+* [Rails Integration]({% link _advanced/rails.md %}) - persist agent chats in your application.

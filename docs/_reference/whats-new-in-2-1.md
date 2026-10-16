@@ -66,11 +66,11 @@ end
 
 Twenty calls to a local HTTPS server through `:net_http_persistent` took one handshake instead of twenty, and 0.4 ms each instead of 2.1 ms. Across a real network, each handshake you skip also saves its round trips. See [Connection Reuse]({% link _getting_started/configuration-connection.md %}#connection-reuse).
 
-In Rails, [run the 2.1 upgrade]({% link _reference/upgrading.md %}#upgrade-the-rails-schema) so chats remember the provider uploads of their stored files. A chat loaded in another process then sends the provider's copy of a large file instead of downloading the file and uploading it again. Five turns of a chat with a 30 MB PDF, each in a new process, uploaded 150 MB with 2.0 and nothing with 2.1.
+In Rails, [run the 2.1 upgrade](https://github.com/crmne/ruby_llm/blob/v2.1.1/docs/_reference/upgrading.md) so chats remember the provider uploads of their stored files. A chat loaded in another process then sends the provider's copy of a large file instead of downloading the file and uploading it again. Five turns of a chat with a 30 MB PDF, each in a new process, uploaded 150 MB with 2.0 and nothing with 2.1.
 
 To measure on your own machine, clone RubyLLM and compare any version with your checkout. The [benchmarks](https://github.com/crmne/ruby_llm/tree/main/benchmarks) need no API keys or network access:
 
-```sh
+```bash
 bundle exec rake "benchmark:compare[v2.0.0]"
 ```
 
@@ -274,7 +274,7 @@ cases:
     expected_output: Yes, unopened items can be returned within 30 days.
 ```
 
-```sh
+```bash
 bin/rails "ruby_llm:eval[SupportEvaluation]"
 ```
 
@@ -377,7 +377,7 @@ From 2.1 on, each release ships the upgrade from the release before it. `bin/rai
 
 RubyLLM 2.1 requires Ruby 3.2 or later. Install it:
 
-```sh
+```bash
 bundle add ruby_llm --version "~> 2.1.0"
 ```
 

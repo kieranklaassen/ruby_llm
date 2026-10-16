@@ -3,7 +3,7 @@ layout: default
 title: MCP Client
 parent: "Tools"
 nav_order: 3
-description: Connect your chats and agents to Model Context Protocol servers and use their tools, resources, and prompts
+description: Connect your chats and agents to Model Context Protocol servers and use their tools, resources, and prompts.
 ---
 
 # {{ page.title }}
@@ -102,7 +102,7 @@ end
 linear = Linear.new(user: current_user)
 ```
 
-Blocks run on the instance whenever RubyLLM sends a request, so a token that refreshes is always current.
+Blocks run on the instance whenever RubyLLM sends a request, so a token that refreshes is always current. Set several headers at once with `headers "X-Workspace" => :workspace_id, "X-Team" => "core"`.
 
 ### Inline Servers
 
@@ -426,7 +426,7 @@ end
 
 RubyLLM accepts form and URL requests by default. `input_requests :form` or `input_requests :url` keeps one kind, and `input_requests false` accepts none, so servers finish the call without asking or answer with an error that raises `RubyLLM::MCP::Error`. A server that asks for a kind you left out gets a decline. Inline servers take the same setting: `RubyLLM.mcp(url: server.endpoint, input_requests: false)`.
 
-In Rails, the requests persist on the tool call, so a job can pause, a controller can record the user's answer, and another job can resume the call after a deploy or a restart. New applications get the `mcp_state` column from `ruby_llm:install`; applications that installed RubyLLM 2.0 add it with `bin/rails generate ruby_llm:upgrade`.
+In Rails, the requests persist on the tool call, so a job can pause, a controller can record the user's answer, and another job can resume the call after a deploy or a restart. New applications get the `mcp_state` column from `ruby_llm:install`; applications that installed RubyLLM 2.0 add it with the [2.1 upgrade](https://github.com/crmne/ruby_llm/blob/v2.1.1/docs/_reference/upgrading.md).
 
 Servers never ask for passwords or tokens through forms; those go through URL requests, so they never pass through your application.
 
@@ -511,7 +511,7 @@ handbook = Handbook.new.listen(resources: ["handbook://policies"])
 
 `listen` asks the server for every list it announces changes to, for updates to the `resources` you pass, as URIs or as resources from `resources`, and for the status of the `tasks` you pass, as [Tasks](#tasks) describes. It returns once the server confirms, then listens in a thread of its own until you call `close`, while chats and requests go on as before. Calling `listen` again replaces the resources and tasks it listens to.
 
-A server that announces no changes leaves `listen` nothing to do. When the server cannot be reached, or will not send updates for a resource or task you pass, `listen` raises `RubyLLM::MCP::Error`.
+A server that announces no changes leaves `listen` nothing to do. When the server cannot be reached, or does not send updates for a resource or task you pass, `listen` raises `RubyLLM::MCP::Error`.
 
 Callbacks for the changes a listener hears run in its thread, one at a time, so keep them short. They can call the server, as `tools` and `content` do above. An exception in one is logged, and listening goes on.
 
@@ -534,7 +534,7 @@ ensure
 end
 ```
 
-```
+```text
 # Procfile
 handbook: bin/rails runner script/listen_to_handbook.rb
 ```
@@ -626,7 +626,7 @@ class Weather::ViewsController < ApplicationController
 end
 ```
 
-Your page loads `html` into the sandbox, then sends the UI `input` and `result` as the spec's tool input and tool result notifications. `mcp_result` is `nil` for tools without a UI, whose results are only what the model saw, and for failed calls, whose content is `{ "error": ... }` as for any tool. New applications get the `mcp_result` column from `ruby_llm:install`; applications that installed RubyLLM 2.0 add it with `bin/rails generate ruby_llm:upgrade`.
+Your page loads `html` into the sandbox, then sends the UI `input` and `result` as the spec's tool input and tool result notifications. `mcp_result` is `nil` for tools without a UI, whose results are only what the model saw, and for failed calls, whose content is `{ "error": ... }` as for any tool. New applications get the `mcp_result` column from `ruby_llm:install`; applications that installed RubyLLM 2.0 add it with the [2.1 upgrade](https://github.com/crmne/ruby_llm/blob/v2.1.1/docs/_reference/upgrading.md).
 
 Some tools exist only for their UI, such as the one behind a refresh button. Their `visibility` leaves out `:model`: `tools` lists them, and you can call them, but chats never offer them to the model, even when you pass them to `with_tools`.
 
@@ -700,7 +700,7 @@ end
 reports = Reports.new.listen(tasks: chat.pending_tasks)
 ```
 
-A server decides whether it announces the status of a task, and servers that predate 2026-07-28 never do, so `listen` raises `RubyLLM::MCP::Error` for tasks it won't hear about. Checking with `complete` works either way.
+A server decides whether it announces the status of a task, and servers that predate 2026-07-28 never do, so `listen` raises `RubyLLM::MCP::Error` for tasks it does not hear about. Checking with `complete` works either way.
 
 A task that needs input pauses the chat on [input requests](#input-requests): answer them and call `complete`. A task that fails raises `RubyLLM::MCP::Error` from `complete`. Cancelling the chat cancels its tasks the next time it runs, so after `chat.cancel`, or the persisted flag on a Rails record, `complete` cancels them and raises `RubyLLM::CancelledError`. `task.cancel` asks the server right away; the server may still finish the task.
 
@@ -818,12 +818,10 @@ Some servers only accept tokens bound to a key, so a token that leaks is useless
 
 ### Storing Credentials
 
-In Rails, credentials live in the `ruby_llm_mcp_credentials` table, encrypted with [Active Record encryption](https://guides.rubyonrails.org/active_record_encryption.html). New applications get the table from `ruby_llm:install`; applications that installed RubyLLM 2.0 add it with the upgrade generator:
+In Rails, credentials live in the `ruby_llm_mcp_credentials` table, encrypted with [Active Record encryption](https://guides.rubyonrails.org/active_record_encryption.html). New applications get the table from `ruby_llm:install`; applications that installed RubyLLM 2.0 add it with the [2.1 upgrade](https://github.com/crmne/ruby_llm/blob/v2.1.1/docs/_reference/upgrading.md). If your app has no encryption keys yet, create them:
 
 ```bash
-bin/rails generate ruby_llm:upgrade
-bin/rails db:encryption:init   # if your app has no encryption keys yet
-bin/rails db:migrate
+bin/rails db:encryption:init
 ```
 
 Plain Ruby keeps credentials in memory. Set `config.mcp_credential_store` to an object with `read(key)`, `write(key, data, owner:)`, and `delete(key)` to keep them elsewhere.
@@ -877,6 +875,6 @@ A server that answers with a protocol error raises `RubyLLM::MCP::Error`, whose 
 
 ## Next Steps
 
-* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) for approvals and concurrency
-* [Provider Tools]({% link _core_features/provider-tools.md %}) for MCP servers the provider connects to
-* [Agents]({% link _advanced/agents.md %}) for reusable chat configurations
+* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - approvals and concurrency.
+* [Provider Tools]({% link _core_features/provider-tools.md %}) - MCP servers the provider connects to.
+* [Agents]({% link _advanced/agents.md %}) - reusable chat configurations.

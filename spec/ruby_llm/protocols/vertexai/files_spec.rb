@@ -155,7 +155,7 @@ RSpec.describe RubyLLM::Protocols::VertexAI::Files do
       allow(files).to receive(:storage).and_call_original
       allow(files).to receive(:require).with('google/cloud/storage').and_raise(LoadError)
 
-      expect { files.send(:storage) }.to raise_error(RubyLLM::Error, /google-cloud-storage gem is required/)
+      expect { files.send(:storage) }.to raise_error(LoadError, /require the google-cloud-storage gem/)
     end
   end
 end

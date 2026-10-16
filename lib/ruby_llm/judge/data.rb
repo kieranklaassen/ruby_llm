@@ -17,7 +17,7 @@ module RubyLLM
 
           value
         when Integer, TrueClass, FalseClass, NilClass then value
-        else raise ArgumentError, "Unsupported judgment data: #{value.class}; pass JSON-compatible values"
+        else raise ArgumentError, "Unsupported judgment data: #{value.class}. Pass JSON-compatible values."
         end
       end
 
@@ -28,7 +28,7 @@ module RubyLLM
           unless key.is_a?(String) || key.is_a?(Symbol) || key == true || key == false
             raise ArgumentError, 'Judgment data keys must be Strings, Symbols, or booleans'
           end
-          raise ArgumentError, "Duplicate judgment key: #{name}" if seen[name]
+          raise ArgumentError, "Two judgment keys are named #{name}" if seen[name]
 
           seen[name] = true
           result[key.is_a?(String) ? key.dup.freeze : key] = copy(item, &resolver)

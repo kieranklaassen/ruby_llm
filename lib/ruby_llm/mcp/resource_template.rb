@@ -91,7 +91,7 @@ module RubyLLM
 
       private
 
-      def inspect_attributes
+      def inspect_attributes # :nodoc:
         { uri:, name: }
       end
     end

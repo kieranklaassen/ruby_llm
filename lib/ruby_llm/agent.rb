@@ -84,9 +84,9 @@ module RubyLLM
 
     # Chat values and operations whose return values pass through unchanged.
     PASSTHROUGH_CHAT_DELEGATES = %i[
-      model provider messages tools deferred_tools mcp provider_tools tool_options provider_options headers schema
-      concurrency caching citations code_execution compaction context end_user fallbacks thinking temperature
-      max_output_tokens skills
+      model provider protocol messages tools deferred_tools mcp provider_tools tool_options provider_options headers
+      schema concurrency caching citations code_execution compaction context end_user fallbacks thinking
+      temperature max_output_tokens skills
       each complete? cancelled? waiting? awaiting_approval? pending_approvals awaiting_input? pending_inputs
       awaiting_tasks? pending_tasks add_message add_completion tokens cost render
     ].freeze
@@ -118,7 +118,7 @@ module RubyLLM
       # model and +protocol:+ to override its wire protocol. A block picks
       # the model when the chat is built, with the declared ::inputs
       # available as methods. Called with no arguments, returns the
-      # configured chat keywords.
+      # configured chat keywords as a Hash, not a Model.
       #
       #   model "gpt-6-luna"
       #   model "gpt-6.1-sol", provider: :openai, protocol: :responses
@@ -269,25 +269,26 @@ module RubyLLM
       def thinking(enabled = true, **options) # rubocop:disable Style/OptionalBooleanParameter
         return thinking(**enabled.transform_keys(&:to_sym), **options) if enabled.is_a?(Hash)
 
-        validate_thinking_options(enabled, options)
+        validate_switch_options(:thinking, enabled, options, THINKING_OPTIONS)
+        raise ArgumentError, 'thinking options cannot be nil. Pass false to disable.' if options.value?(nil)
+
         @thinking = enabled ? options : false
       end
 
       # Enables context compaction for chats this agent builds, applied via
       # Chat#with_compaction. With no options, the provider's own defaults
-      # apply. Pass +false+ to disable it.
+      # apply. Accepts keywords or an options Hash. Pass +false+ to disable
+      # it. Passing +nil+ raises ArgumentError.
       #
       #   compaction
       #   compaction false
       #   compaction at: 50_000
       #
-      def compaction(options = {})
-        options = {} if options == true
-        unless options == false || options.is_a?(Hash)
-          raise ArgumentError, 'compaction accepts true, false, or compaction options'
-        end
+      def compaction(enabled = true, **options) # rubocop:disable Style/OptionalBooleanParameter
+        return compaction(**enabled.transform_keys(&:to_sym), **options) if enabled.is_a?(Hash)
 
-        @compaction = options
+        validate_switch_options(:compaction, enabled, options, Chat::COMPACTION_OPTIONS)
+        @compaction = enabled ? options : false
       end
 
       # Lets chats this agent builds run code in the configured sandbox,
@@ -304,7 +305,7 @@ module RubyLLM
       # A +mounts+ lambda runs before each run, with +chat+ and the
       # agent's inputs in scope, like the agent's other lambdas.
       def code_execution(enabled = true, **options) # rubocop:disable Style/OptionalBooleanParameter
-        @code_execution = CodeExecution.options(enabled, options)
+        @code_execution = CodeExecution.options(enabled, options, name: :code_execution)
       end
 
       # Gives chats this agent builds the skills named, applied via
@@ -322,7 +323,7 @@ module RubyLLM
       def skills(*skills)
         return @skills if skills.empty?
 
-        @skills = Skill.selection(skills)
+        @skills = Skill.selection(skills, name: :skills)
       end
 
       # Sets the safety identifier for chats this agent builds, applied via
@@ -340,15 +341,16 @@ module RubyLLM
       end
 
       # Enables citations for chats this agent builds, applied via
-      # Chat#with_citations. Pass +false+ to disable them.
+      # Chat#with_citations. Pass +false+ to disable them. Passing +nil+
+      # raises ArgumentError.
       #
       #   citations
       #   citations false
       #
-      def citations(value = true) # rubocop:disable Style/OptionalBooleanParameter
-        raise ArgumentError, 'citations accepts true or false' unless [true, false].include?(value)
+      def citations(enabled = true) # rubocop:disable Style/OptionalBooleanParameter
+        raise ArgumentError, 'citations accepts true or false' unless [true, false].include?(enabled)
 
-        @citations = value
+        @citations = enabled
       end
 
       # Enables prompt caching for chats this agent builds, applied via
@@ -365,33 +367,35 @@ module RubyLLM
       def caching(enabled = true, **options, &block) # rubocop:disable Metrics/PerceivedComplexity, Style/OptionalBooleanParameter
         return caching(**enabled.transform_keys(&:to_sym), **options, &block) if enabled.is_a?(Hash)
 
-        raise ArgumentError, 'caching accepts false or caching options' unless [true, false].include?(enabled)
-        raise ArgumentError, 'caching accepts options or a block, not both' if options.any? && block
-        raise ArgumentError, 'caching false does not accept options or a block' if !enabled && (options.any? || block)
+        raise ArgumentError, 'caching accepts true, false, or caching options' unless [true, false].include?(enabled)
+        raise ArgumentError, 'Pass caching options or a block, not both' if options.any? && block
+        raise ArgumentError, 'caching(false) does not accept options or a block' if !enabled && (options.any? || block)
 
         @caching = block || (enabled ? options : false)
       end
 
       # Sets options in the provider's request vocabulary for chats this
-      # agent builds, applied via Chat#with_provider_options. A block
-      # defers evaluation until the chat is built. Called with no
-      # arguments, returns the configured value.
+      # agent builds, applied via Chat#with_provider_options. Accepts
+      # keywords or a Hash, as Judge.provider_options and
+      # Tool.provider_options do. A block defers evaluation until the chat
+      # is built. Called with no arguments, returns the configured value.
       #
       #   provider_options service_tier: "flex"
       #
-      def provider_options(**provider_options, &block)
-        return @provider_options || {} if provider_options.empty? && !block_given?
+      def provider_options(options = nil, **provider_options, &block)
+        return @provider_options || {} if options.nil? && provider_options.empty? && !block_given?
 
-        @provider_options = block_given? ? block : provider_options
+        @provider_options = block_given? ? block : options.to_h.merge(provider_options)
       end
 
       # Sets custom HTTP headers for chats this agent builds, applied via
-      # Chat#with_headers. A block defers evaluation until the chat is
-      # built. Called with no arguments, returns the configured value.
-      def headers(**headers, &block)
-        return @headers || {} if headers.empty? && !block_given?
+      # Chat#with_headers. Accepts keywords or a Hash. A block defers
+      # evaluation until the chat is built. Called with no arguments,
+      # returns the configured value.
+      def headers(options = nil, **headers, &block)
+        return @headers || {} if options.nil? && headers.empty? && !block_given?
 
-        @headers = block_given? ? block : headers
+        @headers = block_given? ? block : options.to_h.merge(headers)
       end
 
       # Sets the structured output schema for chats this agent builds,
@@ -518,7 +522,7 @@ module RubyLLM
       # lookup until an exception is raised.
       def rescue_from(*exception_classes, with: nil, &block)
         raise ArgumentError, 'rescue_from needs a handler: pass with: or a block' unless with || block
-        raise ArgumentError, 'rescue_from takes with: or a block, not both' if with && block
+        raise ArgumentError, 'Pass with: or a block, not both' if with && block
 
         exception_classes.flatten.each do |exception_class|
           rescue_handlers << [rescue_handler_key(exception_class), with || block]
@@ -583,7 +587,7 @@ module RubyLLM
       #
       #   chat = WorkAssistant.create(user: current_user)
       #
-      # Raises ArgumentError if ::chat_model is not configured.
+      # Raises ConfigurationError if ::chat_model is not configured.
       def create(**)
         with_rails_chat_record(:create, **)
       end
@@ -603,9 +607,9 @@ module RubyLLM
       #
       #   chat = WorkAssistant.find(params[:id])
       #
-      # Raises ArgumentError if ::chat_model is not configured.
+      # Raises ConfigurationError if ::chat_model is not configured.
       def find(id, **kwargs)
-        raise ArgumentError, 'chat_model must be configured to use find' unless resolved_chat_model
+        raise ConfigurationError, 'chat_model must be configured to use find' unless resolved_chat_model
 
         input_values, = partition_inputs(kwargs)
         record = resolved_chat_model.find(id)
@@ -621,9 +625,9 @@ module RubyLLM
       #
       #   WorkAssistant.sync_instructions(chat)
       #
-      # Raises ArgumentError if ::chat_model is not configured.
+      # Raises ConfigurationError if ::chat_model is not configured.
       def sync_instructions(chat_or_id, **kwargs)
-        raise ArgumentError, 'chat_model must be configured to use sync_instructions' unless resolved_chat_model
+        raise ConfigurationError, 'chat_model must be configured to use sync_instructions' unless resolved_chat_model
 
         input_values, = partition_inputs(kwargs)
         record = chat_or_id.is_a?(resolved_chat_model) ? chat_or_id : resolved_chat_model.find(chat_or_id)
@@ -693,18 +697,17 @@ module RubyLLM
         return unless value.is_a?(Proc)
         return if value.arity.zero?
 
-        raise ArgumentError, 'context Proc must accept zero arguments'
+        raise ArgumentError, 'A context Proc must accept zero arguments'
       end
 
-      def validate_thinking_options(enabled, options)
-        raise ArgumentError, 'thinking accepts false or thinking options' unless [true, false].include?(enabled)
-        raise ArgumentError, 'thinking false does not accept options' if !enabled && options.any?
-        raise ArgumentError, 'thinking options cannot be nil; use thinking false to disable' if options.value?(nil)
+      def validate_switch_options(name, enabled, options, supported)
+        raise ArgumentError, "#{name} accepts true, false, or #{name} options" unless [true, false].include?(enabled)
+        raise ArgumentError, "#{name}(false) does not accept options" if !enabled && options.any?
 
-        unsupported = options.keys - THINKING_OPTIONS
+        unsupported = options.keys - supported
         return if unsupported.empty?
 
-        raise ArgumentError, "thinking accepts #{THINKING_OPTIONS.join(', ')}, got #{unsupported.join(', ')}"
+        raise ArgumentError, "#{name} accepts #{Support::Utils.option_list(supported)}, got #{Support::Utils.option_list(unsupported)}"
       end
 
       def rescue_handler_key(exception_class)
@@ -737,7 +740,7 @@ module RubyLLM
       end
 
       def with_rails_chat_record(method_name, **kwargs)
-        raise ArgumentError, 'chat_model must be configured to use create/create!' unless resolved_chat_model
+        raise ConfigurationError, 'chat_model must be configured to use create/create!' unless resolved_chat_model
 
         input_values, chat_options = partition_inputs(kwargs)
         record = resolved_chat_model.public_send(
@@ -1078,13 +1081,13 @@ module RubyLLM
 
     ##
     # :method: with_compaction
-    # :call-seq: with_compaction(options = {})
+    # :call-seq: with_compaction(enabled = true, **options)
     #
     # Delegates to Chat#with_compaction. See that method for arguments and return values.
 
     ##
     # :method: with_caching
-    # :call-seq: with_caching(options = {})
+    # :call-seq: with_caching(enabled = true, **options)
     #
     # Delegates to Chat#with_caching. See that method for arguments and return values.
 
@@ -1231,6 +1234,12 @@ module RubyLLM
     # :call-seq: provider
     #
     # Delegates to Chat#provider. See that method for arguments and return values.
+
+    ##
+    # :method: protocol
+    # :call-seq: protocol
+    #
+    # Delegates to Chat#protocol. See that method for arguments and return values.
 
     ##
     # :method: messages

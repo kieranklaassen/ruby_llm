@@ -12,13 +12,35 @@ module RubyLLM
   class VideoJob
     include Support::Inspectable
 
+    # A video generation failure that retains the job for inspection or
+    # recovery.
+    class Error < RubyLLM::Error
+      # The video job, including its remote ID and last known state.
+      attr_reader :job
+
+      # Creates an error retaining +job+ and the optional HTTP response.
+      def initialize(message, job:, response: nil)
+        @job = job
+        super(message, response:)
+      end
+    end
+
+    # Raised when polling exceeds its deadline. The provider may still be
+    # rendering the video; Error#job retains its ID.
+    class TimeoutError < Error; end
+
     # The provider's id for the job.
     attr_reader :id
 
-    # The job state: +:pending+, +:completed+, or +:failed+.
+    # The slug of the provider rendering the video, as a String.
+    def provider
+      @protocol.provider.slug
+    end
+
+    # The job state: +:pending+, +:succeeded+, or +:failed+.
     attr_reader :status
 
-    # The id of the model rendering the video.
+    # The id of the model rendering the video, as a String.
     attr_reader :model
 
     # The provider's failure message when #failed?, or +nil+.
@@ -94,29 +116,29 @@ module RubyLLM
       record_usage
     end
 
-    # Returns +true+ while the provider is still rendering the video.
+    # Returns whether the provider is still rendering the video.
     def pending?
       status == :pending
     end
 
-    # Returns +true+ once the job finished, successfully or not.
+    # Returns whether the job finished, successfully or not.
     def done?
       !pending?
     end
 
-    # Returns +true+ when the job finished with a video.
-    def completed?
-      status == :completed
+    # Returns whether the job finished with a video.
+    def succeeded?
+      status == :succeeded
     end
 
-    # Returns +true+ when the job finished without a video. #error carries
+    # Returns whether the job finished without a video. #error carries
     # the provider's failure message.
     def failed?
       status == :failed
     end
 
     # Re-fetches the job from the provider, updating #status, #error, and
-    # #raw. Does nothing once the job is #done?. Returns self.
+    # #raw. Does nothing once the job is #done?. Returns +self+.
     def refresh
       return self if done?
 
@@ -140,10 +162,11 @@ module RubyLLM
       Cost.new(tokens: Tokens.new(reported_cost: @reported_cost))
     end
 
-    # Polls the job until it finishes, then returns self. Raises Error
-    # when the job fails or +timeout+ elapses first. +timeout+ and
-    # +interval+ are seconds and default to the configured
-    # +video_generation_timeout+ and +video_generation_poll_interval+.
+    # Polls the job until it finishes, then returns +self+. Raises Error
+    # when the job fails and TimeoutError when +timeout+ elapses first;
+    # both retain this job. +timeout+ and +interval+ are seconds and
+    # default to the configured +video_generation_timeout+ and
+    # +video_generation_poll_interval+.
     def wait(timeout: nil, interval: nil)
       timeout ||= @protocol.config.video_generation_timeout
       interval ||= @protocol.config.video_generation_poll_interval
@@ -151,12 +174,14 @@ module RubyLLM
 
       until done?
         remaining = deadline - monotonic_time
-        raise Error, "Video generation timed out after #{timeout} seconds" unless remaining.positive?
+        unless remaining.positive?
+          raise TimeoutError.new("Video generation timed out after #{timeout} seconds (job #{id})", job: self)
+        end
 
         sleep [interval, remaining].min
         refresh
       end
-      raise Error, "Video generation failed: #{error}" if failed?
+      raise Error.new("Video generation failed: #{error}", job: self) if failed?
 
       self
     end
@@ -165,8 +190,8 @@ module RubyLLM
     # its API requires that. Returns +nil+ while #pending? and raises
     # Error when #failed?.
     def video
-      raise Error, "Video generation failed: #{error}" if failed?
-      return unless completed?
+      raise Error.new("Video generation failed: #{error}", job: self) if failed?
+      return unless succeeded?
 
       @video ||= @protocol.download_video(self).tap { |video| video.config = @protocol.config }
     end
@@ -177,8 +202,8 @@ module RubyLLM
       return if pending? || @usage_recorded
 
       @usage_recorded = true
-      entry = Accounting::Usage::Entry.new(operation: :video, provider: @protocol.provider.slug, model:,
-                                           status: completed? ? :succeeded : :failed, cost:, owner: @usage_owner)
+      entry = Accounting::Usage::Entry.new(operation: :video, provider:, model:,
+                                           status: succeeded? ? :succeeded : :failed, cost:, owner: @usage_owner)
       Accounting::Usage.report(entry, config: @protocol.config)
     end
 

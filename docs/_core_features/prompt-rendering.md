@@ -3,7 +3,7 @@ layout: default
 title: Prompt Rendering
 parent: "Chat"
 nav_order: 6
-description: Render reusable ERB prompt templates from app/prompts with RubyLLM.render_prompt
+description: Render reusable ERB prompt templates from app/prompts with RubyLLM.render_prompt.
 ---
 
 # {{ page.title }}

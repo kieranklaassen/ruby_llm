@@ -2,7 +2,7 @@
 layout: default
 title: What's New in 2.2
 nav_order: 4
-description: Let models run Ruby, Python, JavaScript, and shell code in sandboxes on your own servers, let them ask for a wider sandbox one call at a time, teach them your workflows with skills, and run each persisted chat in one process at a time, in RubyLLM 2.2.
+description: Run model-written code in sandboxes on your servers, teach models your workflows with skills, and keep each chat in one process in RubyLLM 2.2.
 ---
 
 # {{ page.title }}
@@ -98,7 +98,7 @@ The default sandbox should be the smallest one that does the job. When the code 
 chat.with_code_execution(sandbox: ReadOnlySandbox, escalate_to: [WorkspaceSandbox, OnlineSandbox])
 chat.ask "Add a changelog entry for the new export feature"
 
-chat.pending_approvals.first.arguments # => {"code"=>"...", "sandbox"=>"workspace", "reason"=>"Edit CHANGELOG.md"}
+chat.pending_approvals.first.arguments # => {"code" => "...", "sandbox" => "workspace", "reason" => "Edit CHANGELOG.md"}
 chat.approve(chat.pending_approvals.first)
 chat.complete
 ```
@@ -113,7 +113,7 @@ See [Sandboxes]({% link _core_features/sandboxes.md %}).
 
 Some tasks need a procedure, not a sentence: how your company formats an invoice, or the script that turns a spreadsheet into slides. Putting every procedure in every chat's instructions fills the model's context with work it rarely does. Skills keep them in folders, in the open [Agent Skills format](https://agentskills.io/specification), and the model loads one only when a task needs it:
 
-```
+```text
 app/skills/invoices/
 ├── SKILL.md
 ├── references/TAX_RULES.md
@@ -135,7 +135,7 @@ See [Skills]({% link _core_features/skills.md %}).
 
 Every building block now has a generator that puts it in its `app/` folder, ready to use:
 
-```sh
+```bash
 bin/rails generate ruby_llm:mcp Linear https://mcp.linear.app/mcp
 bin/rails generate ruby_llm:skill invoices "Bills an order to a customer as a PDF."
 bin/rails generate ruby_llm:sandbox Workspace
@@ -176,8 +176,8 @@ If a process dies, its claims expire and another process picks the chat up. See 
 
 RubyLLM 2.2 requires Ruby 3.2 or later. Install it:
 
-```sh
-bundle add ruby_llm --version "~> 2.2.0"
+```bash
+{% if site.docs_unreleased %}bundle add ruby_llm --git https://github.com/crmne/ruby_llm --branch main{% else %}bundle add ruby_llm --version "~> 2.2.0"{% endif %}
 ```
 
 Start with [Getting Started]({% link _getting_started/getting-started.md %}), or follow [Upgrading]({% link _reference/upgrading.md %}) to update a 2.1 application.

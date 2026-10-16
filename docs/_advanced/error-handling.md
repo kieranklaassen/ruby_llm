@@ -2,7 +2,7 @@
 layout: default
 title: Error Handling
 nav_order: 7
-description: Rescue provider errors, fall back to other models, and let automatic retries absorb transient failures
+description: Rescue provider errors, fall back to other models, and let automatic retries absorb transient failures.
 redirect_from:
   - /guides/error-handling
 ---
@@ -14,15 +14,15 @@ redirect_from:
 
 After reading this guide, you will know:
 
-*   RubyLLM's error hierarchy.
-*   How to rescue specific types of errors.
-*   How to access details from the original API response.
-*   How to see the shape of a request a provider rejected.
-*   How errors are handled during streaming.
-*   How to fall back to another model when a provider has a transient failure.
-*   Best practices for handling errors within Tools.
-*   RubyLLM's automatic retry behavior.
-*   How to enable debug logging.
+* RubyLLM's error hierarchy.
+* How to rescue specific types of errors.
+* How to access details from the original API response.
+* How to see the shape of a request a provider rejected.
+* How errors are handled during streaming.
+* How to fall back to another model when a provider has a transient failure.
+* Best practices for handling errors within Tools.
+* RubyLLM's automatic retry behavior.
+* How to enable debug logging.
 
 ## RubyLLM Error Hierarchy
 
@@ -43,16 +43,26 @@ RubyLLM::Error                    # Base error class for provider-operation issu
     RubyLLM::ServerError          # 500: Provider server error
     RubyLLM::ServiceUnavailableError # 502/503/504: Service unavailable
     RubyLLM::OverloadedError      # 529: Service overloaded (Specific providers)
+    RubyLLM::MCP::Error           # MCP server answered with an error, an unexpected status, or not at all
+    RubyLLM::ResearchJob::Error   # Hosted research job failed; keeps the job for inspection
+    RubyLLM::VideoJob::Error      # Video job failed or timed out; keeps the job for inspection
 
 # Local Errors (inherit from StandardError)
 RubyLLM::ConfigurationError   # Missing required configuration (e.g., API key)
 RubyLLM::PromptNotFoundError  # Prompt file not found
+RubyLLM::SkillNotFoundError   # Skill named by with_skills not found
+RubyLLM::InvalidSkillError    # SKILL.md breaks the Agent Skills specification
 RubyLLM::ModelNotFoundError   # Requested model ID not found in registry
 RubyLLM::InvalidRoleError     # Invalid role symbol used for a message
 RubyLLM::InvalidToolChoiceError # Invalid tool choice option
 RubyLLM::PendingToolCallsError # A new question was staged before pending tools finished
+RubyLLM::ToolCallRunningError # A persisted tool call was denied after it started running
 RubyLLM::ModelRegistryError   # Model registry could not be fetched, parsed, or persisted
 RubyLLM::CancelledError       # An in-flight chat operation was cancelled
+RubyLLM::DeprecationError     # Deprecated API used while deprecation_behavior is :raise
+
+# Interruption (inherits from Interrupt, so a bare rescue does not catch it)
+RubyLLM::ResearchJob::InterruptedError # Blocking research call interrupted; keeps the job for recovery
 ```
 
 ## Basic Error Handling
@@ -167,7 +177,7 @@ A long conversation keeps its first 10 and last 50 turns, and `omitted_turns` co
 
 ## Error Handling During Streaming
 
-When using streaming with a block, errors can occur *during* the stream after some chunks have already been processed. The `ask` method will raise the error *after* the block execution finishes or is interrupted by the error.
+When using streaming with a block, errors can occur *during* the stream after some chunks have already been processed. `ask` raises the error *after* the block execution finishes or is interrupted by the error.
 
 ```ruby
 begin
@@ -187,7 +197,7 @@ rescue RubyLLM::Error => e
 end
 ```
 
-Your block will execute for chunks received *before* the error. Because `ask` raises, it does not return a final response in this case; handle the exception and any partial content you accumulated.
+Your block runs for chunks received *before* the error. Because `ask` raises, it does not return a final response in this case; handle the exception and any partial content you accumulated.
 
 ## Model Fallbacks
 
@@ -247,7 +257,7 @@ When streaming has already yielded chunks before a fallback-worthy error, RubyLL
 
 When building [Tools]({% link _core_features/tools.md %}), you need to decide how errors within the tool's `execute` method should be handled:
 
-1.  **Return Error to LLM:** If the error is something the LLM might be able to recover from (e.g., invalid parameters provided by the LLM, temporary lookup failure), return a Hash containing an `:error` key. The LLM will see this error message as the tool's output and may try again or use a different approach.
+1.  **Return Error to LLM:** If the error is something the LLM might be able to recover from (e.g., invalid parameters provided by the LLM, temporary lookup failure), return a Hash containing an `:error` key. The LLM sees this error message as the tool's output and may try again or use a different approach.
 
     ```ruby
     class Weather < RubyLLM::Tool
@@ -263,7 +273,7 @@ When building [Tools]({% link _core_features/tools.md %}), you need to decide ho
     end
     ```
 
-2.  **Raise Error for Application:** If the error indicates a problem with the tool itself or the application's state (e.g., database connection lost, configuration error, unrecoverable external API failure), `raise` an exception as normal. This will halt the RubyLLM interaction and bubble up to your application's main error handling (`begin/rescue`).
+2.  **Raise Error for Application:** If the error indicates a problem with the tool itself or the application's state (e.g., database connection lost, configuration error, unrecoverable external API failure), `raise` an exception as normal. This halts the RubyLLM interaction and bubbles up to your application's main error handling (`begin/rescue`).
 
     ```ruby
     class DatabaseQueryTool < RubyLLM::Tool
@@ -296,19 +306,18 @@ class ApplicationAgent < RubyLLM::Agent
 end
 ```
 
-Handlers cover the agent's chat operations (`ask`, `say`, `ask_later`, `complete`, `generate`, `run_tools`, `step`), run on the agent instance, and follow `ActiveSupport::Rescuable` semantics. See [Handling Errors with `rescue_from`]({% link _advanced/agents.md %}#handling-errors-with-rescue_from).
+Handlers cover the agent's chat operations, run on the agent instance, and follow `ActiveSupport::Rescuable` semantics. See [Handling Errors with `rescue_from`]({% link _advanced/agents.md %}#handling-errors-with-rescue_from) for the operations they cover.
 
 ## Automatic Retries
 
-RubyLLM automatically retries requests that fail due to transient network or server issues using Faraday's retry middleware.
-Retries are driven by error classification (exception types), not raw HTTP status codes alone.
+RubyLLM automatically retries requests that fail due to transient network or server issues using Faraday's retry middleware. Retries are driven by error classification (exception types), not raw HTTP status codes alone.
 
 Retries are attempted for:
 
-*   Network timeouts (`Timeout::Error`, `Faraday::TimeoutError`, `Errno::ETIMEDOUT`)
-*   Connection failures (`Faraday::ConnectionFailed`, `Faraday::SSLError`)
-*   Rate limit errors (`RubyLLM::RateLimitError`, often HTTP 429)
-*   Server-side errors (`RubyLLM::ServerError`, `RubyLLM::ServiceUnavailableError`, `RubyLLM::OverloadedError` / HTTP 500, 502, 503, 504, 529)
+* Network timeouts (`Timeout::Error`, `Faraday::TimeoutError`, `Errno::ETIMEDOUT`)
+* Connection failures (`Faraday::ConnectionFailed`, `Faraday::SSLError`)
+* Rate limit errors (`RubyLLM::RateLimitError`, often HTTP 429)
+* Server-side errors (`RubyLLM::ServerError`, `RubyLLM::ServiceUnavailableError`, `RubyLLM::OverloadedError` / HTTP 500, 502, 503, 504, 529)
 
 `RubyLLM::ContextLengthExceededError` is not retried.
 
@@ -339,6 +348,6 @@ Debug logs show request and response headers and bodies, with API keys filtered.
 
 ## Next Steps
 
-*   [Using Tools]({% link _core_features/tools.md %})
-*   [Streaming Responses]({% link _core_features/streaming.md %})
-*   [Rails Integration]({% link _advanced/rails.md %})
+* [Tools]({% link _core_features/tools.md %}) - handle errors inside tool execution.
+* [Stream Responses]({% link _core_features/streaming.md %}) - handle errors that arrive during a stream.
+* [Rails Integration]({% link _advanced/rails.md %}) - use RubyLLM with your Active Record models.

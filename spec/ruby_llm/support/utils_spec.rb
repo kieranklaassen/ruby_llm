@@ -21,6 +21,13 @@ RSpec.describe RubyLLM::Support::Utils do
     end
   end
 
+  describe '.option_list' do
+    it 'writes keys the way a caller types them' do
+      expect(described_class.option_list(%i[effort budget])).to eq(':effort, :budget')
+      expect(described_class.option_list(['ttl'])).to eq(':ttl')
+    end
+  end
+
   describe '.underscore' do
     it 'separates words and keeps acronyms together' do
       expect(described_class.underscore('MyTool')).to eq('my_tool')

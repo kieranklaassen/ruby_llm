@@ -12,20 +12,11 @@ module RubyLLM
   class TranscriptionChunk
     include Support::Inspectable
 
-    # Text deltas, arriving as the model transcribes.
-    DELTA = 'transcript.text.delta'
-
-    # A tentative transcript that may change before its segment completes.
-    PARTIAL = 'transcript.text.partial'
-
-    # A completed segment, on models that return timed or diarized segments.
-    SEGMENT = 'transcript.text.segment'
-
-    # The final event, carrying the complete transcript.
-    DONE = 'transcript.text.done'
-
-    # The normalized event type, such as
-    # <tt>"transcript.text.delta"</tt>.
+    # The event type: +:delta+ for text arriving as the model transcribes,
+    # +:partial+ for a tentative transcript that may still change,
+    # +:segment+ for a completed timed or diarized segment, or +:done+ for
+    # the final event. Returns +nil+ for an event RubyLLM does not
+    # normalize; read it from #raw.
     attr_reader :type
 
     # The text added by this event, or +nil+ for events that add no text.
@@ -49,17 +40,19 @@ module RubyLLM
       @raw = raw
     end
 
-    # Whether this event carries a text delta.
+    # Returns whether this event carries a text delta.
     def delta? = !delta.nil?
 
-    # Whether this is a tentative transcript, replacing the previous partial.
-    def partial? = type == PARTIAL
+    # Returns whether this is a tentative transcript, replacing the previous partial.
+    def partial? = type == :partial
 
-    # Whether this event completed a segment.
+    # Returns whether this event completed a segment.
     def segment? = !segment.nil?
 
-    # Whether this is the final event of the transcription.
-    def done? = type == DONE
+    # Returns whether this is the final event of the transcription.
+    def done? = type == :done
+
+    private
 
     def inspect_attributes # :nodoc:
       { type: type, delta: delta, text: text, segment: segment }

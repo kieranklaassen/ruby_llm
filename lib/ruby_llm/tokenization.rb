@@ -10,16 +10,20 @@ module RubyLLM
     # The integer token IDs in text order.
     attr_reader :ids
 
-    # The id of the model whose tokenizer was used.
+    # The id of the model whose tokenizer was used, as a String.
     attr_reader :model
 
     # The provider's unmodified response, including token strings when available.
     attr_reader :raw
 
-    # Tokenizes +text+ and returns a Tokenization. Most code calls
-    # RubyLLM.tokenize. +model:+ defaults to the configured chat model;
-    # +provider:+ selects its provider. +assume_model_exists:+ skips
-    # registry lookup, and +context:+ supplies an isolated configuration.
+    # Tokenizes +text+ and returns a Tokenization. Most code calls this
+    # through RubyLLM.tokenize.
+    #
+    # +model:+ selects the model and defaults to the configured
+    # +default_model+. +provider:+ forces a specific provider, and
+    # +assume_model_exists:+ skips the registry lookup. +context:+ supplies
+    # a Context whose configuration replaces the global one. +metadata:+
+    # is included in the instrumentation payload.
     #
     #   result = RubyLLM.tokenize("Hello Ruby", model: "grok-4.3", provider: :xai)
     #   result.ids
@@ -27,13 +31,13 @@ module RubyLLM
     #
     # Raises ArgumentError for non-string input and RubyLLM::Error when
     # the provider does not expose a tokenizer.
-    def self.tokenize(text, model: nil, provider: nil, assume_model_exists: false, context: nil)
+    def self.tokenize(text, model: nil, provider: nil, assume_model_exists: false, context: nil, metadata: nil)
       raise ArgumentError, 'text must be a String' unless text.is_a?(String)
 
       config = context&.config || RubyLLM.config
       model ||= config.default_model
       model, provider_instance = Models.resolve(model, provider:, assume_model_exists:, config:)
-      payload = { model: model.id, provider: provider_instance.slug }
+      payload = { model: model.id, provider: provider_instance.slug, metadata: }
       RubyLLM.instrument('tokenization.ruby_llm', payload, config:) do |event|
         result = provider_instance.tokenize(text, model:)
         event[:result] = result
@@ -47,10 +51,21 @@ module RubyLLM
       @raw = raw
     end
 
+    # Returns the tokenization's Model from its provider's registry, falling
+    # back to the requested model when the response ID is unknown.
+    # Returns +nil+ if the model is unknown.
+    def model_info
+      @model_info ||= RubyLLM.models.find(model)
+    rescue ModelNotFoundError
+      nil
+    end
+
     # Returns the number of tokens in the text.
     def count
       ids.length
     end
+
+    private
 
     def inspect_attributes # :nodoc:
       { model:, count: }

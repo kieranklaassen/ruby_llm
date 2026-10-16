@@ -2,9 +2,9 @@
 
 module RubyLLM
   # An EmbeddingRequest is an embedding awaiting a provider-side batch.
-  # RubyLLM.embed_later stages one; submit an array of them with
-  # RubyLLM.batch, and once the batch completes, collecting the results
-  # fills in #result:
+  # RubyLLM.embed_later stages one and documents its arguments; submit an
+  # array of them with RubyLLM.batch, and once the batch completes,
+  # collecting the results fills in #result:
   #
   #   requests = texts.map { |text| RubyLLM.embed_later(text) }
   #   batch = RubyLLM.batch(requests)
@@ -18,7 +18,7 @@ module RubyLLM
     # The text staged for embedding.
     attr_reader :text
 
-    # The Model of the embedding model the request targets.
+    # The Model the request targets. Its id is <tt>model.id</tt>.
     attr_reader :model
 
     # The requested vector size, or +nil+ for the model's default.
@@ -32,10 +32,11 @@ module RubyLLM
     # Batch result collection writes it.
     attr_accessor :result
 
-    def initialize(text, model: nil, provider: nil, dimensions: nil, context: nil) # :nodoc:
+    def initialize(text, model: nil, provider: nil, assume_model_exists: false, context: nil, # :nodoc:
+                   dimensions: nil)
       config = context&.config || RubyLLM.config
       model ||= config.default_embedding_model
-      @model, @provider = Models.resolve(model, provider:, config:)
+      @model, @provider = Models.resolve(model, provider:, assume_model_exists:, config:)
       @text = text
       @dimensions = dimensions
     end
@@ -45,6 +46,8 @@ module RubyLLM
     def render
       @provider.render_embedding(text, model: @model, dimensions: @dimensions)
     end
+
+    private
 
     def inspect_attributes # :nodoc:
       { text: text, model: model.id, dimensions: dimensions, result: result }

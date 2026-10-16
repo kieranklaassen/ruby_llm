@@ -16,7 +16,7 @@ module RubyLLM
     # The transcribed text.
     attr_reader :text
 
-    # The id of the model that produced the transcription.
+    # The id of the model that produced the transcription, as a String.
     attr_reader :model
 
     # The language of the audio, or +nil+ when the provider does not report it.
@@ -63,17 +63,18 @@ module RubyLLM
 
     attr_writer :model_info # :nodoc:
 
-    def model_info # :nodoc:
+    # Returns the transcription's Model from its provider's registry, falling
+    # back to the requested model when the response ID is unknown.
+    # Returns +nil+ if the model is unknown.
+    def model_info
       @model_info ||= RubyLLM.models.find(model)
     rescue ModelNotFoundError
       nil
     end
 
     # Transcribes +audio_file+ and returns a Transcription. The file may be
-    # a path, URL, or IO object. Uses
-    # <tt>config.default_transcription_model</tt> unless +model:+ is given.
-    # Pass +provider:+ and <tt>assume_model_exists: true</tt> to use a model
-    # that is not in the registry.
+    # a path, URL, or IO object. Most code calls this through
+    # RubyLLM.transcribe.
     #
     #   RubyLLM.transcribe("meeting.wav")
     #   RubyLLM.transcribe("entrevista.mp3", language: "es")
@@ -84,6 +85,11 @@ module RubyLLM
     #     speaker_references: ["alice-voice.wav", "bob-voice.wav"]
     #   )
     #
+    # +model:+ selects the transcription model and defaults to the
+    # configured +default_transcription_model+. +provider:+ forces a
+    # specific provider, and +assume_model_exists:+ skips the registry
+    # lookup. +context:+ supplies a Context whose configuration replaces
+    # the global one.
     # +language:+ hints at the spoken language using the provider's accepted
     # ISO 639-1 or BCP-47 language code.
     # +prompt:+ gives the model vocabulary or formatting guidance, and
@@ -97,7 +103,8 @@ module RubyLLM
     # +timestamps:+ requests +:word+ timestamps. Some providers also accept
     # +:segment+ or +:character+; unsupported granularities raise ArgumentError.
     # +provider_options:+ takes options in the provider's request vocabulary
-    # and merges them into the rendered request as-is.
+    # and merges them into the request as-is. +metadata:+ is included in the
+    # instrumentation payload.
     # +owner:+ attributes the usage to a record, such as a user, and wins
     # over RubyLLM.with_usage_owner.
     #
@@ -116,10 +123,10 @@ module RubyLLM
     # stream transcriptions.
     def self.transcribe(audio_file,
                         model: nil,
-                        language: nil,
                         provider: nil,
                         assume_model_exists: false,
                         context: nil,
+                        language: nil,
                         prompt: nil,
                         temperature: nil,
                         format: nil,
@@ -160,6 +167,8 @@ module RubyLLM
         result
       end
     end
+
+    private
 
     def inspect_attributes # :nodoc:
       { text: text, model: model, language: language, duration: duration }

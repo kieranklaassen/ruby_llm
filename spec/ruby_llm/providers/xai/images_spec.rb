@@ -43,11 +43,11 @@ RSpec.describe RubyLLM::Providers::XAI::Images do
     end
   end
 
-  describe '.validate_paint_inputs!' do
+  describe '.validate_paint_inputs' do
     it 'rejects masks with a clear error' do
       expect do
-        described_class.validate_paint_inputs!(with: 'logo.png', mask: 'mask.png')
-      end.to raise_error(RubyLLM::Error, /mask/)
+        described_class.validate_paint_inputs(with: 'logo.png', mask: 'mask.png')
+      end.to raise_error(RubyLLM::UnsupportedAttachmentError, /image mask/)
     end
   end
 end

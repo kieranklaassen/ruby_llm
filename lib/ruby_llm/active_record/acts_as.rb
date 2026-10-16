@@ -7,7 +7,7 @@ module RubyLLM
   # Rails integration brings the RubyLLM API to Active Record models, with
   # Active Storage attachments and a persisted message lifecycle for Hotwire
   # streaming and background jobs. Applications own chats and messages;
-  # RubyLLM owns the supporting usage, tool-call, registry, and batch records.
+  # RubyLLM owns the supporting records.
   module ActiveRecord
     # Adds the RubyLLM conversation API to application-owned records.
     #
@@ -29,6 +29,9 @@ module RubyLLM
     #
     module ActsAs
       extend ActiveSupport::Concern
+
+      ACTIVE_STORAGE_SETUP = 'Load it with require "active_storage/engine" in config/application.rb, ' \
+                             'then run bin/rails active_storage:install and bin/rails db:migrate.' # :nodoc:
 
       def self.included(base) # :nodoc:
         super
@@ -155,8 +158,7 @@ module RubyLLM
             has_many_attached :attachments unless reflect_on_attachment(:attachments)
           else
             RubyLLM.logger.warn "#{name} has no attachments because Active Storage is not loaded. " \
-                                'Load it with require "active_storage/engine" in config/application.rb, ' \
-                                'then run bin/rails active_storage:install and bin/rails db:migrate.'
+                                "#{ACTIVE_STORAGE_SETUP}"
           end
         end
 

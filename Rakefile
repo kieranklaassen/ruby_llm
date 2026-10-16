@@ -26,7 +26,7 @@ task :rdoc do
 end
 CLOBBER.include 'doc'
 
-desc 'Run overcommit hooks and update models'
+desc 'Run the overcommit hooks, then update models and the files generated from them'
 task :default do
   sh 'overcommit --run'
   Rake::Task['models'].invoke

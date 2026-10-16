@@ -2,7 +2,7 @@
 layout: default
 title: Embeddings
 nav_order: 3
-description: Create vectors from text, images, audio, video, and documents for search and similarity
+description: Create vectors from text, images, audio, video, and documents for search and similarity.
 redirect_from:
   - /guides/embeddings
 ---
@@ -14,11 +14,11 @@ redirect_from:
 
 After reading this guide, you will know:
 
-*   How to generate embeddings for single or multiple texts.
-*   How to embed images, audio, video, and documents with multimodal models.
-*   How to choose specific embedding models.
-*   How to use the results, including calculating similarity.
-*   How to integrate embeddings in a Rails application.
+* How to generate embeddings for single or multiple texts.
+* How to embed images, audio, video, and documents with multimodal models.
+* How to choose specific embedding models.
+* How to use the results, including calculating similarity.
+* How to integrate embeddings in a Rails application.
 
 ## Basic Embedding Generation
 
@@ -208,8 +208,8 @@ The `embedding` vector column must match your model's dimensions. This example g
 
 ## Next Steps
 
-*   [Reranking]({% link _core_features/rerank.md %}) to order your candidates by relevance before you use them.
-*   [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) to ground answers in your own documents.
-*   [Chatting with AI Models]({% link _core_features/chat.md %}) for interactive conversations.
-*   [Using Tools]({% link _core_features/tools.md %}) to extend AI capabilities.
-*   [Error Handling]({% link _advanced/error-handling.md %}) for retries and provider failures.
+* [Reranking]({% link _core_features/rerank.md %}) - order your candidates by relevance before you use them.
+* [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) - ground answers in your own documents.
+* [Chat]({% link _core_features/chat.md %}) - hold interactive conversations.
+* [Tools]({% link _core_features/tools.md %}) - let the model call your Ruby code.
+* [Error Handling]({% link _advanced/error-handling.md %}) - handle retries and provider failures.

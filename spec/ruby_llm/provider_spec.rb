@@ -609,7 +609,7 @@ RSpec.describe RubyLLM::Provider do
     it 'raises on protocols the provider does not speak' do
       expect do
         provider.send(:resolve_protocol, :gemini, model)
-      end.to raise_error(RubyLLM::Error, /gemini is not a protocol of OpenAI\. Available: responses, chat_completions/)
+      end.to raise_error(RubyLLM::Error, /Unknown OpenAI protocol: :gemini\. Valid protocols: responses, chat_/)
     end
 
     it 'uses Responses as the default batch protocol' do
@@ -634,7 +634,7 @@ RSpec.describe RubyLLM::Provider do
                         { payload: { input: [{ role: 'user', content: 'hi' }] } },
                         { payload: { messages: [] } }
                       ])
-      end.to raise_error(RubyLLM::Error, /one endpoint/)
+      end.to raise_error(ArgumentError, 'OpenAI batches take one endpoint per submission')
     end
   end
 
@@ -691,10 +691,10 @@ RSpec.describe RubyLLM::Provider do
     let(:provider) { RubyLLM::Providers::Ollama.new(config_for(:ollama)) }
 
     it 'refuses every file operation' do
-      expect { provider.upload_file('file.txt') }.to raise_error(RubyLLM::Error, /doesn't support file uploads/)
-      expect { provider.find_file('id') }.to raise_error(RubyLLM::Error, /doesn't support file uploads/)
-      expect { provider.download_file('id') }.to raise_error(RubyLLM::Error, /doesn't support file uploads/)
-      expect { provider.list_file_uris('uri') }.to raise_error(RubyLLM::Error, /doesn't support file uploads/)
+      expect { provider.upload_file('file.txt') }.to raise_error(RubyLLM::Error, 'Ollama does not support file uploads')
+      expect { provider.find_file('id') }.to raise_error(RubyLLM::Error, /does not support file uploads/)
+      expect { provider.download_file('id') }.to raise_error(RubyLLM::Error, /does not support file uploads/)
+      expect { provider.list_file_uris('uri') }.to raise_error(RubyLLM::Error, /does not support file uploads/)
     end
   end
 

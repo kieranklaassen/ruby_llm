@@ -38,8 +38,8 @@ module RubyLLM
           OpenRouter::Media.supported_attachment?(attachment)
         end
 
-        def format_content(content, attachments = [])
-          OpenRouter::Media.format_content(content, attachments)
+        def render_content(content, attachments = [])
+          OpenRouter::Media.render_content(content, attachments)
         end
 
         def render_payload(messages, tools:, temperature:, model:, stream: false, max_output_tokens: nil, schema: nil,
@@ -85,7 +85,7 @@ module RubyLLM
           reasoning[:enabled] = thinking.enabled
         end
 
-        def format_thinking(msg)
+        def render_thinking(msg)
           return {} unless msg.role == :assistant
           return { reasoning_details: msg.raw_reasoning } if msg.raw_reasoning.is_a?(Array)
 
@@ -103,7 +103,7 @@ module RubyLLM
           end
         end
 
-        def format_message_content(msg, caching: nil)
+        def render_message_content(msg, caching: nil)
           content = super
           return content unless caching != false && msg.cache_until_here?
 
@@ -139,11 +139,7 @@ module RubyLLM
           return options if unsupported.empty?
 
           raise ArgumentError,
-                "OpenRouter prompt caching accepts :ttl, got #{format_cache_option_keys(unsupported)}"
-        end
-
-        def format_cache_option_keys(keys)
-          keys.map { |key| ":#{key}" }.join(', ')
+                "OpenRouter prompt caching accepts :ttl, got #{Support::Utils.option_list(unsupported)}"
         end
 
         def openai_prompt_caching?
@@ -158,7 +154,7 @@ module RubyLLM
           cost
         end
 
-        def supports_provider_file_references?
+        def provider_file_references?
           true
         end
 
@@ -170,7 +166,7 @@ module RubyLLM
           attachment.pdf?
         end
 
-        def extract_thinking_text(message_data)
+        def parse_thinking_text(message_data)
           candidate = message_data['reasoning']
           return candidate if candidate.is_a?(String)
 
@@ -189,7 +185,7 @@ module RubyLLM
           text.empty? ? nil : text
         end
 
-        def extract_thinking_signature(message_data)
+        def parse_thinking_signature(message_data)
           details = message_data['reasoning_details']
           return nil unless details.is_a?(Array)
 
@@ -204,7 +200,7 @@ module RubyLLM
 
         # OpenRouter requires the reasoning_details array back untouched for
         # signed reasoning to survive multi-turn tool calls.
-        def extract_raw_reasoning(message_data)
+        def parse_raw_reasoning(message_data)
           details = message_data['reasoning_details']
           details if details.is_a?(Array) && !details.empty?
         end

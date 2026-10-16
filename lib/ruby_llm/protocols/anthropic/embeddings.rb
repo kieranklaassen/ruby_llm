@@ -6,7 +6,7 @@ module RubyLLM
       # Embeddings methods of the Anthropic API integration
       module Embeddings
         def embed(...)
-          raise Error, "Anthropic doesn't support embeddings"
+          raise Error, 'Anthropic does not support embeddings'
         end
       end
     end

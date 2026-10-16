@@ -17,9 +17,21 @@ module RubyLLM
     # +markdown+, and the +images+ and +tables+ the provider reports for the
     # page, or +nil+ when it reports none. +raw+ holds the provider's
     # unmodified page hash, including any fields beyond these.
-    Page = Struct.new(:index, :markdown, :images, :tables, :raw, keyword_init: true)
+    Page = Data.define(:index, :markdown, :images, :tables, :raw) do
+      include Support::Inspectable
 
-    # The id of the model that performed the OCR.
+      def initialize(index:, markdown:, images: nil, tables: nil, raw: nil) # :nodoc:
+        super
+      end
+
+      private
+
+      def inspect_attributes # :nodoc:
+        to_h.except(:raw)
+      end
+    end
+
+    # The id of the model that performed the OCR, as a String.
     attr_reader :model
 
     # The provider's usage block for the request, such as the number of
@@ -36,11 +48,11 @@ module RubyLLM
     # +model:+ selects the OCR model and defaults to the configured
     # +default_ocr_model+. +provider:+ forces a specific provider, and
     # +assume_model_exists:+ skips the registry lookup. +context:+ supplies
-    # a Context whose configuration replaces the global one. +metadata:+ is
-    # included in the instrumentation payload. +pages:+ limits the read to
-    # the given zero-based page indexes. +provider_options:+ merges options
-    # into the request in the provider's own vocabulary, such as Mistral's
-    # +include_image_base64:+ or +table_format:+.
+    # a Context whose configuration replaces the global one. +pages:+ limits
+    # the read to the given zero-based page indexes. +provider_options:+
+    # takes options in the provider's request vocabulary, such as Mistral's
+    # +include_image_base64:+ or +table_format:+, and merges them into the
+    # request as-is. +metadata:+ is included in the instrumentation payload.
     # +owner:+ attributes the usage to a record, such as a user, and wins
     # over RubyLLM.with_usage_owner.
     #
@@ -90,7 +102,18 @@ module RubyLLM
       @raw = raw
     end
 
-    # Returns the pages of the document as an array of Page structs.
+    attr_writer :model_info # :nodoc:
+
+    # Returns the OCR result's Model from its provider's registry, falling
+    # back to the requested model when the response ID is unknown.
+    # Returns +nil+ if the model is unknown.
+    def model_info
+      @model_info ||= RubyLLM.models.find(model)
+    rescue ModelNotFoundError
+      nil
+    end
+
+    # Returns the pages of the document as an array of Page.
     def pages
       @pages ||= @page_hashes.map.with_index do |page, position|
         next page if page.is_a?(Page)
@@ -109,6 +132,8 @@ module RubyLLM
     def markdown
       pages.filter_map(&:markdown).join("\n\n")
     end
+
+    private
 
     def inspect_attributes # :nodoc:
       { model: model, pages: pages.length }

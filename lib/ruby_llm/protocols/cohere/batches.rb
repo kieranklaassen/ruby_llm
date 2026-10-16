@@ -12,7 +12,7 @@ module RubyLLM
         private_constant :TERMINAL_STATUSES, :Response
 
         def create_batch(requests)
-          model = single_batch_model!(requests, 'Cohere')
+          model = single_batch_model(requests, 'Cohere')
           type = batch_dataset_type(requests)
           rows = requests.map { |request| render_batch_request(request, type:) }
           file = datasets.upload(StringIO.new(rows.map { |row| "#{JSON.generate(row)}\n" }.join),

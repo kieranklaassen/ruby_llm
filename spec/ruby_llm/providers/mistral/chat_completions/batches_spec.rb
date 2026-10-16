@@ -54,7 +54,7 @@ RSpec.describe RubyLLM::Providers::Mistral::ChatCompletions::Batches do
         { model: model, payload: { messages: [] } }
       ]
 
-      expect { protocol.create_batch(requests) }.to raise_error(RubyLLM::Error, /cannot mix/)
+      expect { protocol.create_batch(requests) }.to raise_error(ArgumentError, /not both/)
     end
 
     it 'rejects mixed-model jobs' do
@@ -64,7 +64,7 @@ RSpec.describe RubyLLM::Providers::Mistral::ChatCompletions::Batches do
       ]
 
       expect { protocol.create_batch(requests) }
-        .to raise_error(RubyLLM::Error, /one model/)
+        .to raise_error(ArgumentError, /one model/)
     end
   end
 

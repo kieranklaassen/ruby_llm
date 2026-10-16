@@ -33,7 +33,7 @@ module RubyLLM
             loop do
               body = @connection.get("#{images_url}/#{id}").body
               state = parse_generation_status(body)
-              return body if state[:status] == :completed
+              return body if state[:status] == :succeeded
               raise Error, "ElevenLabs image generation failed: #{state[:error]}" if state[:status] == :failed
               if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
                 raise Error, "ElevenLabs image generation timed out: #{id}"
@@ -43,7 +43,7 @@ module RubyLLM
             end
           end
 
-          def validate_paint_inputs!(with:, mask:)
+          def validate_paint_inputs(with:, mask:)
             images = Attachment.wrap(with, config: @config)
             raise ArgumentError, 'An image mask requires a source image' if mask && images.empty?
 

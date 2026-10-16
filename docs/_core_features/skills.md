@@ -25,7 +25,7 @@ Some tasks need more than a sentence of instructions: how your company formats a
 
 A skill is a folder that holds those procedures. It follows the open [Agent Skills format](https://agentskills.io/specification), so the skills you write work in other tools that read the format, and skills written elsewhere work in RubyLLM:
 
-```
+```text
 app/skills/
 └── invoices/
     ├── SKILL.md
@@ -99,7 +99,7 @@ The model gets one tool, `load_skill`. Called with a skill's name, it returns th
 chat.ask "Bill order 1042 to ACME"
 
 chat.messages.select(&:tool_call?).flat_map { |message| message.tool_calls.values.map(&:arguments) }
-# => [{"skill"=>"invoices"}, {"skill"=>"invoices", "file"=>"references/TAX_RULES.md"}]
+# => [{"skill" => "invoices"}, {"skill" => "invoices", "file" => "references/TAX_RULES.md"}]
 ```
 
 What the model loads stays in the conversation as tool results, so it does not need to load a skill again on the next turn.
@@ -146,7 +146,7 @@ Persisted chats take the same calls, and `BillingAgent.find(id)` applies the age
 chat = Chat.create!(model: "{{ site.models.default_chat }}").with_skills(:invoices)
 ```
 
-## Skills From Engines
+## Skills from Engines
 
 RubyLLM looks for skills in `app/skills` under `Rails.root`, or under the current directory outside Rails. An engine adds its own folder in an initializer:
 
@@ -199,6 +199,6 @@ RubyLLM checks every skill when you give it to a chat, so a broken skill fails w
 
 ## Next Steps
 
-* [Code Execution]({% link _core_features/code-execution.md %}) - Configure the sandbox that runs skill scripts.
-* [Sandboxes]({% link _core_features/sandboxes.md %}) - Decide what skill scripts can read, write, and reach.
-* [Agents]({% link _advanced/agents.md %}) - Package skills with instructions and tools.
+* [Code Execution]({% link _core_features/code-execution.md %}) - configure the sandbox that runs skill scripts.
+* [Sandboxes]({% link _core_features/sandboxes.md %}) - decide what skill scripts can read, write, and reach.
+* [Agents]({% link _advanced/agents.md %}) - package skills with instructions and tools.

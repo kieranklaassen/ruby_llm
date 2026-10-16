@@ -31,7 +31,7 @@ module RubyLLM
         if values.size > 1 || (!values.empty? && block)
           ::Kernel.raise ::ArgumentError, "#{name} accepts one value or a block"
         end
-        ::Kernel.raise ::ArgumentError, "Duplicate judgment field: #{name}" if @data.key?(name)
+        ::Kernel.raise ::ArgumentError, "Two judgment fields are named #{name}" if @data.key?(name)
 
         @data[name] = block ? ::RubyLLM::Judge::Builder.resolve(block, scope: @scope) : values.first
         self

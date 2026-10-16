@@ -31,7 +31,7 @@ result.ids   # integer token IDs, in text order
 result.count # number of tokens
 ```
 
-The result is a `RubyLLM::Tokenization`. `result.model` identifies the tokenizer's model, and `result.raw` contains any additional provider fields.
+The result is a `RubyLLM::Tokenization`. `result.model` identifies the tokenizer's model, and `result.raw` contains any additional provider fields. Pass `metadata:` to include your own data in the `tokenization.ruby_llm` event.
 
 Token IDs depend on the model. Use the same model when comparing tokenized inputs. Tokenization covers the supplied string; it excludes chat formatting, instructions, tools, and attachments.
 
@@ -47,6 +47,8 @@ count = RubyLLM.count_tokens(
   model: "{{ site.models.anthropic_current }}"
 )
 ```
+
+`count_tokens` accepts `model:`, `provider:`, `assume_model_exists:`, and `context:`, with the same meaning as on `RubyLLM.chat`.
 
 For a configured conversation, call `chat.count_tokens`:
 

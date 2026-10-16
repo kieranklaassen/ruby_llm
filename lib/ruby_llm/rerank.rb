@@ -16,7 +16,15 @@ module RubyLLM
 
     # One reranked document: its +index+ in the input array, the
     # +document+ text, and the provider's relevance +score+.
-    Result = Struct.new(:index, :document, :score, keyword_init: true)
+    Result = Data.define(:index, :document, :score) do
+      include Support::Inspectable
+
+      private
+
+      def inspect_attributes # :nodoc:
+        to_h
+      end
+    end
 
     # The reranked results, most relevant first, as an array of Result.
     attr_reader :results
@@ -51,21 +59,26 @@ module RubyLLM
 
     attr_writer :model_info # :nodoc:
 
-    def model_info # :nodoc:
+    # Returns the ranking's Model from its provider's registry, falling
+    # back to the requested model when the response ID is unknown.
+    # Returns +nil+ if the model is unknown.
+    def model_info
       @model_info ||= RubyLLM.models.find(model)
     rescue ModelNotFoundError
       nil
     end
 
-    def inspect_attributes # :nodoc:
-      { model: model, results: results.length }
-    end
-
     # Ranks +documents+ (an array of strings) by relevance to +query+ and
-    # returns a Rerank. +model:+ is required; rerank catalogs are
-    # provider-specific and have no cross-provider default. +top_n:+
-    # limits how many results come back. +provider_options:+ merges
-    # options into the request in the provider's vocabulary.
+    # returns a Rerank. Most code calls this through RubyLLM.rerank.
+    #
+    # +model:+ selects the rerank model and is required; rerank catalogs are
+    # provider-specific and have no cross-provider default. +provider:+
+    # forces a specific provider, and +assume_model_exists:+ skips the
+    # registry lookup. +context:+ supplies a Context whose configuration
+    # replaces the global one. +top_n:+ limits how many results come back.
+    # +provider_options:+ takes options in the provider's request
+    # vocabulary and merges them into the request as-is. +metadata:+ is
+    # included in the instrumentation payload.
     # +owner:+ attributes the usage to a record, such as a user, and wins
     # over RubyLLM.with_usage_owner.
     #
@@ -107,6 +120,12 @@ module RubyLLM
         event[:cost] = result.cost
         result
       end
+    end
+
+    private
+
+    def inspect_attributes # :nodoc:
+      { model: model, results: results.length }
     end
   end
 end

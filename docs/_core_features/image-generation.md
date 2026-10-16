@@ -2,7 +2,7 @@
 layout: default
 title: Image Generation
 nav_order: 5
-description: Generate and edit images from text prompts, reference images, and masks
+description: Generate and edit images from text prompts, reference images, and masks.
 redirect_from:
   - /guides/image-generation
 ---
@@ -14,14 +14,14 @@ redirect_from:
 
 After reading this guide, you will know:
 
-*   How to generate images from text prompts.
-*   How to generate several images from one prompt in a single request.
-*   How to edit existing images with source images and masks.
-*   How to select different image generation models.
-*   How to specify image sizes (for supported models).
-*   How to inspect token usage and calculate image costs.
-*   How to save images to disk or attach them with Rails Active Storage.
-*   How to handle errors during image generation.
+* How to generate images from text prompts.
+* How to generate several images from one prompt in a single request.
+* How to edit existing images with source images and masks.
+* How to select different image generation models.
+* How to specify image sizes (for supported models).
+* How to inspect token usage and calculate image costs.
+* How to save images to disk or attach them with Rails Active Storage.
+* How to handle errors during image generation.
 
 ## Basic Image Generation
 
@@ -82,7 +82,7 @@ image = RubyLLM.paint(
 
 `with:` accepts the same kinds of sources RubyLLM already supports elsewhere for attachments: local files, URLs, IO-like objects, and Active Storage attachments.
 
-### Editing With Multiple Images
+### Editing with Multiple Images
 
 ```ruby
 image = RubyLLM.paint(
@@ -92,7 +92,7 @@ image = RubyLLM.paint(
 )
 ```
 
-### Editing With a Mask
+### Editing with a Mask
 
 ```ruby
 image = RubyLLM.paint(
@@ -216,6 +216,6 @@ Store generated images for reuse. For jobs that need a longer request timeout, s
 
 ## Next Steps
 
-*   [Video Generation]({% link _core_features/video-generation.md %}) - animate an image you have generated.
-*   [Attachments]({% link _core_features/attachments.md %}) - ask a model about an image.
-*   [Rails Integration]({% link _advanced/rails.md %}) - use media generation in your application jobs.
+* [Video Generation]({% link _core_features/video-generation.md %}) - animate an image you have generated.
+* [Attachments]({% link _core_features/attachments.md %}) - ask a model about an image.
+* [Rails Integration]({% link _advanced/rails.md %}) - use media generation in your application jobs.

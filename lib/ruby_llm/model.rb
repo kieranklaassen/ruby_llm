@@ -144,7 +144,7 @@ module RubyLLM
     #
     def price(kind)
       column = PRICES.fetch(kind) do
-        raise ArgumentError, "Unknown price kind: #{kind.inspect}. Valid kinds: #{PRICES.keys.join(', ')}"
+        raise ArgumentError, "Unknown price kind: #{kind.inspect}. Valid kinds: #{PRICES.keys.join(', ')}."
       end
       pricing.text_tokens.public_send(column)
     end

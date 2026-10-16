@@ -3,7 +3,7 @@ layout: default
 title: Retrieval-Augmented Generation (RAG)
 parent: "Agents"
 nav_order: 2
-description: Retrieve relevant context from your own documents, then answer with that context
+description: Retrieve relevant context from your own documents, then answer with that context.
 ---
 
 # {{ page.title }}
@@ -26,7 +26,7 @@ RAG is often just one step in a larger [workflow]({% link _advanced/agentic-work
 ```ruby
 # Gemfile
 gem 'neighbor'
-gem 'ruby_llm', '2.0.0'
+gem 'ruby_llm'
 ```
 
 ```bash
@@ -115,8 +115,8 @@ To improve retrieval ordering, fetch a larger candidate set and rerank it before
 
 ## Next Steps
 
-* [Embeddings]({% link _core_features/embeddings.md %}) - Turn text into vectors for similarity search.
-* [Memory]({% link _advanced/memory.md %}) - The same pattern over memories the agent writes itself.
-* [Agentic Workflows]({% link _advanced/agentic-workflows.md %}) - Compose retrieval into larger orchestrations.
-* [Tools]({% link _core_features/tools.md %}) - Build the retrieval tool and other capabilities.
-* [Agents]({% link _advanced/agents.md %}) - Define the answering agent class.
+* [Embeddings]({% link _core_features/embeddings.md %}) - turn text into vectors for similarity search.
+* [Memory]({% link _advanced/memory.md %}) - the same pattern over memories the agent writes itself.
+* [Agentic Workflows]({% link _advanced/agentic-workflows.md %}) - compose retrieval into larger orchestrations.
+* [Tools]({% link _core_features/tools.md %}) - build the retrieval tool and other capabilities.
+* [Agents]({% link _advanced/agents.md %}) - define the answering agent class.

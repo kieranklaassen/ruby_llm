@@ -12,8 +12,8 @@ RSpec.describe RubyLLM::Protocols::Perplexity::Files do
   it 'binds a generated file to its response and preserves native metadata' do
     file = protocol.parse_response_file('resp_123', data)
     expect(file).to have_attributes(id: 'resp_123/files/file_123', filename: 'numbers.csv', byte_size: 9,
-                                    provider: 'perplexity', created_at: Time.at(100), downloadable: true)
-    expect(file.metadata).to eq(data.merge('response_id' => 'resp_123'))
+                                    provider: 'perplexity', created_at: Time.at(100), downloadable?: true)
+    expect(file.raw).to eq(data.merge('response_id' => 'resp_123'))
   end
 
   it 'finds and downloads only the bound generated file through the provider connection' do

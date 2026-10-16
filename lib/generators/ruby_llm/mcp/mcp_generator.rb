@@ -20,8 +20,9 @@ module RubyLLM
       class_option :command, type: :string, desc: 'The command that starts a local server, for stdio'
 
       desc "Creates an MCP server class in app/mcp\n" \
-           'Usage: bin/rails g ruby_llm:mcp Linear https://mcp.linear.app/mcp ' \
-           'or bin/rails g ruby_llm:mcp Files --command "npx -y @modelcontextprotocol/server-filesystem ."'
+           'Usage: bin/rails generate ruby_llm:mcp Linear https://mcp.linear.app/mcp ' \
+           'or bin/rails generate ruby_llm:mcp Files ' \
+           '--command "npx -y @modelcontextprotocol/server-filesystem ."'
 
       def check_server
         return if url.present? ^ options[:command].present?

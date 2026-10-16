@@ -141,7 +141,7 @@ module RubyLLM
       # Raises ArgumentError when called without a schema or a block.
       def parameters(schema = nil, &block)
         if schema.nil? && block.nil?
-          raise ArgumentError, 'parameters requires a schema or a block; declare single arguments with parameter'
+          raise ArgumentError, 'parameters needs a schema or a block. Declare single arguments with parameter.'
         end
 
         @parameters_schema_definition = SchemaDefinition.new(schema:, block:)
@@ -190,7 +190,7 @@ module RubyLLM
       # Sets how long a run of this tool may take before a persisted chat
       # treats it as crashed, overriding Configuration#max_run_time. Another
       # process that resumes the chat after that time runs the call again.
-      # Without an argument, returns the declared value, or +nil+.
+      # Called with no arguments, returns the declared value, or +nil+.
       #
       #   class GenerateReport < RubyLLM::Tool
       #     max_run_time 2.hours
@@ -207,7 +207,7 @@ module RubyLLM
       #
       # Sets provider-specific metadata, such as Anthropic's +cache_control+
       # hints, merged verbatim into the tool payload sent to the provider.
-      # Without an argument, returns the current options.
+      # Called with no arguments, returns the current options.
       #
       #   provider_options cache_control: { type: "ephemeral" }
       #
@@ -365,7 +365,7 @@ module RubyLLM
     #   end
     #
     def execute(...)
-      raise NotImplementedError, 'Subclasses must implement #execute'
+      raise NotImplementedError, "#{self.class} must implement #execute"
     end
 
     # Reports what the tool is doing while #execute runs, so an application

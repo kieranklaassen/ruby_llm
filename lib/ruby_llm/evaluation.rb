@@ -26,7 +26,7 @@ module RubyLLM
       end
 
       # Sets the dataset path, enumerable of cases, or block returning cases.
-      # With no argument, returns the configured source. The default is discovered by class name.
+      # Called with no arguments, returns the configured source. The default is discovered by class name.
       def dataset(source = nil, &block)
         return @dataset if source.nil? && !block
 
@@ -38,7 +38,7 @@ module RubyLLM
       # Sets the default evaluator: a model, Agent class, or Judge class.
       # Model keywords accept provider, protocol, and context as Chat does.
       # Without a declaration, uses the default chat model and built-in reviewer.
-      # Pass false to disable model grading and run only Ruby assertions.
+      # Pass +false+ to disable model grading and run only Ruby assertions.
       def evaluator(target = nil, **options)
         if target.nil? && options.empty?
           @evaluator = Evaluator.new if @evaluator.nil?
@@ -59,7 +59,7 @@ module RubyLLM
         validate_criterion(name, minimum)
         name = name.to_sym
         @declared_names ||= []
-        raise ArgumentError, "Duplicate evaluation: #{name}" if @declared_names.include?(name)
+        raise ArgumentError, "Two evaluations are named #{name}" if @declared_names.include?(name)
 
         @declared_names << name
         backend = Evaluator.new(evaluator) if evaluator
@@ -141,7 +141,7 @@ module RubyLLM
       end
 
       def validate_run(repetitions)
-        raise ArgumentError, 'Define perform(input) in your evaluation' if instance_method(:perform).owner == Evaluation
+        raise ArgumentError, "#{self} must implement #perform" if instance_method(:perform).owner == Evaluation
         if evaluator == false && definitions.any?
           raise ArgumentError, 'Cannot declare semantic evaluations with evaluator false'
         end
@@ -172,7 +172,7 @@ module RubyLLM
 
       def prepare_criterion(backend, criterion, cases)
         existing = backend.question_names.include?(criterion[:name])
-        raise ArgumentError, "Duplicate Judge question: #{criterion[:name]}" if existing && criterion[:instructions]
+        raise ArgumentError, "Two Judge questions are named #{criterion[:name]}" if existing && criterion[:instructions]
         return criterion if existing || !criterion[:instructions].to_s.empty?
 
         if criterion[:name] == :correctness && criterion[:instructions].nil?
@@ -190,14 +190,18 @@ module RubyLLM
       end
     end
 
-    # Returns the current case's input, reference output, and metadata, respectively.
-    attr_reader :input, :expected_output, :metadata
-    # Returns the original value returned by perform.
+    # The current case's input.
+    attr_reader :input
+    # The current case's reference output, or +nil+ when none was supplied.
+    attr_reader :expected_output
+    # The current case's metadata.
+    attr_reader :metadata
+    # The original value returned by perform.
     attr_reader :result
 
     # Runs the application under evaluation. Override in your evaluation class.
     def perform(_input)
-      raise NotImplementedError, 'Define perform(input) in your evaluation'
+      raise NotImplementedError, "#{self.class} must implement #perform"
     end
 
     # Runs Ruby assertions after perform. Override to use assert, refute, and the Minitest assertion family.
@@ -237,7 +241,7 @@ module RubyLLM
     # :call-seq:
     #   refute(condition, message = nil)
     #
-    # Asserts that condition is false or nil. See #assert.
+    # Asserts that condition is +false+ or +nil+. See #assert.
 
     # :method: assert_equal
     # :call-seq:

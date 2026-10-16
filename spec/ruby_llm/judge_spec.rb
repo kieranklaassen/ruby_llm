@@ -176,13 +176,15 @@ RSpec.describe RubyLLM::Judge do
     configured = Class.new(judge_class) { inputs :ticket }
 
     expect { configured.new }.to raise_error(ArgumentError, /Missing judge inputs: ticket/)
-    expect { configured.new(ticket: 'Help', extra: true) }.to raise_error(ArgumentError, /Unknown judge inputs: extra/)
+    expect { configured.new(ticket: 'Help', extra: true) }
+      .to raise_error(ArgumentError, 'This judge accepts :ticket, got :extra')
   end
 
   it 'rejects duplicate questions, including String and Symbol spellings' do
-    expect { judge_class.probability 'urgent', 'Another question' }.to raise_error(ArgumentError, /Duplicate question/)
+    expect { judge_class.probability 'urgent', 'Another question' }
+      .to raise_error(ArgumentError, 'Two questions are named urgent')
     expect { judge_class.judge('Help', questions: { urgent: { type: :probability } }) }
-      .to raise_error(ArgumentError, /Duplicate question/)
+      .to raise_error(ArgumentError, /Two questions are named/)
   end
 
   it 'rejects conflicting input and block declarations before sending a request' do
@@ -205,7 +207,7 @@ RSpec.describe RubyLLM::Judge do
         message 'A'
         message 'B'
       end
-    end.to raise_error(ArgumentError, /Duplicate judgment field/)
+    end.to raise_error(ArgumentError, /Two judgment fields are named/)
     expect(requests).to be_empty
   end
 
@@ -287,7 +289,7 @@ RSpec.describe RubyLLM::Judge do
   it 'rejects unsupported providers through the provider contract' do
     expect do
       judge_class.judge('Help', model: model_for(:anthropic), provider: :anthropic)
-    end.to raise_error(RubyLLM::Error, /doesn't support judgments/)
+    end.to raise_error(RubyLLM::Error, /does not support judgments/)
   end
 
   it 'lets OpenAI reject chat models through Decisions' do

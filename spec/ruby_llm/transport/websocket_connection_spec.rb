@@ -183,7 +183,7 @@ RSpec.describe RubyLLM::Transport::WebsocketConnection do
     connection = described_class.new('wss://example.com', headers: {}, config:)
     allow(connection).to receive(:require).with('websocket/driver').and_raise(LoadError)
 
-    expect { connection.connect }.to raise_error(LoadError, /Add gem "websocket-driver"/)
+    expect { connection.connect }.to raise_error(LoadError, /requires the websocket-driver gem/)
   end
 
   it 'rejects unsupported URL schemes and URL credentials' do

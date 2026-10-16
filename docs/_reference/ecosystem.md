@@ -45,11 +45,13 @@ The community [ruby_llm-mcp](https://github.com/patvice/ruby_llm-mcp) gem define
 
 Stay on `ruby_llm-skills ~> 0.3.0` with RubyLLM 1.x. For RubyLLM 2.0, use the published prerelease `0.4.0.pre1`.
 
+RubyLLM also includes Skills. See [Skills]({% link _core_features/skills.md %}).
+
 ## RubyLLM::Instrumentation
 
 [RubyLLM::Instrumentation](https://github.com/sinaptia/ruby_llm-instrumentation) adds ActiveSupport notifications to RubyLLM 1.x.
 
-RubyLLM 2.0 emits instrumentation events itself. Start with the [Instrumentation guide]({% link _advanced/instrumentation.md %}) on 2.0.
+RubyLLM 2.x emits instrumentation events itself. Start with [Instrumentation and Observability]({% link _advanced/instrumentation.md %}) on 2.x.
 
 ## RubyLLM::Monitoring
 
@@ -111,7 +113,7 @@ For templates that ship with your application code, RubyLLM includes [Prompt Ren
 
 [RubyLLM::Tokenizer](https://github.com/washu/ruby_llm-tokenizer) counts and truncates text locally using model-to-tokenizer mappings.
 
-RubyLLM also provides [provider-side token counting]({% link _core_features/cost-and-usage-tracking.md %}#counting-tokens-before-you-send) for supported providers.
+RubyLLM also provides [provider-side token counting]({% link _core_features/tokenization.md %}) for supported providers.
 
 ## RubyLLM::Turbovec
 

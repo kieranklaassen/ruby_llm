@@ -35,10 +35,10 @@ RSpec.describe RubyLLM::Protocols::Converse::Batches do
     end
   end
 
-  describe '#validate_bedrock_batch_requests!' do
+  describe '#validate_bedrock_batch_requests' do
     it 'rejects tools and structured output' do
       expect do
-        protocol.send(:validate_bedrock_batch_requests!, [
+        protocol.send(:validate_bedrock_batch_requests, [
                         { payload: { toolConfig: { tools: [] } } }
                       ])
       end.to raise_error(RubyLLM::Error, /tools or structured output/)
@@ -52,7 +52,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Batches do
         { custom_id: '1', model: 'amazon.nova-2-lite-v1:0', payload: {} }
       ]
 
-      expect { protocol.create_batch(requests) }.to raise_error(RubyLLM::Error, /one model/)
+      expect { protocol.create_batch(requests) }.to raise_error(ArgumentError, /one model/)
     end
 
     it 'requires an S3 bucket prefix' do

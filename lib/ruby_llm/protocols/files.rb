@@ -32,7 +32,7 @@ module RubyLLM
       end
 
       def list_uris(_uri)
-        raise Error, "#{@provider.slug} doesn't support file listing"
+        raise Error, "#{@provider.name} does not support file listing"
       end
 
       private
@@ -98,7 +98,7 @@ module RubyLLM
       end
 
       def uploaded_file(data, **attributes)
-        UploadedFile.new(**attributes, provider: @provider.slug, metadata: data)
+        UploadedFile.new(**attributes, provider: @provider.slug, raw: data)
       end
 
       def with_file_body(attachment, &)

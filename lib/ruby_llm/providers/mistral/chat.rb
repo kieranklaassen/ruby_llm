@@ -9,7 +9,7 @@ module RubyLLM
 
         module_function
 
-        def format_role(role)
+        def render_role(role)
           role.to_s
         end
 
@@ -39,17 +39,13 @@ module RubyLLM
           unsupported = options.keys - PROMPT_CACHE_OPTIONS
           return options if unsupported.empty?
 
-          raise ArgumentError, "Mistral prompt caching accepts :key, got #{format_cache_option_keys(unsupported)}"
-        end
-
-        def format_cache_option_keys(keys)
-          keys.map { |key| ":#{key}" }.join(', ')
+          raise ArgumentError, "Mistral prompt caching accepts :key, got #{Support::Utils.option_list(unsupported)}"
         end
 
         # extra_content carries Gemini's thought signatures on Google's
         # OpenAI-compatible endpoints, and Mistral refuses any field it does
         # not define.
-        def format_tool_calls(tool_calls)
+        def render_tool_calls(tool_calls)
           super&.map { |call| call.except(:extra_content) }
         end
 
@@ -73,7 +69,7 @@ module RubyLLM
 
         # Mistral carries reasoning in content blocks, not in the top-level
         # reasoning fields the rest of the Chat Completions family uses.
-        def format_message_content(msg, **)
+        def render_message_content(msg, **)
           formatted_content = super
           return formatted_content unless msg.role == :assistant && msg.thinking
 
@@ -83,7 +79,7 @@ module RubyLLM
           content_blocks
         end
 
-        def format_thinking(_msg)
+        def render_thinking(_msg)
           {}
         end
 

@@ -3,7 +3,7 @@ layout: default
 title: Evaluation Examples
 parent: Evaluations
 nav_order: 6
-description: Complete evaluations for formatting, grounded answers, and safe tool use that you can adapt
+description: Adapt complete evaluations for formatting, grounded answers, and safe tool use.
 ---
 
 # {{ page.title }}

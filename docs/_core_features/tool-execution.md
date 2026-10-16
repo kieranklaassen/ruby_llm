@@ -3,7 +3,7 @@ layout: default
 title: Controlling Tool Execution
 parent: "Tools"
 nav_order: 2
-description: Choose tools, require approval, run calls concurrently, and observe their results
+description: Choose tools, require approval, run calls concurrently, and observe their results.
 ---
 
 # {{ page.title }}
@@ -149,7 +149,7 @@ The resolver can run repeatedly while a call waits, including after a job resume
 
 ### Remote Tool Approval
 
-Providers can also request approval for a tool running on an MCP server. These requests appear in `chat.pending_approvals` with a `server` label. Use `approve`, `deny`, and `complete` as above; RubyLLM sends the decision to the provider instead of executing a Ruby tool. See [MCP servers]({% link _core_features/provider-tools.md %}#remote-tool-approval) for a working example.
+Providers can also request approval for a tool running on an MCP server. These requests appear in `chat.pending_approvals`, and their `remote?` is true. Use `approve`, `deny`, and `complete` as above; RubyLLM sends the decision to the provider instead of executing a Ruby tool. See [Remote Tool Approval]({% link _core_features/provider-tools.md %}#remote-tool-approval) for a working example.
 
 ### Approval in Rails
 
@@ -245,8 +245,7 @@ chat.with_tool_options(concurrency: false)
 
 Rails chat records use the same settings.
 
-With concurrency enabled, tool results are added back to the conversation as each tool finishes. RubyLLM waits
-for all tool results before asking the model for the next response.
+With concurrency enabled, tool results are added back to the conversation as each tool finishes. RubyLLM waits for all tool results before asking the model for the next response.
 
 In Rails, a tool call on another thread, or on another fiber when `config.active_support.isolation_level` is `:fiber`, runs as its own unit of work, as Rails expects of any work on another thread. It checks out its own database connection and doesn't see the caller's `Current` attributes. Give the tool what it needs when you create it:
 
@@ -291,29 +290,11 @@ RubyLLM stores the provider's original identifier separately as `provider_call_i
 
 ## Model Compatibility
 
-RubyLLM will attempt to use tools with any model. If the model doesn't support function calling, the provider will return an appropriate error when you call `ask`.
+RubyLLM sends tools to any model. If the model doesn't support function calling, the provider returns an error when you call `ask`.
 
 ## Monitoring Tool Calls with Callbacks
 
-You can monitor tool execution using additive callbacks to track when tools are called and what they return.
-
-```ruby
-chat = RubyLLM.chat(model: '{{ site.models.openai_tools }}')
-      .with_tools(Weather)
-      .before_tool_call do |tool_call|
-        puts "Calling tool: #{tool_call.name}"
-        puts "Arguments: #{tool_call.arguments}"
-      end
-      .after_tool_result do |result|
-        puts "Tool returned: #{result}"
-      end
-
-response = chat.ask "What's the weather in Paris?"
-# Output:
-# Calling tool: weather
-# Arguments: {"latitude": "48.8566", "longitude": "2.3522"}
-# Tool returned: {"temperature": 15, "conditions": "Partly cloudy"}
-```
+`before_tool_call` and `after_tool_result` report each tool call and what it returns. See [Tool Events]({% link _core_features/chat-callbacks.md %}#tool-events).
 
 
 ## Reporting Progress
@@ -349,7 +330,7 @@ end
 
 The callback runs in the thread or fiber that reports, before the tool's result. That includes threads and fibers the tool starts itself, such as a batch of downloads. With concurrent tool execution, callbacks for different tool calls can run at the same time, so keep shared state thread-safe. Tools can report as often as they like; throttle in the callback if you forward reports to a UI. Outside a chat, `progress` does nothing.
 
-### Limiting Tool Calls
+## Limiting Tool Calls
 
 To cap a runaway loop, give the loop a step budget instead of raising inside a callback:
 
@@ -368,7 +349,7 @@ When the budget runs out the transcript is still valid, and calling `step` again
 
 ## Next Steps
 
-*   [Tool Parameters]({% link _core_features/tool-parameters.md %}) - Declare flat arguments, structured schemas, and provider-specific metadata.
-*   [Tools]({% link _core_features/tools.md %}) - The execution flow, error handling, and security overview.
-*   [Agentic Workflows]({% link _advanced/agentic-workflows.md %}#driving-the-loop-yourself) - Drive the tool loop yourself for full control.
-*   [Chat Event Handlers]({% link _core_features/chat-callbacks.md %}) - Other lifecycle callbacks on a chat.
+* [Tool Parameters]({% link _core_features/tool-parameters.md %}) - declare flat arguments, structured schemas, and provider-specific metadata.
+* [Tools]({% link _core_features/tools.md %}) - the execution flow, error handling, and security overview.
+* [Agentic Workflows]({% link _advanced/agentic-workflows.md %}#driving-the-loop-yourself) - drive the tool loop yourself for full control.
+* [Chat Event Handlers]({% link _core_features/chat-callbacks.md %}) - other lifecycle callbacks on a chat.

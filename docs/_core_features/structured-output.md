@@ -3,7 +3,7 @@ layout: default
 title: Structured Output
 parent: "Chat"
 nav_order: 3
-description: Get AI responses that match an exact JSON schema with required fields and types
+description: Get AI responses that match an exact JSON schema with required fields and types.
 ---
 
 # {{ page.title }}
@@ -162,7 +162,7 @@ response = chat.with_schema(PersonSchema).ask("Alice is 30 and lives in Rome.")
 
 Its default Chat Completions protocol falls back to JSON mode, which does not enforce the fields or types.
 
-### Multi-turn Conversations with Schemas
+### Multi-Turn Conversations with Schemas
 
 You can add or remove schemas during a conversation:
 

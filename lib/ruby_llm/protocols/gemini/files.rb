@@ -20,8 +20,8 @@ module RubyLLM
 
         def download(file_id)
           file = find(file_id)
-          download_uri = file.metadata['downloadUri']
-          raise Error, 'gemini file has no download URI' unless download_uri
+          download_uri = file.raw['downloadUri']
+          raise Error, 'Gemini file has no download URI' unless download_uri
 
           gemini_connection(request_json: false, response_json: false).get(download_uri) do |request|
             request.headers.merge!(@provider.headers)
@@ -36,13 +36,13 @@ module RubyLLM
           deadline = Time.now + PROCESSING_TIMEOUT
 
           while file.status == 'PROCESSING'
-            raise Error, "gemini is still processing #{file.id}" if Time.now >= deadline
+            raise Error, "Gemini is still processing #{file.id}" if Time.now >= deadline
 
             sleep PROCESSING_POLL_INTERVAL
             file = find(file.id)
           end
 
-          raise Error, "gemini failed to process #{file.id}" if file.status == 'FAILED'
+          raise Error, "Gemini failed to process #{file.id}" if file.status == 'FAILED'
 
           file
         end
@@ -63,7 +63,7 @@ module RubyLLM
           end
 
           response.headers['x-goog-upload-url'] || response.headers['X-Goog-Upload-URL'] ||
-            raise(Error, 'gemini did not return an upload URL')
+            raise(Error, 'Gemini did not return an upload URL')
         end
 
         def upload_file_bytes(upload_url, attachment)

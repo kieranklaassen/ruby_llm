@@ -23,10 +23,19 @@ RSpec.describe RubyLLM::Agent do
     expect(agent).not_to be_waiting
   end
 
+  it 'reads the protocol override from the underlying chat' do
+    chat = RubyLLM.chat(model: model_for(:openai), protocol: :chat_completions)
+    agent = Class.new(described_class).new(chat:)
+
+    expect(chat.protocol).to eq(:chat_completions)
+    expect(agent.protocol).to eq(:chat_completions)
+    expect(chat.with_model(model_for(:openai)).protocol).to be_nil
+  end
+
   it 'classifies every method defined on Chat' do
     expected_missing_methods = %i[
       approval_checker= cancellation_checker= fallback_errors input_checker= input_recorder= messages= prepare_message
-      raise_if_pending_tool_calls! remembered_checker= running_checker= tool_call_claimer=
+      raise_if_pending_tool_calls remembered_checker= running_checker= tool_call_claimer=
       tool_call_releaser= tool_prefs usage_entries usage_entries= usage_recorder=
     ]
 

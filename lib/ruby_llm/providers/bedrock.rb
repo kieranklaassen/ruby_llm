@@ -200,7 +200,7 @@ module RubyLLM
         end
       end
 
-      def ensure_configured!
+      def ensure_configured
         return if configured?
 
         missing = []
@@ -277,7 +277,7 @@ module RubyLLM
         when bedrock_model_id_pattern('amazon.nova-2-multimodal-embeddings')
           protocols[:nova_embeddings]
         else
-          raise Error, "Bedrock embeddings are not supported for #{model_id.inspect}"
+          raise Error, "Bedrock does not support embeddings for #{model_id.inspect}"
         end
       end
 
@@ -285,13 +285,13 @@ module RubyLLM
         base_id = model_id.sub(/\A(?:#{Protocols::Converse::REGION_PREFIXES.join('|')})\./, '')
         return protocols[:stability_images] if Protocols::InvokeModel::StabilityImages::MODELS.include?(base_id)
 
-        raise Error, "Bedrock image generation is not supported for #{model_id.inspect}"
+        raise Error, "Bedrock does not support image generation for #{model_id.inspect}"
       end
 
       def video_protocol_for(model_id)
         return protocols[:async_videos] if model_id == 'luma.ray-v2:0'
 
-        raise Error, "Bedrock video generation is not supported for #{model_id.inspect}"
+        raise Error, "Bedrock does not support video generation for #{model_id.inspect}"
       end
 
       def bedrock_model_id_pattern(prefix)

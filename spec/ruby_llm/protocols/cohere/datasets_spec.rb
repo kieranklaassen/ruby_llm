@@ -37,7 +37,7 @@ RSpec.describe RubyLLM::Protocols::Cohere::Datasets do
     file = context.upload(StringIO.new(content), filename: 'input.jsonl', purpose: 'embed-input', provider: :cohere)
 
     expect(file).to have_attributes(id: 'dataset_ruby', purpose: 'embed-input', filename: 'input.jsonl',
-                                    mime_type: 'application/jsonl', downloadable: true)
+                                    mime_type: 'application/jsonl', downloadable?: true)
     expect(context.download(file.id, provider: :cohere)).to eq(content)
     expect(request).to have_been_requested.once
     expect(download).to have_been_requested.once
@@ -75,7 +75,7 @@ RSpec.describe RubyLLM::Protocols::Cohere::Datasets do
       .to raise_error(ArgumentError, /do not accept expires_in/)
     allow(protocol).to receive(:require).with('avro').and_raise(LoadError)
     expect { protocol.records(RubyLLM::UploadedFile.new(id: 'dataset')) }
-      .to raise_error(LoadError, /Add gem "avro"/)
+      .to raise_error(LoadError, /require the avro gem/)
   end
 
   it 'uploads validates retrieves and downloads a Cohere dataset', :live do

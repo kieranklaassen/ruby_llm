@@ -17,8 +17,8 @@ RubyLLM is an AI framework with two main parts: its public Ruby API and its
 providers and protocols. The API covers conversations (`Chat`, `Message`,
 `Tool`, `Agent`, structured output, streaming, and loop control) and individual
 operations (`paint`, `animate`, `speak`, `transcribe`, `ocr`, `moderate`, `embed`,
-and `rerank`). Use the relevant operation instead of routing every AI feature
-through a chat.
+`rerank`, `judge`, `tokenize`, and `research`). Use the relevant operation
+instead of routing every AI feature through a chat.
 
 Providers supply endpoints, credentials, catalogs, and protocol selection.
 Protocols implement request and response formats, including dialect quirks.

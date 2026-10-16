@@ -38,6 +38,8 @@ file.byte_size  # => 1234
 file.mime_type  # => "application/jsonl"
 ```
 
+`file.raw` holds the provider's response as a Hash when you need a field RubyLLM does not name.
+
 When `provider:` is omitted, RubyLLM uses the provider of `config.default_model`. Select another provider explicitly:
 
 ```ruby
@@ -168,4 +170,4 @@ Keep the complete file ID and its provider when storing the reference. For gener
 
 DeepSeek does not allow downloading uploaded images. Perplexity supports downloads of generated Agent files, without general file uploads.
 
-Downloads depend on the provider. Anthropic and OpenRouter only allow downloading files created server-side; uploaded files are not downloadable through their Files APIs.
+Downloads depend on the provider. Anthropic and OpenRouter only allow downloading files created server-side; uploaded files are not downloadable through their Files APIs. `file.downloadable?` tells you what the provider reports for a file, and is `nil` when the provider does not say.

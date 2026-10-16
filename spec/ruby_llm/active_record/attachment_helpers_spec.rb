@@ -80,7 +80,7 @@ RSpec.describe RubyLLM::ActiveRecord::AttachmentHelpers do
   describe '#persist_content' do
     it 'says how to add Active Storage for a record without an attachments association' do
       expect { helpers.persist_content(Object.new, [blob]) }
-        .to raise_error(RubyLLM::ConfigurationError, /without Active Storage.*active_storage:install/)
+        .to raise_error(RubyLLM::ConfigurationError, %r{without Active Storage.*config/application\.rb.*db:migrate})
     end
 
     it 'keeps the media resolution across a reload' do
@@ -189,7 +189,7 @@ RSpec.describe RubyLLM::ActiveRecord::AttachmentHelpers do
       allow(RubyLLM.logger).to receive(:warn)
 
       expect(helpers.convert_to_active_storage_format('/nonexistent/path.txt')).to be_nil
-      expect(RubyLLM.logger).to have_received(:warn).with(/Failed to process attachment/)
+      expect(RubyLLM.logger).to have_received(:warn).with(/RubyLLM could not process attachment/)
     end
   end
 

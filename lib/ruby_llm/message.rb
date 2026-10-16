@@ -32,7 +32,8 @@ module RubyLLM
     # Attachment objects.
     attr_reader :attachments
 
-    # The ID of the model that produced the message, +nil+ on user messages.
+    # The id of the model that produced the message, as a String, or +nil+
+    # on user messages.
     attr_reader :model
 
     attr_writer :model_info # :nodoc:
@@ -175,8 +176,8 @@ module RubyLLM
     end
 
     # Returns the tool result messages answering this message's tool calls,
-    # or an empty array when it made none. Mirrors the +tool_results+
-    # association on acts_as_message records.
+    # or an empty array when it made none. Mirrors +tool_results+ on
+    # acts_as_message records.
     def tool_results
       return [] unless tool_call? && conversation
 
@@ -365,7 +366,9 @@ module RubyLLM
     end
 
     def ensure_valid_role
-      raise InvalidRoleError, "Expected role to be one of: #{ROLES.join(', ')}" unless ROLES.include?(role)
+      return if ROLES.include?(role)
+
+      raise InvalidRoleError, "Unknown role: #{role.inspect}. Valid roles: #{ROLES.join(', ')}."
     end
 
     def inspect_attributes # :nodoc:

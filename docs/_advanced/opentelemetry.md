@@ -3,7 +3,7 @@ layout: default
 title: OpenTelemetry
 parent: Instrumentation and Observability
 nav_order: 1
-description: Trace RubyLLM model calls, tools, and workflows with your application's OpenTelemetry setup
+description: Trace RubyLLM model calls, tools, and workflows with your application's OpenTelemetry setup.
 ---
 
 # {{ page.title }}
@@ -52,7 +52,7 @@ RubyLLM::OpenTelemetry.enable
 
 Point the exporter at your backend with the standard environment variables:
 
-```sh
+```bash
 OTEL_EXPORTER_OTLP_ENDPOINT=https://otel.example.com:4318
 OTEL_EXPORTER_OTLP_HEADERS="x-api-key=your-key"
 ```

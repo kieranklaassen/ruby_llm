@@ -118,6 +118,14 @@ RSpec.describe RubyLLM::Models do
       end
     end
 
+    it 'resolves provider model ids with the configuration of a context' do
+      context = RubyLLM.context do |config|
+        config.azure_deployments = { 'prod-chat' => 'grok-4-1-fast-non-reasoning' }
+      end
+
+      expect(RubyLLM.models.find('prod-chat', provider: :azure, context:).provider).to eq('azure')
+    end
+
     it 'raises ModelNotFoundError for unknown models' do
       expect do
         RubyLLM.models.find('nonexistent-model-12345')
@@ -491,6 +499,22 @@ RSpec.describe RubyLLM::Models do
           !Array(m.modalities&.output).intersect?(%w[embeddings moderation image audio video])
         }
       )
+    end
+  end
+
+  describe '#by_type' do
+    it 'filters to the models of one type' do
+      %i[chat embedding image audio video rerank judgment].each do |type|
+        models = RubyLLM.models.by_type(type)
+
+        expect(models).to be_a(described_class)
+        expect(models.all).not_to be_empty
+        expect(models.map(&:type).uniq).to eq([type])
+      end
+    end
+
+    it 'accepts a String' do
+      expect(RubyLLM.models.by_type('video').map(&:id)).to eq(RubyLLM.models.by_type(:video).map(&:id))
     end
   end
 

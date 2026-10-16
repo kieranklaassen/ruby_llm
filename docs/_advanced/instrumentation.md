@@ -3,7 +3,7 @@ layout: default
 title: Instrumentation and Observability
 nav_order: 6
 has_children: true
-description: Observe RubyLLM model operations, provider attempts, tool calls, workflows, batches, and model refreshes
+description: Observe RubyLLM model operations, provider attempts, tool calls, workflows, batches, and model refreshes.
 redirect_from:
   - /guides/instrumentation
 ---
@@ -15,11 +15,11 @@ redirect_from:
 
 After reading this guide, you will know:
 
-*   How to subscribe to RubyLLM events in Rails.
-*   How to connect RubyLLM instrumentation outside Rails.
-*   How to enable optional OpenTelemetry tracing.
-*   Which events RubyLLM emits.
-*   Which payload fields may contain sensitive application data.
+* How to subscribe to RubyLLM events in Rails.
+* How to connect RubyLLM instrumentation outside Rails.
+* How to enable optional OpenTelemetry tracing.
+* Which events RubyLLM emits.
+* Which payload fields may contain sensitive application data.
 
 ## Rails
 
@@ -92,7 +92,7 @@ You can trace model calls, tool execution, and workflows with OpenTelemetry. Con
 RubyLLM::OpenTelemetry.enable
 ```
 
-See the [OpenTelemetry guide]({% link _advanced/opentelemetry.md %}) for setup, span coverage, context propagation, and exported data. Existing subscribers continue to receive their events and payloads.
+See [OpenTelemetry]({% link _advanced/opentelemetry.md %}) for setup, span coverage, context propagation, and exported data. Existing subscribers continue to receive their events and payloads.
 
 ## Workflows and Steps
 
@@ -181,32 +181,32 @@ RubyLLM includes that value as `payload[:metadata]` on the emitted event. It is 
 
 RubyLLM emits these events:
 
-*   `workflow.ruby_llm` - one named workflow block and its correlation ID
-*   `workflow_step.ruby_llm` - one named code region within a workflow
-*   `evaluation.ruby_llm` - one evaluation run, its progress counts, and completed report
-*   `evaluation_trial.ruby_llm` - one completed evaluation case and repetition, including its trial result
-*   `request.ruby_llm` - HTTP request metadata such as provider, method, URL, and status
-*   `usage.ruby_llm` - one finished provider attempt, including retries and cancellations, with status, tokens, cost, and owner
-*   `batch.ruby_llm` - one batch submission operation
-*   `chat.ruby_llm` - chat completion metadata including model, provider, messages, response, and token usage
-*   `tool_call.ruby_llm` - tool name, arguments, and result
-*   `code_execution.ruby_llm` - one [code execution]({% link _core_features/code-execution.md %}) run: language, duration, exit code, timeout, blocked hosts, and returned files
-*   `embedding.ruby_llm` - embedding model, input, result, token usage, and vector dimensions
-*   `image.ruby_llm` - image generation model, prompt, size, and result
-*   `video.ruby_llm` - one blocking video generation, including the wait for the job and the resulting video
-*   `video_job.ruby_llm` - one video job submission with model, prompt, and the provider's job id
-*   `research_job.ruby_llm` - one hosted research job submission with the provider's job id
-*   `moderation.ruby_llm` - moderation model, input, result, and flagged status
-*   `ocr.ruby_llm` - OCR model, provider options, and extracted document result
-*   `rerank.ruby_llm` - reranking model, query, document count, result, token usage, and cost
-*   `judgment.ruby_llm` - judgment model, question count, attachment count, result, token usage, cost, and application metadata
-*   `speech.ruby_llm` - speech generation model, input, voice, format, and audio byte size
-*   `transcription.ruby_llm` - transcription model, language, result, and token usage
-*   `tokenization.ruby_llm` - tokenization model and result
-*   `compaction.ruby_llm` - one provider-side compaction of a chat's history
-*   `models.refresh.ruby_llm` - model registry refresh metadata
+* `workflow.ruby_llm` - one named workflow block and its correlation ID
+* `workflow_step.ruby_llm` - one named code region within a workflow
+* `evaluation.ruby_llm` - one evaluation run, its progress counts, and completed report
+* `evaluation_trial.ruby_llm` - one completed evaluation case and repetition, including its trial result
+* `request.ruby_llm` - HTTP request metadata such as provider, method, URL, and status
+* `usage.ruby_llm` - one finished provider attempt, including retries and cancellations, with status, tokens, cost, and owner
+* `batch.ruby_llm` - one batch submission operation
+* `chat.ruby_llm` - chat completion metadata including model, provider, messages, response, and token usage
+* `tool_call.ruby_llm` - tool name, arguments, and result
+* `code_execution.ruby_llm` - one [code execution]({% link _core_features/code-execution.md %}) run: language, duration, exit code, timeout, blocked hosts, and returned files
+* `embedding.ruby_llm` - embedding model, input, result, token usage, and vector dimensions
+* `image.ruby_llm` - image generation model, prompt, size, and result
+* `video.ruby_llm` - one blocking video generation, including the wait for the job and the resulting video
+* `video_job.ruby_llm` - one video job submission with model, prompt, and the provider's job id
+* `research_job.ruby_llm` - one hosted research job submission with the provider's job id
+* `moderation.ruby_llm` - moderation model, input, result, and flagged status
+* `ocr.ruby_llm` - OCR model, provider options, and extracted document result
+* `rerank.ruby_llm` - reranking model, query, document count, result, token usage, and cost
+* `judgment.ruby_llm` - judgment model, question count, attachment count, result, token usage, cost, and application metadata
+* `speech.ruby_llm` - speech generation model, input, voice, format, and audio byte size
+* `transcription.ruby_llm` - transcription model, language, result, and token usage
+* `tokenization.ruby_llm` - tokenization model and result
+* `compaction.ruby_llm` - one provider-side compaction of a chat's history
+* `models.refresh.ruby_llm` - model registry refresh metadata
 
-Operations that expose normalized usage (`chat`, `embedding`, `image`, `moderation`, `rerank`, `speech`, and `transcription`) include `payload[:tokens]` and `payload[:cost]`. Both value objects are always present; their individual fields may be `nil` when the provider did not report usage or RubyLLM could not price it. Batch, OCR, and video events expose their operation-specific result and lifecycle fields instead.
+Operations that expose normalized usage (`chat`, `embedding`, `image`, `judgment`, `moderation`, `rerank`, `speech`, and `transcription`) include `payload[:tokens]` and `payload[:cost]`. Both value objects are always present; their individual fields may be `nil` when the provider did not report usage or RubyLLM could not price it. Batch, OCR, and video events expose their operation-specific result and lifecycle fields instead.
 
 See [Evaluation Progress and Monitoring]({% link _advanced/evaluation-progress.md %}) for evaluation progress, run IDs, and report payloads.
 
@@ -230,7 +230,7 @@ ActiveSupport::Notifications.subscribe('usage.ruby_llm') do |event|
 end
 ```
 
-This event fires once for every finished physical attempt. Its payload contains `operation`, `provider`, `model`, `status`, `tokens`, and `cost`. The values use the same objects as the rest of RubyLLM; the internal usage record is not part of the public API. Both objects are always present, while individual fields are `nil` when the provider supplied no defensible figure. See [Cost and Usage Tracking]({% link _core_features/cost-and-usage-tracking.md %}) for status semantics and Rails persistence.
+This event fires once for every finished physical attempt. Its payload contains `operation`, `provider`, `model`, `status`, `tokens`, and `cost`. The values use the same objects as the rest of RubyLLM; the internal usage record is not part of the public API. Both objects are always present, while individual fields are `nil` when the provider supplied no defensible figure. See [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) for status semantics and Rails persistence.
 
 `model` is `nil` for operations that do not select a model, so event subscribers should accept a missing model.
 

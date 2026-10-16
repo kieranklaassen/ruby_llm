@@ -29,7 +29,7 @@ module RubyLLM
       end
 
       # Sets the model and provider used by this judge. A block or proc resolves
-      # the model using runtime inputs. With no arguments, returns the settings.
+      # the model using runtime inputs. Called with no arguments, returns the settings.
       # Without a declaration, uses Configuration#default_judgment_model.
       def model(value = nil, **options, &block)
         return @model_options || {} if value.nil? && options.empty? && !block
@@ -40,7 +40,7 @@ module RubyLLM
       end
 
       # Declares required runtime inputs available in question and data blocks.
-      # With no arguments, returns the declared names.
+      # Called with no arguments, returns the declared names.
       #
       #   inputs :teams
       #   choice :department, "Which team?", -> { teams.to_h { |team| [team.slug, team.description] } }
@@ -51,7 +51,7 @@ module RubyLLM
       end
 
       # Sets provider-specific request options as a Hash, proc, or block.
-      # With no arguments, returns the declared options.
+      # Called with no arguments, returns the declared options.
       def provider_options(value = nil, &block)
         return @provider_options || {} if value.nil? && !block
 
@@ -111,7 +111,7 @@ module RubyLLM
       def declare_question(name, type, instructions, criteria, &)
         question = Question.new(name, type:, instructions:, criteria:, &)
         @declared_names ||= []
-        raise ArgumentError, "Duplicate question: #{name}" if @declared_names.include?(name.to_s)
+        raise ArgumentError, "Two questions are named #{name}" if @declared_names.include?(name.to_s)
 
         @declared_names << name.to_s
         question_definitions[name.to_s] = question
@@ -124,7 +124,10 @@ module RubyLLM
       missing = self.class.inputs - inputs.keys
       extra = inputs.keys - self.class.inputs
       raise ArgumentError, "Missing judge inputs: #{missing.join(', ')}" unless missing.empty?
-      raise ArgumentError, "Unknown judge inputs: #{extra.join(', ')}" unless extra.empty?
+      unless extra.empty?
+        raise ArgumentError, "This judge accepts #{Support::Utils.option_list(self.class.inputs)}, " \
+                             "got #{Support::Utils.option_list(extra)}"
+      end
 
       inputs.each do |name, value|
         raise ArgumentError, "Judge input conflicts with a method: #{name}" if respond_to?(name, true)
@@ -133,26 +136,33 @@ module RubyLLM
       end
     end
 
-    # Judges the supplied input and returns a Judgment. Accepts model and
-    # provider overrides, images as +with:+, an isolated +context:+,
-    # +provider_options:+, instrumentation +metadata:+, and a usage +owner:+,
-    # as RubyLLM.with_usage_owner describes. Additional
-    # +questions:+ are a Hash keyed by question name, with +type:+,
-    # +instructions:+, and +criteria:+ (probability), +options:+ (choice), or
-    # +levels:+ (score). The block supplies input only. Input may be omitted
-    # when images are supplied.
+    # Judges the supplied input and returns a Judgment. The block supplies
+    # input only. Input may be omitted when images are supplied.
+    #
+    # +model:+ selects the judgment model and defaults to the judge's
+    # declared model, then to the configured +default_judgment_model+.
+    # +provider:+ forces a specific provider, and +assume_model_exists:+
+    # skips the registry lookup. +context:+ supplies a Context whose
+    # configuration replaces the global one. +questions:+ adds questions
+    # as a Hash keyed by question name, with +type:+, +instructions:+, and
+    # +criteria:+ (probability), +options:+ (choice), or +levels:+ (score).
+    # +with:+ passes one or more images to judge. +provider_options:+ takes
+    # options in the provider's request vocabulary and merges them into the
+    # request as-is. +metadata:+ is included in the instrumentation payload.
+    # +owner:+ attributes the usage to a record, such as a user, and wins
+    # over RubyLLM.with_usage_owner.
     #
     #   RubyLLM.judge("Please help today",
     #     questions: { urgent: { type: :probability, instructions: "Is this urgent?" } })
     #   Receipt.judge(with: "receipt.png")
-    def judge(input = nil, questions: {}, with: nil, context: nil, metadata: nil, owner: nil, **options, &block)
+    def judge(input = nil, questions: {}, context: nil, with: nil, metadata: nil, owner: nil, **options, &block)
       raise ArgumentError, 'Pass judgment input or a block, not both' if !input.nil? && block
 
       data = resolve_data(block || input)
       definitions = resolve_questions(questions)
       settings = self.class.model.merge(provider_options: self.class.provider_options).merge(options)
       settings = settings.transform_values { |value| resolve_data(value) }
-      Judgment.judge(data, questions: definitions, with:, context:, metadata:, owner:, **settings)
+      Judgment.judge(data, questions: definitions, context:, with:, metadata:, owner:, **settings)
     end
 
     private
@@ -167,7 +177,7 @@ module RubyLLM
 
       definitions = self.class.question_definitions.dup
       questions.each do |name, definition|
-        raise ArgumentError, "Duplicate question: #{name}" if definitions.key?(name.to_s)
+        raise ArgumentError, "Two questions are named #{name}" if definitions.key?(name.to_s)
 
         definitions[name.to_s] = Question.from_h(name, definition)
       end

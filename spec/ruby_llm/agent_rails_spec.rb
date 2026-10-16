@@ -357,7 +357,7 @@ RSpec.describe RubyLLM::Agent do
 
     expect do
       agent_class.create!
-    end.to raise_error(ArgumentError, /chat_model must be configured/)
+    end.to raise_error(RubyLLM::ConfigurationError, /chat_model must be configured/)
   end
 
   it 'propagates assume_model_exists from class config when using find' do
@@ -423,6 +423,6 @@ RSpec.describe RubyLLM::Agent do
 
     expect do
       agent_class.sync_instructions(1)
-    end.to raise_error(ArgumentError, /chat_model must be configured/)
+    end.to raise_error(RubyLLM::ConfigurationError, /chat_model must be configured/)
   end
 end

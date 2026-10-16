@@ -13,11 +13,11 @@ Gem::Specification.new do |spec|
                        'home in Rails: switch models without rewriting your code, then grow from a single call ' \
                        'to production agents that run code in a sandbox, follow skills, and resume across ' \
                        'jobs. Features chat (text, images, audio, PDFs), tools, MCP, structured output, ' \
-                       'evaluations, embeddings, image, audio, and video generation, Rails integration, and ' \
-                       'streaming. Works with OpenAI, Azure, Anthropic, Google Gemini, ' \
-                       'Vertex AI, AWS Bedrock, xAI, Cohere, DeepSeek, Mistral, Perplexity, OpenRouter, ' \
-                       'ElevenLabs, Deepgram, Ollama and GPUStack (local models), and any OpenAI-compatible ' \
-                       'API. Plain Ruby with a small set of runtime dependencies.'
+                       'evaluations, judgments, embeddings, reranking, OCR, moderation, image, audio, and ' \
+                       'video generation, Rails integration, and streaming. Works with OpenAI, Azure, xAI, ' \
+                       'Anthropic, Gemini, Vertex AI, Bedrock, Cohere, DeepSeek, Hetzner, Mistral, Ollama, ' \
+                       'Ollama Cloud, OpenRouter, Perplexity, GPUStack, ElevenLabs, Deepgram, TypeSafe, and ' \
+                       'any OpenAI-compatible API. Plain Ruby with a small set of runtime dependencies.'
 
   spec.homepage      = 'https://rubyllm.com'
   spec.license       = 'MIT'
@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = 'https://github.com/crmne/ruby_llm'
   spec.metadata['changelog_uri'] = "#{spec.metadata['source_code_uri']}/releases"
-  spec.metadata['documentation_uri'] = 'https://rubyllm.com/'
+  spec.metadata['documentation_uri'] = spec.homepage
   spec.metadata['bug_tracker_uri'] = "#{spec.metadata['source_code_uri']}/issues"
   spec.metadata['funding_uri'] = 'https://github.com/sponsors/crmne'
 

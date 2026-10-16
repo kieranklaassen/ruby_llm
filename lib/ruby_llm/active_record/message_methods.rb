@@ -45,7 +45,7 @@ module RubyLLM
           usage_entries: entries,
           cost: (cost if entries.any?),
           tool_calls: tool_calls,
-          tool_call_id: parent_tool_call&.id,
+          tool_call_id: tool_call_id,
           provider_call_id: parent_tool_call&.provider_call_id,
           mcp_result: mcp_result,
           finish_reason: optional_column(:finish_reason),
@@ -63,7 +63,8 @@ module RubyLLM
         preloaded_records(:ruby_llm_usages) || ruby_llm_usages.to_a
       end
 
-      # Returns the model ID from the last successful attempt, or +nil+.
+      # Returns the model ID from the last successful attempt, as a String, or
+      # +nil+.
       def model
         to_llm.model
       end
@@ -122,11 +123,15 @@ module RubyLLM
 
       # Returns the token usage across every attempt that produced the message.
       def tokens
-        RubyLLM::Tokens.aggregate(ruby_llm_usages.map(&:tokens))
+        RubyLLM::Tokens.aggregate(ruby_llm_usage_records.map(&:tokens))
       end
 
-      # Returns the cost across every attempt that produced the message, as a RubyLLM::Cost.
-      def cost
+      # Returns the cost across every attempt that produced the message, as a
+      # RubyLLM::Cost. An explicit +model:+ reprices the recorded tokens with
+      # that model instead, as RubyLLM::Message#cost does.
+      def cost(model: nil)
+        return RubyLLM::Cost.new(tokens:, model:) if model
+
         records = ruby_llm_usage_records
         RubyLLM::Cost.aggregate(records.map(&:cost), complete: records.all?(&:cost_available?))
       end
@@ -140,6 +145,12 @@ module RubyLLM
       # Returns the tool call this message answers, or +nil+.
       def parent_tool_call
         ruby_llm_parent_tool_call&.to_llm
+      end
+
+      # Returns the id of the tool call this message answers, as
+      # RubyLLM::Message#tool_call_id does, or +nil+.
+      def tool_call_id
+        parent_tool_call&.id
       end
 
       # Returns the RubyLLM::MCP::Result kept for an MCP tool with a UI, as

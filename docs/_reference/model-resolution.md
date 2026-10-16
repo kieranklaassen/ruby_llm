@@ -3,7 +3,7 @@ layout: default
 title: Model Resolution
 parent: "Model Registry"
 nav_order: 1
-description: How RubyLLM turns a model name into a concrete model and provider, step by step, covering aliases, the registry, provider preference, and unlisted models.
+description: Follow how RubyLLM turns a model name into a concrete model and provider, step by step, covering aliases, the registry, provider preference, and unlisted models.
 ---
 
 # {{ page.title }}
@@ -21,7 +21,7 @@ After reading this guide, you will know:
 
 ## Overview
 
-Every entry point that takes a `model:` argument runs the same resolution. `RubyLLM.chat`, `RubyLLM.embed`, and `RubyLLM.paint` all hand the name to the registry, which returns two things: a `RubyLLM::Model` describing the model, and the provider instance that will serve it.
+Every entry point that takes a `model:` argument runs the same resolution. `RubyLLM.chat`, `RubyLLM.embed`, and `RubyLLM.paint` all hand the name to the registry, which returns two things: a `RubyLLM::Model` describing the model, and the provider instance that serves it.
 
 ```ruby
 chat = RubyLLM.chat(model: "claude-haiku-4-5", provider: :bedrock)
@@ -76,7 +76,7 @@ Provider preference puts first-party providers ahead of the aggregators that res
 
 | Rank | Providers |
 | --- | --- |
-| First-party | `openai`, `anthropic`, `gemini`, `deepseek`, `mistral`, `cohere`, `perplexity`, `xai` |
+| First-party | `openai`, `anthropic`, `gemini`, `deepseek`, `mistral`, `cohere`, `typesafe`, `perplexity`, `xai` |
 | Cloud platforms | `vertexai`, `bedrock` |
 | Aggregators and local | `openrouter`, `azure`, `hetzner`, `ollama_cloud`, `ollama`, `gpustack` |
 
@@ -142,7 +142,7 @@ RubyLLM.chat(model: 'openai.gpt-oss-20b', provider: :bedrock).ask('Hello')
 
 ## Models the Registry Doesn't List
 
-New releases, custom fine-tunes, and private deployments won't be in the registry. Set `assume_model_exists: true` to skip the registry lookup and use the name as-is. You must name a provider, since there is no registry entry to infer one from:
+New releases, custom fine-tunes, and private deployments are not in the registry. Set `assume_model_exists: true` to skip the registry lookup and use the name as-is. You must name a provider, since there is no registry entry to infer one from:
 
 ```ruby
 chat = RubyLLM.chat(

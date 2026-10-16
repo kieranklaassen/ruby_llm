@@ -68,7 +68,7 @@ RSpec.describe RubyLLM::Configuration do
     end
   end
 
-  describe 'log_file' do
+  describe '#log_file' do
     it 'defaults to $stdout' do
       expect(described_class.new.log_file).to eq($stdout)
     end

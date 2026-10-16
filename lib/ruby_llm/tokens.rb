@@ -142,6 +142,13 @@ module RubyLLM
       }.compact
     end
 
+    private
+
+    def positive_counts(counts)
+      used = counts.to_h.to_h { |key, count| [key.to_s, count.to_i] }.select { |_, count| count.positive? }
+      used unless used.empty?
+    end
+
     def inspect_attributes # :nodoc:
       {
         input: input,
@@ -152,13 +159,6 @@ module RubyLLM
         cache_write_by_ttl: cache_write_by_ttl,
         server_tool_use: server_tool_use
       }.compact
-    end
-
-    private
-
-    def positive_counts(counts)
-      used = counts.to_h.to_h { |key, count| [key.to_s, count.to_i] }.select { |_, count| count.positive? }
-      used unless used.empty?
     end
   end
 end

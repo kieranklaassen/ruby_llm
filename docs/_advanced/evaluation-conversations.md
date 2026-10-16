@@ -3,7 +3,7 @@ layout: default
 title: Evaluating Conversations and Tools
 parent: Evaluations
 nav_order: 2
-description: Evaluate multi-turn conversations, saved transcripts, tool calls, and your own result objects
+description: Evaluate multi-turn conversations, saved transcripts, tool calls, and your own result objects.
 ---
 
 # {{ page.title }}

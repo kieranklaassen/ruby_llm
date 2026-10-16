@@ -3,7 +3,7 @@ layout: default
 title: Running Evaluations
 parent: Evaluations
 nav_order: 4
-description: Run evaluations from Rake, RSpec, Minitest, or Ruby and read their results, tokens, and costs
+description: Run evaluations from Rake, RSpec, Minitest, or Ruby and read their results, tokens, and costs.
 ---
 
 # {{ page.title }}
@@ -72,7 +72,7 @@ Each case runs on a fresh instance, so instance variables never leak between cas
 
 In Rails, the task is available automatically:
 
-```sh
+```bash
 bin/rails ruby_llm:eval                                      # every evaluation
 bin/rails "ruby_llm:eval[SupportEvaluation]"                 # one evaluation
 bin/rails "ruby_llm:eval[SupportEvaluation,unopened_return]" # one case
@@ -196,7 +196,7 @@ report = RubyLLM.with_usage_owner(account) do
 end
 ```
 
-See [Cost and Usage Tracking]({% link _core_features/cost-and-usage-tracking.md %}) for owners and unknown costs.
+See [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) for owners and unknown costs.
 
 ## Comparing Runs
 

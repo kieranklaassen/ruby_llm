@@ -16,10 +16,10 @@ module RubyLLM
           '/v1/embeddings'
         end
 
-        def validate_batch_requests!(requests)
+        def validate_batch_requests(requests)
           return if requests.all? { |request| embedding_payload?(request.fetch(:payload)) }
 
-          raise Error, "#{@provider.slug} embedding batch requests require embedding payloads"
+          raise Error, "#{@provider.name} embedding batch requests require embedding payloads"
         end
 
         def embedding_payload?(payload)

@@ -55,6 +55,13 @@ response.cost.output
 
 `response.tokens` aggregates every transport attempt associated with the response. `chat.tokens` and `chat.cost` aggregate the chat's whole internal ledger, including failed retries and cancelled attempts (see [The Usage Ledger](#the-usage-ledger) below).
 
+To see what the same tokens cost on another model, pass `model:`. It works on a response and on a persisted message record:
+
+```ruby
+other = RubyLLM.models.find("{{ site.models.default_chat }}")
+response.cost(model: other).total
+```
+
 The same pair of value objects is used by one-shot results. Their fields remain `nil` when the provider does not report enough information:
 
 ```ruby
@@ -278,7 +285,7 @@ ActiveSupport::Notifications.subscribe("usage.ruby_llm") do |event|
 end
 ```
 
-`status` is `succeeded`, `failed`, or `cancelled`. `tokens` and `cost` use the same value objects returned by responses. They are always present; individual fields are `nil` when the provider did not report enough information. A failed or cancelled attempt may contain the token counts observed before it stopped.
+`status` is `:succeeded`, `:failed`, or `:cancelled`. `tokens` and `cost` use the same value objects returned by responses. They are always present; individual fields are `nil` when the provider did not report enough information. A failed or cancelled attempt may contain the token counts observed before it stopped.
 
 Instrumentation is an observer, not the source of truth for a persisted Rails chat. RubyLLM maintains the internal ledger and emits the same normalized facts for applications that need them elsewhere.
 

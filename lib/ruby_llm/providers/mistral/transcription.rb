@@ -8,9 +8,9 @@ module RubyLLM
       # speaker id; a prompt rides along as context biasing terms.
       module Transcription
         STREAM_TYPES = {
-          'transcription.text.delta' => RubyLLM::TranscriptionChunk::DELTA,
-          'transcription.segment' => RubyLLM::TranscriptionChunk::SEGMENT,
-          'transcription.done' => RubyLLM::TranscriptionChunk::DONE
+          'transcription.text.delta' => :delta,
+          'transcription.segment' => :segment,
+          'transcription.done' => :done
         }.freeze
 
         def render_transcription_options(timestamps:, **)
@@ -28,9 +28,9 @@ module RubyLLM
 
           RubyLLM::TranscriptionChunk.new(
             type: type,
-            delta: (data['text'] if type == RubyLLM::TranscriptionChunk::DELTA),
-            text: (data['text'] if type == RubyLLM::TranscriptionChunk::DONE),
-            segment: (data.except('type') if type == RubyLLM::TranscriptionChunk::SEGMENT),
+            delta: (data['text'] if type == :delta),
+            text: (data['text'] if type == :done),
+            segment: (data.except('type') if type == :segment),
             raw: data
           )
         end

@@ -17,7 +17,7 @@ module RubyLLM
             body = request.fetch(:payload)
             body.key?(:messages) || body.key?('messages') ? 'batch-chat-v2-input' : 'batch-embed-v2-input'
           end.uniq
-          raise ArgumentError, 'Cohere batches cannot mix chat and embeddings' unless types.one?
+          raise ArgumentError, 'Cohere batches take chat or embedding requests, not both' unless types.one?
 
           types.first
         end

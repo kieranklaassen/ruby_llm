@@ -92,10 +92,6 @@ module RubyLLM
 
         include Support::Inspectable
 
-        def inspect_attributes # :nodoc:
-          { operation: operation, provider: provider, model: model, status: status, tokens: tokens }
-        end
-
         def initialize(operation:, provider:, model:, status: :pending, tokens: nil, cost: nil, message: nil,
                        owner: nil)
           @operation = operation.to_sym
@@ -106,7 +102,7 @@ module RubyLLM
           @cost = cost
           @message = message
           @owner = owner
-          validate!
+          validate
         end
 
         def cost
@@ -135,15 +131,24 @@ module RubyLLM
           @status = status.to_sym
           @tokens = tokens || Tokens.new
           @cost = cost
-          validate!
+          validate
           self
         end
 
         private
 
-        def validate!
-          raise ArgumentError, "Unknown usage operation: #{operation.inspect}" unless OPERATIONS.include?(operation)
-          raise ArgumentError, "Unknown usage status: #{status.inspect}" unless STATUSES.include?(status)
+        def validate
+          unless OPERATIONS.include?(operation)
+            raise ArgumentError,
+                  "Unknown usage operation: #{operation.inspect}. Valid operations: #{OPERATIONS.join(', ')}."
+          end
+          return if STATUSES.include?(status)
+
+          raise ArgumentError, "Unknown usage status: #{status.inspect}. Valid statuses: #{STATUSES.join(', ')}."
+        end
+
+        def inspect_attributes # :nodoc:
+          { operation: operation, provider: provider, model: model, status: status, tokens: tokens }
         end
       end
 

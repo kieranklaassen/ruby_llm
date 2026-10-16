@@ -34,7 +34,7 @@ RubyLLM uses its defaults for models, timeouts, and retries. Set only what your 
 
 ## API Keys
 
-Configure API keys only for the providers you use. RubyLLM won't complain about missing keys for providers you never touch.
+Configure API keys only for the providers you use. RubyLLM does not complain about missing keys for providers you never touch.
 
 ```ruby
 RubyLLM.configure do |config|
@@ -46,7 +46,7 @@ end
 
 Each provider has its own key (and sometimes region or project settings). For the full list of providers, organization headers, Vertex AI authentication, and OpenAI-compatible custom endpoints, see [Provider Setup and Custom Endpoints]({% link _getting_started/configuration-providers.md %}).
 
-> Attempting to use an unconfigured provider will raise `RubyLLM::ConfigurationError`. Only configure what you need.
+> Using an unconfigured provider raises `RubyLLM::ConfigurationError`. Only configure what you need.
 {: .note }
 
 ## Default Models
@@ -68,15 +68,15 @@ end
 ```
 
 Defaults if not configured:
-- Chat: `gpt-6.1-sol`
-- Embeddings: `{{ site.models.default_embedding }}`
-- Images: `{{ site.models.default_image }}`
-- Videos: `grok-imagine-video-1.5`
-- Speech: `{{ site.models.default_speech }}`
-- Moderation: `omni-moderation-latest`
-- Transcription: `gpt-transcribe`
-- OCR: `mistral-ocr-latest`
-- Judgments: `{{ site.models.judgment }}`
+* Chat: `{{ site.models.default_chat }}`
+* Embeddings: `{{ site.models.default_embedding }}`
+* Images: `{{ site.models.default_image }}`
+* Videos: `{{ site.models.default_video }}`
+* Speech: `{{ site.models.default_speech }}`
+* Moderation: `{{ site.models.default_moderation }}`
+* Transcription: `{{ site.models.default_transcription }}`
+* OCR: `{{ site.models.default_ocr }}`
+* Judgments: `{{ site.models.judgment }}`
 
 `rerank` requires `model:` on each call; it has no default model setting.
 
@@ -131,10 +131,6 @@ RubyLLM.configure do |config|
   config.deepgram_api_key = String
   config.deepgram_api_base = String
 
-  # TypeSafe
-  config.typesafe_api_key = String
-  config.typesafe_api_base = String
-
   # DeepSeek
   config.deepseek_api_key = String
   config.deepseek_api_base = String
@@ -185,6 +181,10 @@ RubyLLM.configure do |config|
   config.perplexity_api_key = String
   config.perplexity_api_base = String
 
+  # TypeSafe
+  config.typesafe_api_key = String
+  config.typesafe_api_base = String
+
   # Vertex AI
   config.vertexai_project_id = String  # GCP project ID
   config.vertexai_location = String     # e.g., 'us-central1'
@@ -233,6 +233,11 @@ RubyLLM.configure do |config|
   config.sandbox = "ApplicationSandbox" # The name of an MXC::Sandbox class or your own sandbox; defaults to nil
   config.package_cache_dir = String # Declared gems and Python packages; defaults to the OS user cache directory
 
+  # MCP
+  config.mcp_credential_store = Object # Responds to read(key), write(key, data, owner:), and delete(key)
+  config.mcp_client_name = String # Defaults to "RubyLLM"
+  config.mcp_client_id = String # URL of your client ID metadata document
+
   # Logging
   config.logger = Logger
   config.instrumenter = Object # Responds to instrument(name, payload) { ... }
@@ -244,9 +249,11 @@ RubyLLM.configure do |config|
 end
 ```
 
+See [MCP Client]({% link _core_features/mcp.md %}#storing-credentials) for the MCP options.
+
 ## Next Steps
 
-- [Provider Setup and Custom Endpoints]({% link _getting_started/configuration-providers.md %}) - every provider's keys, OpenAI organization headers, Vertex AI auth, and OpenAI-compatible endpoints.
-- [Connection, Logging and Contexts]({% link _getting_started/configuration-connection.md %}) - timeouts, retries, proxies, debug logging, the model registry file, and isolated per-tenant contexts.
-- [Start chatting with AI models]({% link _core_features/chat.md %}) - put your configuration to work.
-- [Set up Rails integration]({% link _advanced/rails.md %}) - persistence, streaming, and generators.
+* [Provider Setup and Custom Endpoints]({% link _getting_started/configuration-providers.md %}) - every provider's keys, OpenAI organization headers, Vertex AI auth, and OpenAI-compatible endpoints.
+* [Connection, Logging and Contexts]({% link _getting_started/configuration-connection.md %}) - timeouts, retries, proxies, debug logging, the model registry file, and isolated per-tenant contexts.
+* [Start chatting with AI models]({% link _core_features/chat.md %}) - put your configuration to work.
+* [Set up Rails integration]({% link _advanced/rails.md %}) - persistence, streaming, and generators.

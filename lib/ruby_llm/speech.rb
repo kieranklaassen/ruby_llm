@@ -24,7 +24,7 @@ module RubyLLM
     # The raw audio bytes returned by the provider.
     attr_reader :data
 
-    # The id of the model that generated the audio.
+    # The id of the model that generated the audio, as a String.
     attr_reader :model
 
     # The voice used for synthesis. When no +voice:+ was given, this is the
@@ -49,11 +49,17 @@ module RubyLLM
     end
 
     # Generates speech for +input+ and returns a Speech holding the audio.
-    # Uses <tt>config.default_speech_model</tt> unless +model:+ is given.
-    # Pass +provider:+ and <tt>assume_model_exists: true</tt> to use a model
-    # that is not in the registry. +provider_options:+ takes options in the
-    # provider's request vocabulary, such as +instructions:+ and +speed:+
-    # for OpenAI, and merges them into the request as-is.
+    # Most code calls this through RubyLLM.speak.
+    #
+    # +model:+ selects the speech model and defaults to the configured
+    # +default_speech_model+. +provider:+ forces a specific provider, and
+    # +assume_model_exists:+ skips the registry lookup. +context:+ supplies
+    # a Context whose configuration replaces the global one. +voice:+
+    # selects one of the provider's voices, and +format:+ sets the audio
+    # format, such as <tt>"wav"</tt>. +provider_options:+ takes options in
+    # the provider's request vocabulary, such as +instructions:+ and
+    # +speed:+ for OpenAI, and merges them into the request as-is.
+    # +metadata:+ is included in the instrumentation payload.
     # +owner:+ attributes the usage to a record, such as a user, and wins
     # over RubyLLM.with_usage_owner.
     #
@@ -79,9 +85,9 @@ module RubyLLM
                    model: nil,
                    provider: nil,
                    assume_model_exists: false,
+                   context: nil,
                    voice: nil,
                    format: nil,
-                   context: nil,
                    provider_options: {},
                    metadata: nil,
                    owner: nil,
@@ -127,8 +133,8 @@ module RubyLLM
       data
     end
 
-    # Returns provider-reported usage across every attempt. Its fields are
-    # +nil+ when the provider did not report any.
+    # Returns usage aggregated across every provider attempt. Its fields
+    # are +nil+ when the provider did not report any.
     def tokens
       return ruby_llm_usage_tokens unless ruby_llm_usage_entries.empty?
 
@@ -144,7 +150,10 @@ module RubyLLM
 
     attr_writer :model_info # :nodoc:
 
-    def model_info # :nodoc:
+    # Returns the speech's Model from its provider's registry, falling
+    # back to the requested model when the response ID is unknown.
+    # Returns +nil+ if the model is unknown.
+    def model_info
       @model_info ||= RubyLLM.models.find(model)
     rescue ModelNotFoundError
       nil
@@ -158,6 +167,8 @@ module RubyLLM
       File.binwrite(File.expand_path(path), to_blob)
       path
     end
+
+    private
 
     def inspect_attributes # :nodoc:
       { model: model, voice: voice, format: format, data: data && "#{data.bytesize} bytes" }

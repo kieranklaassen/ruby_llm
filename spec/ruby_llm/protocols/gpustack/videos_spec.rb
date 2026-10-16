@@ -124,10 +124,10 @@ RSpec.describe RubyLLM::Protocols::GPUStack::Videos do
     end
       .to raise_error(ArgumentError, /one video/)
     expect { context.animate_later('Continue', model:, provider: :gpustack, extend: 'https://media.test/clip.mp4') }
-      .to raise_error(RubyLLM::Error, /doesn't support video extension/)
+      .to raise_error(RubyLLM::Error, /does not support video extension/)
     context.config.gpustack_api_base = 'https://gpu.example.test/v1'
     expect { context.animate_later('A street', model:, provider: :gpustack) }
-      .to raise_error(RubyLLM::Error, %r{/model/proxy/ROUTE_ID/v1})
+      .to raise_error(RubyLLM::ConfigurationError, %r{/model/proxy/ROUTE_ID/v1})
     expect(a_request(:post, /gpu.example.test/)).not_to have_been_made
   end
 end

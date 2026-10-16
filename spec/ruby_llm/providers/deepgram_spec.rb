@@ -111,19 +111,19 @@ RSpec.describe RubyLLM::Providers::Deepgram do
     it 'refuses to chat' do
       chat = RubyLLM.chat(model: 'nova-3', provider: :deepgram)
 
-      expect { chat.ask('Hello') }.to raise_error(RubyLLM::Error, "Deepgram doesn't support chat")
+      expect { chat.ask('Hello') }.to raise_error(RubyLLM::Error, 'Deepgram does not support chat')
     end
 
     it 'refuses to embed' do
       expect do
         RubyLLM.embed('Hello', model: 'nova-3', provider: :deepgram)
-      end.to raise_error(RubyLLM::Error, "Deepgram doesn't support embeddings")
+      end.to raise_error(RubyLLM::Error, 'Deepgram does not support embeddings')
     end
 
     it 'refuses to paint' do
       expect do
         RubyLLM.paint('A ruby', model: 'nova-3', provider: :deepgram)
-      end.to raise_error(RubyLLM::Error, "Deepgram doesn't support image generation")
+      end.to raise_error(RubyLLM::Error, 'Deepgram does not support image generation')
     end
 
     it 'has no chat model to fall back on' do
@@ -145,7 +145,7 @@ RSpec.describe RubyLLM::Providers::Deepgram do
       headers: hash_including('Authorization' => a_string_starting_with('Token ')), config: RubyLLM.config
     )
     expect(result.duration).to eq(3.7)
-    expect(chunks.map(&:type)).to eq([RubyLLM::TranscriptionChunk::DONE])
+    expect(chunks.map(&:type)).to eq([:done])
   end
 
   describe 'audio', :live do

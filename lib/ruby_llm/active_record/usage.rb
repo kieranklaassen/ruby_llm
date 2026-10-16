@@ -2,8 +2,15 @@
 
 module RubyLLM
   module ActiveRecord
-    # RubyLLM's private normalized persistence for one provider attempt.
-    class Usage < Record # :nodoc:
+    # A row of the +ruby_llm_usages+ table: one provider attempt, with its
+    # +operation+, +provider+, +model+, +status+, token buckets, and cost
+    # components as columns. The +ruby_llm_usages+ associations on chats,
+    # messages, and owners return these records, so spend sums in SQL. The
+    # +chronological+ scope orders attempts oldest first.
+    #
+    #   chat.ruby_llm_usages.where(status: "succeeded").sum(:total_cost)
+    #
+    class Usage < Record
       self.table_name = 'ruby_llm_usages'
 
       belongs_to :chat, polymorphic: true, optional: true
@@ -22,7 +29,7 @@ module RubyLLM
       # it. A savepoint keeps a failed insert from aborting the caller's
       # transaction, and a thread that held no connection gives back the
       # one it borrowed.
-      def self.record(entry)
+      def self.record(entry) # :nodoc:
         return unless entry.model
 
         connection_pool.with_connection do
@@ -35,11 +42,11 @@ module RubyLLM
         nil
       end
 
-      def self.ledger_available?
+      def self.ledger_available? # :nodoc:
         table_exists? && columns_hash['chat_id']&.null
       end
 
-      def self.attributes_for(entry)
+      def self.attributes_for(entry) # :nodoc:
         tokens = entry.tokens
         cost = entry.cost
         attributes = {
@@ -64,6 +71,7 @@ module RubyLLM
         attributes
       end
 
+      # Returns the attempt's token usage as a RubyLLM::Tokens.
       def tokens
         RubyLLM::Tokens.new(
           input: input_tokens,
@@ -75,6 +83,8 @@ module RubyLLM
         )
       end
 
+      # Returns the attempt's cost as a RubyLLM::Cost, from the amounts
+      # recorded when the attempt finished.
       def cost
         recorded = {
           input: input_cost,
@@ -87,15 +97,11 @@ module RubyLLM
         RubyLLM::Cost.from_h(recorded, tokens: tokens)
       end
 
-      def usage_available?
-        tokens.to_h.any?
-      end
-
-      def cost_available?
+      def cost_available? # :nodoc:
         !total_cost.nil?
       end
 
-      def to_entry
+      def to_entry # :nodoc:
         ::RubyLLM::Accounting::Usage::Entry.new(
           operation: operation,
           provider: provider,

@@ -277,7 +277,7 @@ RSpec.describe RubyLLM::Attachment do
 
   it 'rejects unknown media resolutions' do
     expect { described_class.new(StringIO.new('png'), filename: 'page.png', resolution: 'high') }
-      .to raise_error(ArgumentError, /resolution must be one of/)
+      .to raise_error(ArgumentError, /Unknown resolution/)
   end
 
   it 'accepts a video processing mode' do
@@ -298,7 +298,7 @@ RSpec.describe RubyLLM::Attachment do
 
   it 'rejects unknown video processing modes' do
     expect { described_class.new(StringIO.new('mp4'), filename: 'lecture.mp4', processing: 'agentic') }
-      .to raise_error(ArgumentError, 'processing must be one of static, agentic, got "agentic"')
+      .to raise_error(ArgumentError, 'Unknown processing: "agentic". Valid values: static, agentic.')
   end
 
   describe 'serialized attributes' do
@@ -353,6 +353,12 @@ RSpec.describe RubyLLM::Attachment do
 
       expect(rebuilt).to have_attributes(source: URI('https://example.com/ruby.png'), filename: 'ruby.png',
                                          mime_type: 'image/png')
+    end
+
+    it 'takes a context for its configuration, like every operation' do
+      context = RubyLLM.context { |config| config.request_timeout = 5 }
+
+      expect(described_class.new(StringIO.new('notes'), filename: 'notes.txt', context:).config).to be(context.config)
     end
 
     it 'passes the configuration to rebuilt attachments' do

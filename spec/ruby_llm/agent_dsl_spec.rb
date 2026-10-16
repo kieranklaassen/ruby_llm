@@ -42,6 +42,17 @@ RSpec.describe RubyLLM::Agent do
       expect(bare.chat_model).to be_nil
     end
 
+    it 'takes provider options and headers as a Hash, like the other DSL classes' do
+      options = { top_p: 0.9 }
+      agent_class = Class.new(described_class) do
+        provider_options options
+        headers({ 'X-Test' => '1' })
+      end
+
+      expect(agent_class.provider_options).to eq(top_p: 0.9)
+      expect(agent_class.headers).to eq('X-Test' => '1')
+    end
+
     it 'accepts model options without a model id' do
       agent = Class.new(described_class) do
         model provider: :openai, assume_model_exists: true
@@ -110,7 +121,34 @@ RSpec.describe RubyLLM::Agent do
       expect { Class.new(described_class) { caching nil } }.to raise_error(ArgumentError)
       expect { Class.new(described_class) { compaction nil } }.to raise_error(ArgumentError)
       expect { Class.new(described_class) { citations nil } }.to raise_error(ArgumentError)
-      expect { Class.new(described_class) { thinking effort: nil } }.to raise_error(ArgumentError)
+      expect { Class.new(described_class) { thinking effort: nil } }
+        .to raise_error(ArgumentError, 'thinking options cannot be nil. Pass false to disable.')
+    end
+
+    it 'names the accepted values the same way on every feature declaration' do
+      expect { Class.new(described_class) { thinking :on } }
+        .to raise_error(ArgumentError, 'thinking accepts true, false, or thinking options')
+      expect { Class.new(described_class) { caching :on } }
+        .to raise_error(ArgumentError, 'caching accepts true, false, or caching options')
+      expect { Class.new(described_class) { compaction :on } }
+        .to raise_error(ArgumentError, 'compaction accepts true, false, or compaction options')
+    end
+
+    it 'declares compaction with true and options, or an options Hash' do
+      with_true = Class.new(described_class) { compaction true, at: 50_000 }
+      with_hash = Class.new(described_class) { compaction({ 'at' => 50_000 }) }
+
+      expect(with_true.chat.compaction).to eq(at: 50_000)
+      expect(with_hash.chat.compaction).to eq(at: 50_000)
+    end
+
+    it 'rejects unknown thinking and compaction options when declared' do
+      expect { Class.new(described_class) { thinking depth: 1 } }
+        .to raise_error(ArgumentError, 'thinking accepts :effort, :budget, :display, got :depth')
+      expect { Class.new(described_class) { compaction keep: 1 } }
+        .to raise_error(ArgumentError, 'compaction accepts :at, :instructions, :pause_after, got :keep')
+      expect { Class.new(described_class) { compaction false, at: 1 } }
+        .to raise_error(ArgumentError, 'compaction(false) does not accept options')
     end
 
     it 'does not carry verb aliases' do
@@ -155,7 +193,7 @@ RSpec.describe RubyLLM::Agent do
 
     it 'rejects context Procs that require arguments' do
       agent = Class.new(described_class)
-      error = 'context Proc must accept zero arguments'
+      error = 'A context Proc must accept zero arguments'
 
       expect { agent.context(->(config) { config }) }.to raise_error(ArgumentError, error)
       expect { agent.context(proc { |config| config }) }.to raise_error(ArgumentError, error)
@@ -302,7 +340,7 @@ RSpec.describe RubyLLM::Agent do
 
     it 'resolves a context block from agent inputs before building the chat' do
       agent = Class.new(described_class) do
-        model 'gpt-4.1-nano', provider: :openai
+        model model_for(:openai, :temperature), provider: :openai
         inputs :timeout
 
         send(:context) { RubyLLM.context { |config| config.request_timeout = timeout } }
@@ -315,7 +353,7 @@ RSpec.describe RubyLLM::Agent do
 
     it 'resolves a context block for agent instances' do
       agent = Class.new(described_class) do
-        model 'gpt-4.1-nano', provider: :openai
+        model model_for(:openai, :temperature), provider: :openai
         inputs :timeout
 
         send(:context) { RubyLLM.context { |config| config.request_timeout = timeout } }
@@ -327,7 +365,7 @@ RSpec.describe RubyLLM::Agent do
     it 'evaluates a context block once when building an agent chat' do
       evaluations = 0
       agent = Class.new(described_class) do
-        model 'gpt-4.1-nano', provider: :openai
+        model model_for(:openai, :temperature), provider: :openai
         send(:context) do
           evaluations += 1
           RubyLLM.context
@@ -373,16 +411,16 @@ RSpec.describe RubyLLM::Agent do
   describe 'Rails mode' do
     it 'requires a chat model for find' do
       expect { Class.new(described_class).find(1) }.to raise_error(
-        ArgumentError, 'chat_model must be configured to use find'
+        RubyLLM::ConfigurationError, 'chat_model must be configured to use find'
       )
     end
 
     it 'requires a chat model for create' do
       expect { Class.new(described_class).create }.to raise_error(
-        ArgumentError, 'chat_model must be configured to use create/create!'
+        RubyLLM::ConfigurationError, 'chat_model must be configured to use create/create!'
       )
       expect { Class.new(described_class).create! }.to raise_error(
-        ArgumentError, 'chat_model must be configured to use create/create!'
+        RubyLLM::ConfigurationError, 'chat_model must be configured to use create/create!'
       )
     end
 

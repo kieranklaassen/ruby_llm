@@ -3,7 +3,7 @@ layout: default
 title: Extended Thinking
 parent: "Chat"
 nav_order: 4
-description: Give reasoning models more time and budget to deliberate, with optional access to thinking output
+description: Give reasoning models more time and budget to deliberate, with optional access to thinking output.
 redirect_from:
   - /guides/thinking
   - /guides/reasoning
@@ -16,12 +16,12 @@ redirect_from:
 
 After reading this guide, you will know:
 
-* How to control extended thinking with `with_thinking`
-* How effort and budget are sent to providers
-* How to access thinking output in responses and streams
-* How to persist thinking data with ActiveRecord
+* How to control extended thinking with `with_thinking`.
+* How effort and budget are sent to providers.
+* How to access thinking output in responses and streams.
+* How to persist thinking data with Active Record.
 
-## What is Extended Thinking?
+## What Is Extended Thinking?
 
 Extended Thinking gives supported models more time and a larger computation budget to deliberate before answering. It can improve results on multi-step tasks like coding, math, and logic, at the expense of latency and cost. Some providers can also return a thinking trace or signature alongside the final answer.
 
@@ -69,7 +69,7 @@ Pass `false` to disable thinking:
 chat.with_thinking(false)
 ```
 
-Disabling is model-specific too. RubyLLM sends the registered off control and raises an `ArgumentError` when the model does not expose one. Passing `nil` is invalid.
+Disabling is model-specific too. RubyLLM sends the registered off control and raises an `ArgumentError` when the model does not expose one. Passing `nil` is invalid. `chat.thinking` returns `false` after `with_thinking(false)`, the resolved options when thinking is on, and `nil` when you never configured it.
 
 ### Effort and Budget
 
@@ -91,7 +91,7 @@ chat.with_thinking(effort: :high, display: :omitted)     # think, but return no 
 Thinking content is delivered alongside normal content in streaming chunks:
 
 ```ruby
-chat = RubyLLM.chat(model: 'claude-opus-5')
+chat = RubyLLM.chat(model: '{{ site.models.anthropic_opus }}')
   .with_thinking(effort: :medium, display: :summarized)
 
 chat.ask("Solve this step by step: What is 127 * 43?") do |chunk|
@@ -102,7 +102,7 @@ end
 
 Some providers only expose thinking in the final response. In those cases, `response.thinking` is populated after the stream completes, and `chunk.thinking` stays empty.
 
-## ActiveRecord Integration
+## Active Record Integration
 
 When using `acts_as_chat` and `acts_as_message`, thinking content is persisted with the message while thinking-token accounting is stored in RubyLLM's internal usage ledger:
 
@@ -124,19 +124,19 @@ The generated schema also preserves the complete thinking blocks when you reload
 
 ## Provider Notes
 
-- Anthropic sends each option to its own parameter: `budget` becomes a thinking budget, `effort` becomes Claude's effort setting, and `display` chooses how much thinking text comes back. Effort alone never turns thinking on, so RubyLLM always sends a thinking block with it. Generations that take a budget (Opus 4.5, Opus and Sonnet 4.6, Sonnet and Haiku 4.5) use the `budget:` you set, or one sized from the effort with the levels Bedrock publishes: 1024 for low, 40000 for medium, 63999 for high, capped under `max_tokens`. Generations without a budget option (Opus 4.7 and later, Sonnet 5, Fable 5) think adaptively and decide how much to think. `with_thinking(false)` sends a disabled block on generations that accept it. Claude Sonnet 5.5 rejects `disabled`, including regional Bedrock ids such as `us.anthropic.claude-sonnet-5-5`; `between_tools` is its lowest thinking setting, not fully off, and still allows thinking between tool calls. Newer Claude models hide their thinking text, so pass `display: :summarized` to read it.
-- Bedrock thinking params are model-dependent. Claude generations on Bedrock that take a budget get the budget level the model advertises for your `effort`, and `budget` sets the exact number of tokens. Generations without a budget option (Opus 4.7 and later, Sonnet 5, Fable 5) think adaptively, as they do on Anthropic.
-- Gemini 2.5 uses a token budget; Gemini 3 uses effort levels.
-- OpenAI reasoning models accept `effort`, return an encrypted signature, and only return thinking text when you pass `display: :summarized`, which asks the Responses API for a reasoning summary.
-- Perplexity's Agent API folds reasoning into the answer text and returns no separate thinking.
-- Mistral sends `effort` as `reasoning_effort` for every model. Its reasoning models take `high` and `none`, and models without reasoning reject the parameter. Mistral has no thinking budget, so `budget` has no effect.
-- DeepSeek accepts a wider range of effort levels than most providers and has no thinking budget. Its error lists the levels a model takes.
-- Cohere reasoning models think by default. `with_thinking(budget:)` caps the thinking tokens, and `with_thinking(effort: :none)` turns the default off. Models without reasoning reject the request. Cohere returns thinking text but no signature, and reports no separate thinking token count.
-- Ollama and GPUStack local-model thinking controls vary by backend and model. RubyLLM does not translate them; pass backend params explicitly with `with_provider_options`.
-- Ollama does not report thinking token counts.
+* Anthropic sends each option to its own parameter: `budget` becomes a thinking budget, `effort` becomes Claude's effort setting, and `display` chooses how much thinking text comes back. Effort alone never turns thinking on, so RubyLLM always sends a thinking block with it. Generations that take a budget (Opus 4.5, Opus and Sonnet 4.6, Sonnet and Haiku 4.5) use the `budget:` you set, or one sized from the effort with the levels Bedrock publishes: 1024 for low, 40000 for medium, 63999 for high, capped under `max_tokens`. Generations without a budget option (Opus 4.7 and later, Sonnet 5, Fable 5) think adaptively and decide how much to think. `with_thinking(false)` sends a disabled block on generations that accept it. Claude Sonnet 5.5 rejects `disabled`, including regional Bedrock ids such as `us.anthropic.claude-sonnet-5-5`; `between_tools` is its lowest thinking setting, not fully off, and still allows thinking between tool calls. Newer Claude models hide their thinking text, so pass `display: :summarized` to read it.
+* Bedrock thinking params are model-dependent. Claude generations on Bedrock that take a budget get the budget level the model advertises for your `effort`, and `budget` sets the exact number of tokens. Generations without a budget option (Opus 4.7 and later, Sonnet 5, Fable 5) think adaptively, as they do on Anthropic.
+* Gemini 2.5 uses a token budget; Gemini 3 uses effort levels.
+* OpenAI reasoning models accept `effort`, return an encrypted signature, and only return thinking text when you pass `display: :summarized`, which asks the Responses API for a reasoning summary.
+* Perplexity's Agent API folds reasoning into the answer text and returns no separate thinking.
+* Mistral sends `effort` as `reasoning_effort` for every model. Its reasoning models take `high` and `none`, and models without reasoning reject the parameter. Mistral has no thinking budget, so `budget` has no effect.
+* DeepSeek accepts a wider range of effort levels than most providers and has no thinking budget. Its error lists the levels a model takes.
+* Cohere reasoning models think by default. `with_thinking(budget:)` caps the thinking tokens, and `with_thinking(effort: :none)` turns the default off. Models without reasoning reject the request. Cohere returns thinking text but no signature, and reports no separate thinking token count.
+* Ollama and GPUStack local-model thinking controls vary by backend and model. RubyLLM does not translate them; pass backend params explicitly with `with_provider_options`.
+* Ollama does not report thinking token counts.
 
 ## Next Steps
 
-* [Streaming Responses]({% link _core_features/streaming.md %})
-* [Rails Integration]({% link _advanced/rails.md %})
-* [Error Handling]({% link _advanced/error-handling.md %})
+* [Stream Responses]({% link _core_features/streaming.md %}) - show thinking output as it arrives.
+* [Rails Integration]({% link _advanced/rails.md %}) - persist thinking data with your messages.
+* [Error Handling]({% link _advanced/error-handling.md %}) - rescue provider errors and retry requests.

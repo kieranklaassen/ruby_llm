@@ -43,12 +43,12 @@ More than a client for model APIs. RubyLLM gives your application the convention
 * **MCP:** Connect agents to your systems with server classes in `app/mcp`, per-user inputs, tool filtering, and OAuth with [`RubyLLM::MCP`](https://rubyllm.com/mcp/)
 * **Agents:** Reusable assistants with `RubyLLM::Agent`
 * **The agentic loop:** Drive it yourself with `ask_later`, `step`, and `complete?`
-* **Evaluations (main):** Reusable datasets, model criteria, and Ruby assertions with [`RubyLLM::Evaluation`](https://rubyllm.com/next/evaluations/)
+* **Evaluations:** Reusable datasets, model criteria, and Ruby assertions with [`RubyLLM::Evaluation`](https://rubyllm.com/evaluations/)
 * **Chat:** Conversational AI with `RubyLLM.chat`
 * **Vision:** Analyze images and videos
 * **Audio:** Transcribe speech with `RubyLLM.transcribe` and generate it with `RubyLLM.speak`
 * **Documents:** Ask questions about PDFs, text files, and other supported formats
-* **OCR:** Turn documents into markdown with `RubyLLM.ocr`
+* **OCR:** Turn documents into Markdown with `RubyLLM.ocr`
 * **Image generation:** Create images with `RubyLLM.paint`
 * **Video generation:** Create videos with `RubyLLM.animate`
 * **Embeddings:** Generate embeddings with `RubyLLM.embed`
@@ -73,14 +73,13 @@ More than a client for model APIs. RubyLLM gives your application the convention
 * **Citations:** Normalized source citations from documents, search, and grounding
 * **Batches:** Provider-side batch processing with provider-specific discounts via `RubyLLM.batch`
 * **Compaction:** Let providers condense long conversations with `with_compaction`
-* **Token counting:** Count a request before you send it with `count_tokens`
-* **Providers:** OpenAI, Azure, xAI, Anthropic, Gemini, VertexAI, Bedrock, Cohere, DeepSeek, Hetzner, Mistral, Ollama, Ollama Cloud, OpenRouter, Perplexity, GPUStack, ElevenLabs, Deepgram, TypeSafe, and any OpenAI-compatible API
+* **Token counting:** Count a request before you send it with `count_tokens`, or tokenize plain text with `RubyLLM.tokenize`
+* **Hosted research:** Run a provider's research agent and read its report with `RubyLLM.research`
+* **Providers:** OpenAI, Azure, xAI, Anthropic, Gemini, Vertex AI, Bedrock, Cohere, DeepSeek, Hetzner, Mistral, Ollama, Ollama Cloud, OpenRouter, Perplexity, GPUStack, ElevenLabs, Deepgram, TypeSafe, and any OpenAI-compatible API
 
 ## Evaluate your agents
 
 Keep questions and expected answers in a dataset. RubyLLM checks correctness by default. Run the same evaluation from Ruby, RSpec, Minitest, or Rake.
-
-Evaluations are available on `main`. Follow the [development installation guide](https://rubyllm.com/next/getting-started/) to try them.
 
 `app/agents/support_agent.rb`
 
@@ -120,7 +119,7 @@ report.passed?
 report.cost.total
 ```
 
-The model evaluator checks meaning, so answers can use different wording. Declare your own criteria, add Ruby assertions, or choose a configured evaluator agent or judgment model. [Read the evaluation guides](https://rubyllm.com/next/evaluations/).
+The model evaluator checks meaning, so answers can use different wording. Declare your own criteria, add Ruby assertions, or choose a configured evaluator agent or judgment model. [Read the evaluation guides](https://rubyllm.com/evaluations/).
 
 ## Feels at home in Rails
 
@@ -218,7 +217,7 @@ speech.save "welcome.mp3"
 ```
 
 ```ruby
-# Extract document text as markdown
+# Extract document text as Markdown
 document = RubyLLM.ocr "contract.pdf"
 puts document.markdown
 ```
@@ -287,10 +286,10 @@ bundle add ruby_llm --version 2.1.1
 Configure a provider in your script, or in `config/initializers/ruby_llm.rb` in Rails:
 
 ```ruby
-require 'ruby_llm'
+require "ruby_llm"
 
 RubyLLM.configure do |config|
-  config.openai_api_key = ENV.fetch('OPENAI_API_KEY')
+  config.openai_api_key = ENV.fetch("OPENAI_API_KEY")
 end
 ```
 

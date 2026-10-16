@@ -16,7 +16,7 @@ component(:runtime_tooling,
 runtime.cannot_reference_constants 'RubyLLM::Generators', 'Rails::Generators'
 
 # User-facing objects and orchestration. These are nouns like Chat, Batch,
-# UploadedFile, Embedding, Image, Message, Tool, and Content.
+# UploadedFile, Embedding, Image, Message, Tool, and Agent.
 component :domain, in: %w[
   lib/ruby_llm/evaluation.rb
   lib/ruby_llm/evaluation/**/*.rb
@@ -145,8 +145,8 @@ component :protocol_contract,
           in: 'lib/ruby_llm/protocol.rb',
           constants: 'RubyLLM::Protocol'
 
-# Protocols are wire-family implementations: Chat Completions, Responses,
-# Anthropic, Gemini, Converse, and shared OpenAI wire mechanics.
+# Protocols are wire formats: Chat Completions, Responses, Anthropic, Gemini,
+# Converse, Cohere, Files, and provider-specific storage APIs.
 component :protocols,
           in: 'lib/ruby_llm/protocols/**/*.rb',
           namespace: 'RubyLLM::Protocols'
@@ -229,7 +229,18 @@ chat_protocol_families.must_implement :render_payload, :completion_url, :parse_c
 # Wire serialization is render_*, deserialization is parse_*. The non-idiomatic
 # serialize_/to_wire_ forms have no place in a protocol.
 protocols.method_names.matching(/\A(serialize|deserialize|to_wire|from_wire)_/)
-         .forbidden(because: 'serialize with render_*, deserialize with parse_*')
+         .forbidden(because: 'protocols serialize with render_* and deserialize with parse_*')
+
+# format_* and extract_* are the same two jobs under older names, in protocols
+# and in the provider dialects that override them. The exceptions do neither
+# job (they resolve a speech format or guess from a model id) or would collide
+# with a parse_* of another meaning in the same class.
+protocols.method_names.matching(/\A(format|extract)_/)
+         .forbidden(except: %i[format_for extract_tool_calls extract_citations],
+                    because: 'protocols serialize with render_* and deserialize with parse_*')
+providers.method_names.matching(/\A(format|extract)_/)
+         .forbidden(except: %i[extract_capabilities],
+                    because: 'protocols serialize with render_* and deserialize with parse_*')
 
 # Protocols render and parse provider wire formats. They may create domain
 # objects, but should not reach into concrete provider adapters. A protocol
@@ -243,16 +254,16 @@ protocols.cannot_reference_constants 'RubyLLM::Providers'
 # under RubyLLM::Protocols instead.
 providers.cannot_reference_constants 'RubyLLM::Protocol'
 providers.cannot_call :batch_protocol, :files, receiver: :none,
-                                               because: 'register every wire operation with protocol'
+                                               because: 'every wire operation is registered with protocol'
 
 provider_contract.method_names(scope: :class)
                  .matching(/\A(?:batch|file)_protocols?\z/)
-                 .forbidden(because: 'keep one protocol macro and one protocol registry')
+                 .forbidden(because: 'protocols share one macro and one registry')
 
 file_protocols.must_implement :upload, :find, :download
 
 # The plain-Ruby library must never reach into the Rails integration; this is
-# what keeps `require "ruby_llm"` free of ActiveRecord. Support is a leaf layer
+# what keeps `require "ruby_llm"` free of Active Record. Support is a leaf layer
 # that also must not know protocols or concrete providers.
 domain.cannot_reference_constants 'RubyLLM::ActiveRecord'
 support.cannot_reference_constants 'RubyLLM::ActiveRecord', 'RubyLLM::Protocols', 'RubyLLM::Providers'
@@ -261,26 +272,31 @@ support.cannot_reference_constants 'RubyLLM::ActiveRecord', 'RubyLLM::Protocols'
 # record that responds to #to_llm, but they never define persistence
 # conversion methods themselves.
 domain.method_names.matching(/\A(to|from)_llm\z/)
-      .forbidden(because: 'convert Active Record values inside the Rails integration')
+      .forbidden(because: 'Active Record values are converted inside the Rails integration')
 
 # The Rails integration builds on the domain and support layers and delegates
 # through the Provider contract, not wire protocols or concrete adapters.
 rails_integration.cannot_reference_constants 'RubyLLM::Protocols', 'RubyLLM::Providers'
 
-# The domain is plain Ruby; it must not call ActiveRecord persistence.
+# The domain is plain Ruby; it must not call Active Record persistence.
 domain.cannot_call :save!, :update!, :create!, :destroy!, :transaction
 
 # Generic Ruby naming idioms: no get_/set_ accessors, no is_ predicate prefix.
 preset :ruby_conventions
 
 # Capabilities are one query, supports?(:name), never a supports_*? predicate.
-support.method_names.matching(/\Asupports_\w+\?\z/).forbidden(because: 'query capabilities with supports?(:name)')
+support.method_names.matching(/\Asupports_\w+\?\z/).forbidden(because: 'capabilities are queried with supports?(:name)')
+
+# What a wire format can carry is a bare predicate, like Provider#files?.
+protocol_contract.method_names.matching(/\Asupports_\w+\?\z/).forbidden(because: 'a predicate is named after the thing')
+protocols.method_names.matching(/\Asupports_\w+\?\z/).forbidden(because: 'a predicate is named after the thing')
+providers.method_names.matching(/\Asupports_\w+\?\z/).forbidden(because: 'a predicate is named after the thing')
 
 provider_capabilities.method_names
                      .matching(
                        /context_window|max_(?:output_)?tokens|pric|family|modalit|release_date|knowledge_cutoff/
                      )
-                     .forbidden(because: 'keep model metadata in models.dev or provider model listings')
+                     .forbidden(because: 'model metadata belongs in models.dev or provider model listings')
 provider_capabilities.must_implement :augment, scope: :class
 
 # The Agent is a declarative wrapper over Chat: every Chat#with_x setter has a

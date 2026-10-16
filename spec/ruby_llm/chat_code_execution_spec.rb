@@ -79,13 +79,14 @@ RSpec.describe RubyLLM::Chat do
     end
 
     it 'rejects nil, unknown options, unknown languages, and options with false' do
-      expect { chat.with_code_execution(nil) }.to raise_error(ArgumentError, /accepts false or code execution/)
-      expect { chat.with_code_execution(memory: 1) }.to raise_error(ArgumentError, /got memory/)
-      expect { chat.with_code_execution(timeout: 5) }.to raise_error(ArgumentError, /got timeout/)
-      expect { chat.with_code_execution(languages: [:cobol]) }.to raise_error(ArgumentError, /got cobol/)
-      expect { chat.with_code_execution(languages: []) }.to raise_error(ArgumentError, /at least one language/)
-      expect { chat.with_code_execution(gems: nil) }.to raise_error(ArgumentError, /cannot be nil/)
-      expect { chat.with_code_execution(false, gems: %w[a]) }.to raise_error(ArgumentError, /does not accept/)
+      expect { chat.with_code_execution(nil) }
+        .to raise_error(ArgumentError, 'with_code_execution accepts true, false, or code execution options')
+      expect { chat.with_code_execution(memory: 1) }.to raise_error(ArgumentError, /\Awith_code.*got :memory/)
+      expect { chat.with_code_execution(timeout: 5) }.to raise_error(ArgumentError, /got :timeout/)
+      expect { chat.with_code_execution(languages: [:cobol]) }.to raise_error(ArgumentError, /\ACode.*got cobol/)
+      expect { chat.with_code_execution(languages: []) }.to raise_error(ArgumentError, /\ACode.*one language/)
+      expect { chat.with_code_execution(gems: nil) }.to raise_error(ArgumentError, /\Awith_code.*cannot be nil/)
+      expect { chat.with_code_execution(false, gems: %w[a]) }.to raise_error(ArgumentError, /\Awith_code.*\(false\)/)
       expect { chat.with_code_execution(gems: %w[a], gem_home: '/g') }.to raise_error(ArgumentError, /not both/)
       expect { chat.with_code_execution(python: %w[a], virtualenv: '/v') }.to raise_error(ArgumentError, /not both/)
       expect { chat.with_code_execution(npm: %w[a], node_modules: '/n') }.to raise_error(ArgumentError, /not both/)

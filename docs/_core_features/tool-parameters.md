@@ -3,7 +3,7 @@ layout: default
 title: Tool Parameters
 parent: "Tools"
 nav_order: 1
-description: Declare tool arguments - from inferred signatures to full JSON Schema, rich return values, and provider-specific metadata.
+description: Declare tool arguments, from inferred signatures to full JSON Schema, with rich return values and provider-specific metadata.
 ---
 
 # {{ page.title }}
@@ -26,9 +26,9 @@ The model only knows what arguments a tool accepts from the schema you give it. 
 
 RubyLLM ships with three complementary approaches:
 
-*   **Signature inference** for simple flat arguments.
-*   The **`parameter` helper** for quick, flat argument lists.
-*   The **`parameters` DSL** for expressive, structured inputs.
+* **Signature inference** for simple flat arguments.
+* The **`parameter` helper** for quick, flat argument lists.
+* The **`parameters` DSL** for expressive, structured inputs.
 
 Start with the method signature. Add `parameter` when a flat argument needs a description, type, or optionality that is not obvious from Ruby alone. Use the `parameters` DSL whenever you need nested objects, arrays, enums, or union types.
 
@@ -67,7 +67,7 @@ class Distance < RubyLLM::Tool
 end
 ```
 
-### parameters DSL
+### The `parameters` DSL
 
 When you need nested objects, arrays, enums, or union types, the `parameters do ... end` DSL produces the JSON Schema that function-calling models expect while staying Ruby-flavoured.
 
@@ -190,15 +190,13 @@ search_tool = DatabaseSearch.new(MyDatabase)
 chat.with_tools(search_tool)
 ```
 
-Use custom initialization for dependencies and runtime state. If two tools need
-different names, descriptions, or inputs, define separate tool classes so the
-parameter schema and `execute` signature stay together.
+Use custom initialization for dependencies and runtime state. If two tools need different names, descriptions, or inputs, define separate tool classes so the parameter schema and `execute` signature stay together.
 
 ## Advanced Tool Metadata
 
 ### Provider-Specific Parameters
 
-Some providers accept additional metadata alongside the JSON Schema, for example Anthropic's `cache_control` hints. Use `provider_options` to declare these once on the tool class and RubyLLM will merge them into the payload when the provider supports the keys.
+Some providers accept additional metadata alongside the JSON Schema, for example Anthropic's `cache_control` hints. Use `provider_options` to declare these once on the tool class and RubyLLM merges them into the payload when the provider supports the keys.
 
 ```ruby
 class TodoTool < RubyLLM::Tool
@@ -252,6 +250,6 @@ Strict mode requires every property in `required`; make optional parameters null
 
 ## Next Steps
 
-*   [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - Steer tool choice, call counts, concurrency, and callbacks.
-*   [Tools]({% link _core_features/tools.md %}) - The execution flow, error handling, and security overview.
-*   [Attachments]({% link _core_features/attachments.md %}) - How attachments returned from tools are consumed.
+* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - steer tool choice, call counts, concurrency, and callbacks.
+* [Tools]({% link _core_features/tools.md %}) - the execution flow, error handling, and security overview.
+* [Attachments]({% link _core_features/attachments.md %}) - how attachments returned from tools are consumed.

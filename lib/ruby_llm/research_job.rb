@@ -46,13 +46,13 @@ module RubyLLM
     # The provider-assigned job ID.
     attr_reader :id
 
-    # The provider slug.
+    # The slug of the provider that runs the task, as a String.
     attr_reader :provider
 
     # The hosted agent's identity, separate from a model ID.
     attr_reader :agent
 
-    # The normalized state: +:pending+, +:completed+, +:incomplete+,
+    # The normalized state: +:pending+, +:succeeded+, +:incomplete+,
     # +:failed+, or +:cancelled+.
     attr_reader :status
 
@@ -124,7 +124,7 @@ module RubyLLM
 
     def initialize(id:, provider:, agent:, protocol:, **state) # :nodoc:
       @id = id
-      @provider = provider.to_sym
+      @provider = provider
       @agent = agent
       @protocol = protocol
       @usage_owner = Accounting::Usage.owner
@@ -138,7 +138,7 @@ module RubyLLM
     def done? = !pending?
 
     # Returns whether the task finished with a complete report.
-    def completed? = status == :completed
+    def succeeded? = status == :succeeded
 
     # Returns whether the provider stopped before completing the report.
     def incomplete? = status == :incomplete
@@ -149,7 +149,7 @@ module RubyLLM
     # Returns whether the provider confirmed cancellation.
     def cancelled? = status == :cancelled
 
-    # Fetches the latest state and returns self. Does nothing after the
+    # Fetches the latest state and returns +self+. Does nothing after the
     # task finishes. +timeout:+ limits this request in seconds.
     def refresh(timeout: nil)
       self.class.validate_polling_options(timeout, 1) unless timeout.nil?
@@ -160,7 +160,7 @@ module RubyLLM
       self
     end
 
-    # Polls until a terminal state and returns self. A timeout leaves the
+    # Polls until a terminal state and returns +self+. A timeout leaves the
     # independent task running and raises TimeoutError with this job.
     # Incomplete reports remain available through #message.
     def wait(timeout: 600, interval: 5)
@@ -168,7 +168,9 @@ module RubyLLM
       deadline = monotonic_time + timeout
       until done?
         remaining = deadline - monotonic_time
-        raise TimeoutError.new("Research timed out (job #{id})", job: self) unless remaining.positive?
+        unless remaining.positive?
+          raise TimeoutError.new("Research timed out after #{timeout} seconds (job #{id})", job: self)
+        end
 
         refresh(timeout: remaining)
         sleep [interval, deadline - monotonic_time].min if pending? && monotonic_time < deadline
@@ -178,7 +180,7 @@ module RubyLLM
       self
     end
 
-    # Requests cancellation and returns self. Only the provider's response
+    # Requests cancellation and returns +self+. Only the provider's response
     # can confirm cancellation; this does not delete stored task data.
     def cancel(timeout: 5)
       self.class.validate_polling_options(timeout, 1)
@@ -198,7 +200,7 @@ module RubyLLM
       @message
     end
 
-    # Returns the provider-reported task usage. Unreported fields are nil.
+    # The provider-reported task usage. Unreported fields are +nil+.
     attr_reader :tokens
 
     # Returns the reported cost, or unknown cost when the provider supplies
@@ -234,7 +236,7 @@ module RubyLLM
     end
 
     def record_usage
-      status = { completed: :succeeded, incomplete: :succeeded, cancelled: :cancelled }.fetch(@status, :failed)
+      status = { succeeded: :succeeded, incomplete: :succeeded, cancelled: :cancelled }.fetch(@status, :failed)
       entry = Accounting::Usage::Entry.new(operation: :research, provider:, model: agent, status:, tokens:, cost:,
                                            owner: @usage_owner)
       Accounting::Usage.report(entry, config: @protocol.config)

@@ -5,7 +5,7 @@ require_relative '../generator_helpers'
 
 module RubyLLM
   module Generators
-    # Generates a simple chat UI scaffold for RubyLLM
+    # Generator for the chat UI scaffold.
     class ChatUIGenerator < Rails::Generators::Base
       include RubyLLM::Generators::GeneratorHelpers
 
@@ -16,18 +16,17 @@ module RubyLLM
 
       namespace 'ruby_llm:chat_ui'
 
-      argument :model_mappings, type: :array, default: [], banner: 'chat:ChatName message:MessageName ...'
+      argument :model_mappings, type: :array, default: [], banner: 'chat:ChatName message:MessageName'
       class_option :ui, type: :string, default: 'auto', enum: %w[scaffold tailwind auto],
                         desc: 'UI template style (scaffold, tailwind, auto)'
 
       desc 'Creates a chat UI scaffold with Turbo streaming\n' \
-           'Usage: bin/rails g ruby_llm:chat_ui [chat:ChatName] [message:MessageName] ...'
+           'Usage: bin/rails generate ruby_llm:chat_ui [chat:ChatName] [message:MessageName]'
 
       def check_model_exists
         model_path = "app/models/#{message_model_name.underscore}.rb"
         return if File.exist?(model_path)
 
-        # Build the argument string for the install/upgrade commands
         args = []
         args << "chat:#{chat_model_name}" if chat_model_name != 'Chat'
         args << "message:#{message_model_name}" if message_model_name != 'Message'
@@ -42,16 +41,10 @@ module RubyLLM
       end
 
       def create_views
-        # Design contract:
-        # - `scaffold` should stay close to Rails scaffold ERB output.
-        # - `tailwind` should stay close to tailwindcss-rails scaffold output.
-        # - Only small chat-specific affordances should be layered on top.
-        # For namespaced models, use the proper Rails convention path
         chat_view_path = chat_model_name.underscore.pluralize
         message_view_path = message_model_name.underscore.pluralize
         model_view_path = model_model_name.underscore.pluralize
 
-        # Chat views
         template ui_template('views/chats/index.html.erb'), "app/views/#{chat_view_path}/index.html.erb"
         template ui_template('views/chats/new.html.erb'), "app/views/#{chat_view_path}/new.html.erb"
         template ui_template('views/chats/show.html.erb'), "app/views/#{chat_view_path}/show.html.erb"
@@ -60,11 +53,9 @@ module RubyLLM
         template ui_template('views/chats/_form.html.erb'), "app/views/#{chat_view_path}/_form.html.erb"
         template 'views/chats/_approvals.html.erb', "app/views/#{chat_view_path}/_approvals.html.erb"
 
-        # Approval views
         template ui_template('views/approvals/_approval.html.erb'), "app/views/#{approval_view_path}/_approval.html.erb"
         template 'views/approvals/create.turbo_stream.erb', "app/views/#{approval_view_path}/create.turbo_stream.erb"
 
-        # Message views
         template ui_template('views/messages/_assistant.html.erb'), "app/views/#{message_view_path}/_assistant.html.erb"
         template ui_template('views/messages/_user.html.erb'), "app/views/#{message_view_path}/_user.html.erb"
         template ui_template('views/messages/_system.html.erb'), "app/views/#{message_view_path}/_system.html.erb"
@@ -85,7 +76,6 @@ module RubyLLM
                  "app/views/#{message_view_path}/_attachments.html.erb"
         template ui_template('views/messages/_form.html.erb'), "app/views/#{message_view_path}/_form.html.erb"
 
-        # Model views
         template ui_template('views/models/index.html.erb'), "app/views/#{model_view_path}/index.html.erb"
         template ui_template('views/models/show.html.erb'), "app/views/#{model_view_path}/show.html.erb"
         template ui_template('views/models/_model.html.erb'),
@@ -93,7 +83,6 @@ module RubyLLM
       end
 
       def create_controllers
-        # For namespaced models, use the proper Rails convention path
         chat_controller_path = chat_model_name.underscore.pluralize
         message_controller_path = message_model_name.underscore.pluralize
         model_controller_path = model_model_name.underscore.pluralize
@@ -158,7 +147,6 @@ module RubyLLM
       end
 
       def add_routes
-        # For namespaced models, use Rails convention with namespace blocks
         if chat_model_name.include?('::')
           namespace = chat_model_name.deconstantize.underscore
           chat_resource = chat_model_name.demodulize.underscore.pluralize
@@ -215,7 +203,6 @@ module RubyLLM
       def display_post_install_message
         return unless behavior == :invoke
 
-        # Show the correct URL based on whether models are namespaced
         url_path = if chat_model_name.include?('::')
                      chat_model_name.underscore.pluralize
                    else

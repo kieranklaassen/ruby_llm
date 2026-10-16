@@ -109,7 +109,7 @@ chat.ask "Add a changelog entry for the new export feature"
 
 call = chat.pending_approvals.first
 call.arguments
-# => {"language"=>"shell", "code"=>"...", "sandbox"=>"workspace", "reason"=>"Edit CHANGELOG.md in the project"}
+# => {"language" => "shell", "code" => "...", "sandbox" => "workspace", "reason" => "Edit CHANGELOG.md in the project"}
 chat.tools[:run_code].summary(call.arguments["sandbox"])
 # => "Starts in /srv/app/storage/workspace. Can change /srv/app/storage/workspace. No network access. Stops after 300 seconds."
 
@@ -237,6 +237,6 @@ A sandbox on another machine copies the readable and writable paths in before th
 
 ## Next Steps
 
-* [Code Execution]({% link _core_features/code-execution.md %}) - Let the model run Ruby, Python, JavaScript, and shell code.
-* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - Approve calls, remember approvals, and run calls concurrently.
-* [Agents]({% link _advanced/agents.md %}) - Package code execution with instructions and tools.
+* [Code Execution]({% link _core_features/code-execution.md %}) - let the model run Ruby, Python, JavaScript, and shell code.
+* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - approve calls, remember approvals, and run calls concurrently.
+* [Agents]({% link _advanced/agents.md %}) - package code execution with instructions and tools.

@@ -328,7 +328,7 @@ module RubyLLM
       end
 
       def check_callback(pending, params)
-        raise Error, 'The authorization expired; start again' if pending['expires_at'] < Time.now.to_i
+        raise Error, 'The authorization expired. Start again.' if pending['expires_at'] < Time.now.to_i
 
         check_issuer(pending, value(params, :iss))
         check_state(pending, value(params, :state).to_s)
@@ -354,7 +354,7 @@ module RubyLLM
 
       def token_request(grant_type, client: credential, key: (signing_key if client['client_id'] == @client_id),
                         **params)
-        server = client['server'] or raise Error, 'No authorization server known; authorize first'
+        server = client['server'] or raise Error, 'No authorization server known. Authorize first.'
         send_token_request(server, client, key, params.merge(grant_type:))
       rescue Error => e
         forget_registration(client) if oauth_error(e) == 'invalid_client'

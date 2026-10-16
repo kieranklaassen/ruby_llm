@@ -33,6 +33,15 @@ RSpec.describe RubyLLM::Batch do
       end
     end
 
+    it 'answers done? and pending? like the other jobs' do
+      provider = RubyLLM::Provider.resolve!(:openai).new(RubyLLM.config)
+      running = described_class.new(provider:, id: 'batch_1', raw_status: 'in_progress', completed: false)
+      finished = described_class.new(provider:, id: 'batch_1', raw_status: 'completed', completed: true)
+
+      expect(running).to have_attributes(pending?: true, done?: false, complete?: false)
+      expect(finished).to have_attributes(pending?: false, done?: true, complete?: true)
+    end
+
     it 'exposes the provider status separately' do
       provider = RubyLLM::Provider.resolve!(:openai).new(RubyLLM.config)
       batch = described_class.new(provider:, id: 'batch_1', raw_status: 'cancelled', completed: true)
@@ -115,7 +124,7 @@ RSpec.describe RubyLLM::Batch do
       Class.new do
         include RubyLLM::Batch::Helpers
 
-        public :batch_result_index, :batch_failure, :batch_error_message, :single_batch_model!, :batch_payload
+        public :batch_result_index, :batch_failure, :batch_error_message, :single_batch_model, :batch_payload
       end.new
     end
 
@@ -145,18 +154,18 @@ RSpec.describe RubyLLM::Batch do
       end
     end
 
-    describe '#single_batch_model!' do
+    describe '#single_batch_model' do
       it 'returns the one model the requests share' do
         requests = [{ model: model_for(:anthropic) }, { model: model_for(:anthropic) }]
 
-        expect(helpers.single_batch_model!(requests, 'anthropic')).to eq(model_for(:anthropic))
+        expect(helpers.single_batch_model(requests, 'Anthropic')).to eq(model_for(:anthropic))
       end
 
       it 'refuses a batch that mixes models' do
         requests = [{ model: 'a' }, { model: 'b' }]
 
-        expect { helpers.single_batch_model!(requests, 'anthropic') }.to raise_error(
-          RubyLLM::Error, 'anthropic batch requests must use one model per submission'
+        expect { helpers.single_batch_model(requests, 'Anthropic') }.to raise_error(
+          ArgumentError, 'Anthropic batches take one model per submission'
         )
       end
     end
@@ -222,7 +231,7 @@ RSpec.describe RubyLLM::Batch do
 
     it 'refuses a provider that has no batch API' do
       expect { described_class.find('batch_123', provider: :perplexity) }.to raise_error(
-        RubyLLM::Error, "perplexity doesn't support batch requests"
+        RubyLLM::Error, 'Perplexity does not support batch requests'
       )
     end
   end

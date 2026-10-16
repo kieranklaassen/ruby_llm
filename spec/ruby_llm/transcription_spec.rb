@@ -161,7 +161,7 @@ RSpec.describe RubyLLM::Transcription, :live do
     it 'raises for providers that do not stream transcriptions' do
       expect do
         RubyLLM.transcribe(audio_path, model: model_for(:gemini), provider: :gemini) { |chunk| chunk }
-      end.to raise_error(RubyLLM::Error, /doesn't support streaming transcription/)
+      end.to raise_error(RubyLLM::Error, /does not support streaming transcription/)
     end
 
     it 'validates model existence' do

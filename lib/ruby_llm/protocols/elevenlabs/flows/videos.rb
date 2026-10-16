@@ -33,7 +33,7 @@ module RubyLLM
 
           def render_character_animation(prompt, with:)
             unless prompt.nil? || prompt.empty?
-              raise ArgumentError, 'Creatify Aurora uses image and audio input; omit the prompt'
+              raise ArgumentError, 'Creatify Aurora uses image and audio input. Omit the prompt.'
             end
 
             image = with.select(&:image?)
@@ -73,7 +73,7 @@ module RubyLLM
                       model: job.model, raw: job.raw)
           end
 
-          def validate_animate_inputs!(with:)
+          def validate_animate_inputs(with:)
             with.each do |attachment|
               unless attachment.image? || attachment.audio? || attachment.video?
                 raise UnsupportedAttachmentError, attachment.mime_type

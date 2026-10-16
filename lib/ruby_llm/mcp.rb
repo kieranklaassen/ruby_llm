@@ -35,6 +35,7 @@ module RubyLLM
     INPUT_ROUNDS = 10
     INPUT_REQUESTS = %i[form url].freeze
     INLINE_SETTINGS = %i[url command transport bearer_token directory timeout prefix input_requests log_level].freeze
+    INLINE_KEYWORDS = %i[name headers env oauth extensions].freeze
     LOG_LEVELS = {
       debug: Logger::DEBUG, info: Logger::INFO, notice: Logger::INFO, warning: Logger::WARN,
       error: Logger::ERROR, critical: Logger::FATAL, alert: Logger::FATAL, emergency: Logger::FATAL
@@ -50,8 +51,8 @@ module RubyLLM
       @url @command @directory @env @headers @bearer_token @timeout @input_names @only @except @prefix
       @tool_declarations @approvals @deferrals @callbacks @oauth @input_requests @extensions @log_level
     ].freeze
-    private_constant :SETTINGS, :INPUT_ROUNDS, :INPUT_REQUESTS, :INLINE_SETTINGS, :EXTENSIONS, :POLL_INTERVAL,
-                     :LOG_LEVELS, :UNKNOWN_TOOL_ERRORS
+    private_constant :SETTINGS, :INPUT_ROUNDS, :INPUT_REQUESTS, :INLINE_SETTINGS, :INLINE_KEYWORDS, :EXTENSIONS,
+                     :POLL_INTERVAL, :LOG_LEVELS, :UNKNOWN_TOOL_ERRORS
 
     class << self
       attr_writer :default_name # :nodoc:
@@ -114,7 +115,8 @@ module RubyLLM
         @transport = block || value
       end
 
-      # Sets the working directory for a stdio server's process.
+      # Sets the working directory for a stdio server's process. Called with
+      # no arguments, returns the declared directory.
       #
       #   directory Rails.root
       #
@@ -145,8 +147,16 @@ module RubyLLM
         @headers = headers.merge(name.to_s => block || value)
       end
 
-      def headers # :nodoc:
-        @headers || {}
+      # Adds HTTP headers sent with every request to the server, as ::header
+      # does for one, and ::env does for environment variables. Values may
+      # be blocks or method names. Called with no arguments, returns them.
+      #
+      #   headers "X-MCP-Toolsets" => "issues", "X-Account" => :account_id
+      #
+      def headers(**headers)
+        return @headers || {} if headers.empty?
+
+        @headers = self.headers.merge(headers.transform_keys(&:to_s))
       end
 
       # Sets the bearer token sent in the +Authorization+ header. Pass the
@@ -206,7 +216,9 @@ module RubyLLM
       #                              client_secret: ENV["OKTA_CLIENT_SECRET"], id_token: -> { user.id_token } }
       def oauth(owner: nil, scopes: nil, client_id: nil, client_secret: nil, grant: nil, private_key: nil,
                 assertion: nil, identity_provider: nil)
-        raise ArgumentError, "Unknown OAuth grant: #{grant}" unless grant.nil? || OAuth::GRANTS.include?(grant)
+        unless grant.nil? || OAuth::GRANTS.include?(grant)
+          raise ArgumentError, "Unknown OAuth grant: #{grant.inspect}. Valid grants: #{OAuth::GRANTS.join(', ')}."
+        end
 
         @oauth = { owner:, scopes:, client_id:, client_secret:, grant:, private_key:, assertion:, identity_provider: }
       end
@@ -216,7 +228,8 @@ module RubyLLM
       end
 
       # Sets how many seconds a request to the server may take. Defaults to
-      # the configured +request_timeout+.
+      # the configured +request_timeout+. Called with no arguments, returns
+      # the declared seconds.
       #
       #   timeout 30
       #
@@ -239,7 +252,8 @@ module RubyLLM
         @input_names.each { |input| define_method(input) { @inputs[input] } }
       end
 
-      # Limits the tools the model sees to the named server tools.
+      # Limits the tools the model sees to the named server tools. Called
+      # with no arguments, returns the declared names.
       #
       #   only :search_issues, :get_issue
       #
@@ -249,7 +263,8 @@ module RubyLLM
         @only = names.flatten.map(&:to_s)
       end
 
-      # Hides the named server tools from the model.
+      # Hides the named server tools from the model. Called with no
+      # arguments, returns the declared names.
       #
       #   except :delete_repository
       #
@@ -261,7 +276,8 @@ module RubyLLM
 
       # Prefixes the names of the server's tools, so tools from servers that
       # share names, such as two servers with a +search+ tool, can join one
-      # chat. Tools renamed with ::tool keep the name you gave them.
+      # chat. Tools renamed with ::tool keep the name you gave them. Called
+      # with no arguments, returns the declared prefix.
       #
       #   prefix :github   # search_issues becomes github_search_issues
       #
@@ -313,7 +329,7 @@ module RubyLLM
       #
       def requires_approval(*names, **options)
         unknown = options.keys - [:if]
-        raise ArgumentError, "Unknown requires_approval options: #{unknown.join(', ')}" if unknown.any?
+        raise ArgumentError, "requires_approval accepts :if, got #{Support::Utils.option_list(unknown)}" if unknown.any?
 
         @approvals = approvals + [[names.flatten.map(&:to_s), options[:if]]]
       end
@@ -382,8 +398,8 @@ module RubyLLM
         return @input_requests || INPUT_REQUESTS if kinds.empty?
 
         kinds = (kinds.flatten - [false, nil]).map(&:to_sym)
-        unknown = kinds - INPUT_REQUESTS
-        raise ArgumentError, "Unknown input requests: #{unknown.join(', ')}" if unknown.any?
+        unknown = Support::Utils.option_list(kinds - INPUT_REQUESTS)
+        raise ArgumentError, "input_requests accepts :form, :url, got #{unknown}" unless unknown.empty?
 
         @input_requests = kinds
       end
@@ -441,7 +457,9 @@ module RubyLLM
       # Raises ArgumentError for a level the protocol does not define.
       def log_level(level = nil)
         return @log_level if level.nil?
-        raise ArgumentError, "Unknown MCP log level: #{level}" unless LOG_LEVELS.key?(level.to_sym)
+        unless LOG_LEVELS.key?(level.to_sym)
+          raise ArgumentError, "Unknown MCP log level: #{level.inspect}. Valid levels: #{LOG_LEVELS.keys.join(', ')}."
+        end
 
         @log_level = level.to_sym
       end
@@ -474,13 +492,19 @@ module RubyLLM
       private
 
       def check_inline_settings(name, settings)
-        unknown = settings.keys - INLINE_SETTINGS
-        raise ArgumentError, "Unknown MCP settings: #{unknown.join(', ')}" if unknown.any?
+        unknown = Support::Utils.option_list(settings.keys - INLINE_SETTINGS)
+        accepted = Support::Utils.option_list(INLINE_KEYWORDS + INLINE_SETTINGS)
+        raise ArgumentError, "An inline MCP accepts #{accepted}, got #{unknown}" unless unknown.empty?
         raise ArgumentError, 'An MCP with a transport needs a name' if settings[:transport] && name.nil?
       end
 
       def extension_identifier(name)
-        return EXTENSIONS.fetch(name) { raise ArgumentError, "Unknown MCP extension: #{name}" } if name.is_a?(Symbol)
+        if name.is_a?(Symbol)
+          return EXTENSIONS.fetch(name) do
+            raise ArgumentError,
+                  "Unknown MCP extension: #{name.inspect}. Valid extensions: #{EXTENSIONS.keys.join(', ')}."
+          end
+        end
         return [name.to_s, {}] if name.to_s.include?('/')
 
         raise ArgumentError, "MCP extensions are named with a vendor prefix, such as com.example/#{name}"
@@ -511,7 +535,10 @@ module RubyLLM
     # Raises ArgumentError for keywords that are not declared inputs.
     def initialize(context: nil, **inputs)
       unknown = inputs.keys - self.class.inputs
-      raise ArgumentError, "Unknown MCP inputs: #{unknown.join(', ')}" if unknown.any?
+      if unknown.any?
+        accepted = self.class.inputs.empty? ? 'no inputs' : Support::Utils.option_list(self.class.inputs)
+        raise ArgumentError, "This MCP accepts #{accepted}, got #{Support::Utils.option_list(unknown)}"
+      end
 
       @context = context
       @inputs = inputs
@@ -675,7 +702,7 @@ module RubyLLM
       until task.done?
         ask_for_task_input(task) if task.status == :input_required
         remaining = deadline - Process.clock_gettime(Process::CLOCK_MONOTONIC)
-        raise Error, "Task #{task.id} did not finish in #{limit} seconds" unless remaining.positive?
+        raise Error, "Task #{task.id} timed out after #{limit} seconds" unless remaining.positive?
 
         Support::Cancellation.pause([interval || poll_interval(task), remaining].min)
         task.refresh

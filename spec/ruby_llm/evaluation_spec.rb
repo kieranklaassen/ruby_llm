@@ -113,13 +113,13 @@ RSpec.describe RubyLLM::Evaluation do
     expect(evaluation.definitions.keys).to eq([:correct])
     expect(evaluation.definitions[:correct][:instructions]).to eq('Correct answer')
     expect(evaluation.adapters).to be_empty
-    expect { child.evaluation(:short, 'Duplicate') }.to raise_error(ArgumentError, /Duplicate/)
+    expect { child.evaluation(:short, 'Duplicate') }.to raise_error(ArgumentError, 'Two evaluations are named short')
   end
 
   it 'rejects invalid runs and incomplete definitions before executing' do
     expect { evaluation.run(dataset: [], repetitions: 0) }.to raise_error(ArgumentError, /Repetitions/)
     expect { evaluation.run(dataset: []) }.to raise_error(ArgumentError, /empty/)
-    expect { evaluation.run(dataset: cases * 2) }.to raise_error(ArgumentError, /unique/)
+    expect { evaluation.run(dataset: cases * 2) }.to raise_error(ArgumentError, /\ATwo cases are named /)
     evaluation.evaluation(:correct)
     evaluation.evaluator(model: model_for(:openai))
     expect { evaluation.run(dataset: cases) }.to raise_error(ArgumentError, /Missing instructions/)
@@ -211,7 +211,7 @@ RSpec.describe RubyLLM::Evaluation do
   it 'rejects imported executable evaluators instead of silently ignoring their checks' do
     expect do
       evaluation.run(dataset: { cases:, evaluators: ['EqualsExpected'] })
-    end.to raise_error(ArgumentError, /declare evaluators in Ruby/)
+    end.to raise_error(ArgumentError, /A dataset accepts :name, :cases, got :evaluators\. Declare evaluators in Ruby\./)
   end
 
   it 'runs teardown when setup fails and keeps the original error' do
@@ -228,7 +228,12 @@ RSpec.describe RubyLLM::Evaluation do
   end
 
   it 'rejects an evaluation without perform before starting cases' do
-    expect { Class.new(described_class).run(dataset: cases) }.to raise_error(ArgumentError, /Define perform/)
+    expect { Class.new(described_class).run(dataset: cases) }.to raise_error(ArgumentError, /must implement #perform/)
+  end
+
+  it 'names the unknown fields of a case as a list' do
+    expect { described_class::Case.new(name: 'greeting', inputs: 'Hello', expected: 'HELLO', tags: []) }
+      .to raise_error(ArgumentError, 'A case accepts :name, :inputs, :metadata, :expected_output, got :expected, :tags')
   end
 
   it 'rejects conflicting dataset arguments and invalid acceptance thresholds' do

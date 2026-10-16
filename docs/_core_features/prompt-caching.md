@@ -3,7 +3,7 @@ layout: default
 title: Prompt Caching
 parent: "Chat"
 nav_order: 7
-description: Reuse stable prompt prefixes with automatic or explicit prompt caching
+description: Reuse stable prompt prefixes with automatic or explicit prompt caching.
 ---
 
 # {{ page.title }}
@@ -133,10 +133,12 @@ cache = RubyLLM.cache(
   ttl: 3600
 )
 
-cache.name       # => "cachedContents/abc123"
+cache.id         # => "cachedContents/abc123"
 cache.tokens     # => 7809
 cache.expires_at # => 2026-08-11 12:34:56 UTC
 ```
+
+`cache.raw` holds the provider's response as a Hash when you need a field RubyLLM does not name.
 
 Pass file attachments with `with:`, the same way `ask` accepts them:
 
@@ -146,7 +148,7 @@ cache = RubyLLM.cache("Reference material:", model: 'gemini-2.5-flash', with: "m
 
 The content must meet the model's minimum cacheable size. `ttl:` accepts seconds or a duration string such as `"300s"` and defaults to one hour.
 
-Attach the cache with `with_caching(id:)`, passing the `CachedContent` or its name:
+Attach the cache with `with_caching(id:)`, passing the `CachedContent` or its id:
 
 ```ruby
 chat = RubyLLM.chat(model: 'gemini-2.5-flash').with_caching(id: cache)
@@ -181,4 +183,4 @@ chat.ask("Today's request: #{summary}")
 
 A reloaded chat renders the same request bytes as the turn that wrote it, so the next turn reuses the cached prefix. Tool call arguments keep the key order PostgreSQL `jsonb` and MySQL `json` columns store.
 
-Apps upgrading from 1.16 get `cache_until_here` from the [2.0 upgrade](https://github.com/crmne/ruby_llm/blob/v2.0.0/docs/_reference/upgrading.md), and apps on 2.0 get `cache_ttl` from the [2.1 upgrade]({% link _reference/upgrading.md %}#upgrade-the-rails-schema). New apps get both columns from the install generator.
+Apps upgrading from 1.16 get `cache_until_here` from the [2.0 upgrade](https://github.com/crmne/ruby_llm/blob/v2.0.0/docs/_reference/upgrading.md), and apps on 2.0 get `cache_ttl` from the [2.1 upgrade](https://github.com/crmne/ruby_llm/blob/v2.1.1/docs/_reference/upgrading.md). New apps get both columns from the install generator.

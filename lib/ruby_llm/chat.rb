@@ -33,11 +33,15 @@ module RubyLLM
     UNFINISHED_TOOL_RESULT = { error: 'The tool call did not finish.' }.to_json.freeze
     private_constant :THINKING_OPTIONS, :PAUSED, :UNFINISHED_TOOL_RESULT
 
-    # The Model the chat sends requests to.
+    # The Model the chat sends requests to. Its id is <tt>model.id</tt>.
     attr_reader :model
 
     # The Provider instance handling requests for the current model.
     attr_reader :provider
+
+    # The wire protocol set with +protocol:+ on Chat.new or #with_model, or
+    # +nil+ when the provider picks the protocol for the model.
+    attr_reader :protocol
 
     # The Message objects exchanged so far, including system instructions.
     attr_reader :messages
@@ -85,7 +89,9 @@ module RubyLLM
     # The Fallback models tried in order when generation fails.
     attr_reader :fallbacks
 
-    # Whether #with_citations asked the provider for citations.
+    # Whether #with_citations asked the provider for citations. Always
+    # +true+ or +false+, never +nil+: citations take no options, so a new
+    # chat starts with +false+.
     attr_reader :citations
 
     # The code execution options set with #with_code_execution, +false+
@@ -118,10 +124,6 @@ module RubyLLM
     # which requires +provider:+. Pass a Context as +context:+ to use its
     # configuration instead of the global one.
     def initialize(model: nil, provider: nil, protocol: nil, assume_model_exists: false, context: nil)
-      if assume_model_exists && !provider
-        raise ArgumentError, 'Provider must be specified if assume_model_exists is true'
-      end
-
       @context = context
       @config = context&.config || RubyLLM.config
       with_model(model, provider: provider, protocol: protocol, assume_model_exists: assume_model_exists)
@@ -204,7 +206,7 @@ module RubyLLM
     # tool calls: finish the round first, recording #approve or #deny
     # decisions for calls that require approval.
     def ask_later(message = nil, with: nil)
-      raise_if_pending_tool_calls!
+      raise_if_pending_tool_calls
       if message.is_a?(MCP::Prompt)
         message.messages.each { |prompt_message| add_message(prompt_message) }
       else
@@ -219,7 +221,7 @@ module RubyLLM
     # Chunk objects. Tool calls in the response are not executed; that is
     # #run_tools.
     def generate(&)
-      raise_if_cancelled!
+      raise_if_cancelled
 
       return generate_once(&) if fallbacks.empty?
 
@@ -237,7 +239,7 @@ module RubyLLM
     # is then ready for the next #generate, or the next batch round.
     # Returns +self+.
     def run_tools
-      raise_if_cancelled!
+      raise_if_cancelled
 
       message = pending_tool_response
       execute_pending_tool_calls(message) if message
@@ -254,7 +256,7 @@ module RubyLLM
     def step(&)
       return if complete?
 
-      raise_if_cancelled!
+      raise_if_cancelled
       return generate(&) unless pending_tool_response
 
       before = messages.length
@@ -445,7 +447,7 @@ module RubyLLM
     # Cancels the current in-flight chat operation. The next cancellation
     # checkpoint raises CancelledError and clears the flag so the chat can be
     # reused. The MCP tasks that pending tool calls wait on are cancelled
-    # then too; see #pending_tasks.
+    # then too; see #pending_tasks. Returns +self+.
     def cancel
       @cancelled = true
       self
@@ -522,7 +524,9 @@ module RubyLLM
         next if hidden_from_model?(tool)
 
         name = tool.name.to_sym
-        raise ArgumentError, "Two tools are named #{name}. Rename one with `tool :#{name}, as:`" if tools.key?(name)
+        if tools.key?(name)
+          raise ArgumentError, "Two tools are named #{name}. Rename one with tool :#{name}, as: :other_name."
+        end
 
         tools[name] = tool
       end
@@ -615,7 +619,7 @@ module RubyLLM
         when :choice then apply_tool_choice(value)
         when :calls then @tool_prefs[:calls] = value.nil? ? nil : normalize_calls(value)
         when :concurrency then @concurrency = normalize_tool_concurrency(value.nil? ? @config.tool_concurrency : value)
-        else raise ArgumentError, "Unknown tool option: #{option}. Valid options are: choice, calls, concurrency"
+        else raise ArgumentError, "with_tool_options accepts :choice, :calls, :concurrency, got :#{option}"
         end
       end
       self
@@ -646,10 +650,11 @@ module RubyLLM
       self
     end
 
-    # Sets fallback models to try, in order, when generation fails. +on:+
-    # selects the error classes that trigger a fallback; the default covers
-    # transient provider and network errors. Pass +nil+ to remove all
-    # fallbacks and restore the default error classes. Returns +self+.
+    # Sets fallback models to try, in order, when generation fails,
+    # replacing any fallbacks set earlier. +on:+ selects the error classes
+    # that trigger a fallback; the default covers transient provider and
+    # network errors. Pass +nil+ to remove all fallbacks and restore the
+    # default error classes. Returns +self+.
     #
     #   chat.with_fallbacks("gpt-4.1-mini", "claude-haiku-4-5")
     #   chat.with_fallbacks(nil)
@@ -701,13 +706,15 @@ module RubyLLM
     def with_thinking(enabled = true, **options) # rubocop:disable Metrics/PerceivedComplexity
       return with_thinking(**enabled.transform_keys(&:to_sym), **options) if enabled.is_a?(Hash)
 
-      raise ArgumentError, 'with_thinking accepts false or thinking options' unless [true, false].include?(enabled)
+      unless [true, false].include?(enabled)
+        raise ArgumentError, 'with_thinking accepts true, false, or thinking options'
+      end
       raise ArgumentError, 'with_thinking(false) does not accept options' if !enabled && options.any?
-      raise ArgumentError, 'thinking options cannot be nil; pass false to disable' if options.value?(nil)
+      raise ArgumentError, 'with_thinking options cannot be nil. Pass false to disable.' if options.value?(nil)
       if (unsupported = options.keys - THINKING_OPTIONS).any?
         raise ArgumentError,
-              "with_thinking accepts #{format_option_keys(THINKING_OPTIONS)}, " \
-              "got #{format_option_keys(unsupported)}"
+              "with_thinking accepts #{Support::Utils.option_list(THINKING_OPTIONS)}, " \
+              "got #{Support::Utils.option_list(unsupported)}"
       end
 
       @thinking = if enabled
@@ -718,18 +725,15 @@ module RubyLLM
       self
     end
 
-    # Returns the thinking options resolved for the current model, or +nil+
-    # when thinking was not configured or needs no provider control.
+    # Returns the thinking options resolved for the current model, +false+
+    # when explicitly disabled, or +nil+ when thinking was not configured or
+    # needs no provider control.
     def thinking
       config = resolved_thinking
       return unless config
+      return false if @thinking.disable?
 
-      {
-        effort: config.effort,
-        budget: config.budget,
-        display: config.display,
-        enabled: config.enabled
-      }.compact
+      { effort: config.effort, budget: config.budget, display: config.display }.compact
     end
 
     # Enables document citations, so the model backs its claims with quotes
@@ -749,7 +753,7 @@ module RubyLLM
 
     # Enables provider prompt caching. With no arguments the provider's
     # default behavior applies; options such as +ttl:+ apply where
-    # supported. Pass +id:+ with a CachedContent (or its name) from
+    # supported. Pass +id:+ with a CachedContent (or its id) from
     # RubyLLM.cache to attach an explicit
     # content cache. Pass +false+ to stop RubyLLM from sending cache
     # controls or rendering explicit cache boundaries. A provider may still
@@ -761,13 +765,13 @@ module RubyLLM
     #   chat.with_caching(id: cache)
     #   chat.with_caching(false)
     #
-    def with_caching(options = {})
-      options = {} if options == true
-      unless options == false || options.is_a?(Hash)
-        raise ArgumentError, 'with_caching accepts true, false, or caching options'
-      end
+    def with_caching(enabled = true, **options)
+      return with_caching(**enabled.transform_keys(&:to_sym), **options) if enabled.is_a?(Hash)
 
-      @caching = options == false ? false : options.transform_keys(&:to_sym).freeze
+      raise ArgumentError, 'with_caching accepts true, false, or caching options' unless [true, false].include?(enabled)
+      raise ArgumentError, 'with_caching(false) does not accept options' if !enabled && options.any?
+
+      @caching = enabled ? options.freeze : false
       self
     end
 
@@ -795,13 +799,15 @@ module RubyLLM
     # and OpenAI summarize the compacted span into an opaque block that
     # replaces it; OpenRouter drops messages from the middle of the
     # conversation instead, and has no threshold of its own.
-    def with_compaction(options = {})
-      options = {} if options == true
-      unless options == false || options.is_a?(Hash)
+    def with_compaction(enabled = true, **options)
+      return with_compaction(**enabled.transform_keys(&:to_sym), **options) if enabled.is_a?(Hash)
+
+      unless [true, false].include?(enabled)
         raise ArgumentError, 'with_compaction accepts true, false, or compaction options'
       end
+      raise ArgumentError, 'with_compaction(false) does not accept options' if !enabled && options.any?
 
-      @compaction = options == false ? false : normalize_compaction(options)
+      @compaction = enabled ? normalize_compaction(options) : false
       self
     end
 
@@ -1116,8 +1122,8 @@ module RubyLLM
     # when the provider has no manual compaction endpoint, and
     # PendingToolCallsError until pending tool calls have been answered.
     def compact
-      raise_if_cancelled!
-      raise_if_pending_tool_calls!
+      raise_if_cancelled
+      raise_if_pending_tool_calls
       usage_start = usage_entries.length
       payload = instrumentation_payload(streaming: false)
       RubyLLM.instrument('compaction.ruby_llm', payload, config: @config) do |event|
@@ -1223,7 +1229,7 @@ module RubyLLM
     # Refuses to stage a user message onto an unfinished tool round, which
     # providers reject. Called by #ask_later here and in the Rails
     # integration before it persists anything.
-    def raise_if_pending_tool_calls! # :nodoc:
+    def raise_if_pending_tool_calls # :nodoc:
       response = pending_tool_response
       return unless response
 
@@ -1246,13 +1252,9 @@ module RubyLLM
       return compaction.freeze if unsupported.empty?
 
       raise ArgumentError,
-            "with_compaction accepts #{format_option_keys(COMPACTION_OPTIONS)}, " \
-            "got #{format_option_keys(unsupported)}. Provider-specific settings " \
+            "with_compaction accepts #{Support::Utils.option_list(COMPACTION_OPTIONS)}, " \
+            "got #{Support::Utils.option_list(unsupported)}. Provider-specific settings " \
             'go through with_provider_options.'
-    end
-
-    def format_option_keys(keys)
-      keys.map { |key| ":#{key}" }.join(', ')
     end
 
     def message_list(new_messages)
@@ -1319,7 +1321,7 @@ module RubyLLM
       self
     end
 
-    def raise_if_cancelled!
+    def raise_if_cancelled
       external_cancelled = @cancellation_checker&.call
       return unless @cancelled || external_cancelled
 
@@ -1328,7 +1330,7 @@ module RubyLLM
     end
 
     def generate_once(stream_tracker: nil, usage_start: nil, &block)
-      raise_if_cancelled!
+      raise_if_cancelled
 
       result = nil
       entries_before = usage_entries.length
@@ -1348,7 +1350,7 @@ module RubyLLM
     end
 
     def record_generated_message(result, usage_start, streaming: false)
-      raise_if_cancelled!
+      raise_if_cancelled
       link_completion_usage(result, usage_start)
       run_callbacks(:before_message) unless streaming
       add_message result
@@ -1552,7 +1554,7 @@ module RubyLLM
     end
 
     def provider_completion(usage_recorder:, stream_tracker: nil, &)
-      raise_if_cancelled!
+      raise_if_cancelled
 
       request_messages = preprocessed_messages
       tool_call_ids = ToolCallIds.new
@@ -1655,17 +1657,17 @@ module RubyLLM
       index = -1
 
       proc do |chunk|
-        raise_if_cancelled!
+        raise_if_cancelled
         chunk = tool_call_ids.assign(chunk)
         chunk.index = index += 1
         stream_tracker&.call(chunk)
         block.call(chunk)
-        raise_if_cancelled!
+        raise_if_cancelled
       end
     end
 
     def execute_pending_tool_calls(response)
-      raise_if_cancelled!
+      raise_if_cancelled
 
       server_calls, local_calls = pending_tool_calls(response).partition { |_, call| call.remote? }.map(&:to_h)
       decisions = server_calls.transform_values { |tool_call| approval_decision(nil, tool_call) }.compact
@@ -1718,7 +1720,7 @@ module RubyLLM
     def respond_to_tool_approvals(tool_calls, decisions)
       tool_calls.each do |id, tool_call|
         decision = decisions.fetch(id)
-        raise_if_cancelled!
+        raise_if_cancelled
         run_callbacks(:before_message)
         response = @provider.tool_approval_response(tool_call, approved: decision, model: @model, protocol: @protocol)
         message = add_message(response)
@@ -1745,7 +1747,7 @@ module RubyLLM
 
     def deny_tool_calls(tool_calls)
       tool_calls.each_value do |tool_call|
-        raise_if_cancelled!
+        raise_if_cancelled
         run_callbacks(:before_message)
         add_tool_result_message(tool_call, { error: "The user denied the #{tool_call.name} tool call." })
       end
@@ -1813,7 +1815,7 @@ module RubyLLM
 
     def handle_sequential_tool_calls(tool_calls)
       tool_calls.each_value do |tool_call|
-        raise_if_cancelled!
+        raise_if_cancelled
         result = execute_tool_with_callbacks(tool_call)
         next if result.equal?(PAUSED)
 
@@ -1826,7 +1828,7 @@ module RubyLLM
       execute_tools_concurrently(tool_calls) do |tool_call, result|
         next if result.equal?(PAUSED)
 
-        raise_if_cancelled!
+        raise_if_cancelled
         run_callbacks(:before_message)
         add_tool_result_message(tool_call, result)
       end
@@ -1839,12 +1841,12 @@ module RubyLLM
     end
 
     def execute_tool_with_callbacks(tool_call)
-      raise_if_cancelled!
+      raise_if_cancelled
       run_callbacks(:before_tool_call, tool_call)
       result = execute_tool tool_call
       return result if result.equal?(PAUSED)
 
-      raise_if_cancelled!
+      raise_if_cancelled
       run_callbacks(:after_tool_result, result)
       result
     end
@@ -1882,7 +1884,7 @@ module RubyLLM
       }
 
       RubyLLM.instrument('tool_call.ruby_llm', payload, config: @config) do |event|
-        result = Support::Cancellation.watch(-> { raise_if_cancelled! }) do
+        result = Support::Cancellation.watch(-> { raise_if_cancelled }) do
           Support::ProgressReporter.listen(progress_listener(tool_call)) { invoke_tool(tool, tool_call, args) }
         end
         event[:result] = result
@@ -1981,7 +1983,7 @@ module RubyLLM
         valid_tool_choices = %i[auto none required] + tools.keys
         unless valid_tool_choices.include?(normalized_choice)
           raise InvalidToolChoiceError,
-                "Invalid tool choice: #{choice}. Valid choices are: #{valid_tool_choices.join(', ')}"
+                "Unknown tool choice: #{choice.inspect}. Valid choices: #{valid_tool_choices.join(', ')}."
         end
 
         @tool_prefs[:choice] = normalized_choice
@@ -1997,7 +1999,7 @@ module RubyLLM
 
       raise ArgumentError,
             "Unknown tool concurrency: #{concurrency.inspect}. " \
-            "Available modes: #{ToolConcurrency::MODES.join(', ')}"
+            "Valid modes: #{ToolConcurrency::MODES.join(', ')}."
     end
 
     def normalize_calls(calls)
@@ -2007,7 +2009,7 @@ module RubyLLM
       when :one, 'one', 1
         :one
       else
-        raise ArgumentError, "Invalid calls value: #{calls.inspect}. Valid values are: :many, :one, or 1"
+        raise ArgumentError, "Unknown calls value: #{calls.inspect}. Valid values: many, one, 1."
       end
     end
 

@@ -116,7 +116,7 @@ RSpec.describe RubyLLM::Chat do
 
       expect { chat.with_tool_options(calls: :single) }.to raise_error(
         ArgumentError,
-        /Invalid calls value/
+        /Unknown calls value/
       )
     end
 

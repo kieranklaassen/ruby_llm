@@ -27,7 +27,7 @@ RSpec.describe RubyLLM::Protocols::XAI::StreamingTranscription do
     protocol.process_transcription_segment({ 'type' => 'transcript.done', 'text' => '', 'duration' => 1.0 },
                                            segments) { |chunk| chunks << chunk }
 
-    expect(chunks.map(&:type)).to eq([RubyLLM::TranscriptionChunk::PARTIAL, RubyLLM::TranscriptionChunk::SEGMENT])
+    expect(chunks.map(&:type)).to eq(%i[partial segment])
     expect(chunks.first).to have_attributes(partial?: true, text: 'Ruby is useful.', delta: nil)
     expect(chunks.last).to have_attributes(delta: 'Ruby is useful.', raw: segment)
     expect(segments.size).to eq(1)

@@ -59,14 +59,14 @@ module RubyLLM
 
         def job_status(body)
           case body['status']
-          when 'completed' then :completed
+          when 'completed' then :succeeded
           when 'failed' then :failed
           else :pending
           end
         end
 
-        def validate_animate_inputs!(with:)
-          raise Error, 'OpenRouter video generation takes at most first and last frame images' if with.size > 2
+        def validate_animate_inputs(with:)
+          raise ArgumentError, 'OpenRouter video generation takes at most first and last frame images' if with.size > 2
 
           with.each do |attachment|
             next if attachment.url?

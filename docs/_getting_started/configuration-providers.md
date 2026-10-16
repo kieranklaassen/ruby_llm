@@ -20,7 +20,7 @@ After reading this guide, you will know:
 
 ## API Keys
 
-Configure API keys only for the providers you use. RubyLLM won't complain about missing keys for providers you never touch.
+Configure API keys only for the providers you use, as [Configuration]({% link _getting_started/configuration.md %}#api-keys) describes.
 
 RubyLLM resolves the provider from the model registry. Pass `provider:` when you want another host for that model or use a custom deployment. See [Model Resolution]({% link _reference/model-resolution.md %}).
 
@@ -121,7 +121,7 @@ RubyLLM.configure do |config|
 end
 ```
 
-> Attempting to use an unconfigured provider will raise `RubyLLM::ConfigurationError`. Only configure what you need.
+> Using an unconfigured provider raises `RubyLLM::ConfigurationError`. Only configure what you need.
 {: .note }
 
 ## TypeSafe
@@ -226,7 +226,7 @@ RubyLLM.configure do |config|
 end
 ```
 
-## OpenAI Organization & Project Headers
+## OpenAI Organization and Project Headers
 
 For OpenAI users with multiple organizations or projects:
 
@@ -415,7 +415,7 @@ Blank strings are treated as unset, so environment variables can be wired direct
 
 ## Next Steps
 
-- [Custom Endpoints and Unlisted Models]({% link _reference/custom-endpoints.md %}) - work with models RubyLLM doesn't know about.
-- [Connection, Logging and Contexts]({% link _getting_started/configuration-connection.md %}) - timeouts, proxies, and per-tenant isolation.
-- [Configuration]({% link _getting_started/configuration.md %}#full-reference) - the complete option list.
-- [Model Registry]({% link _reference/models.md %}) - discover, select, and refresh the model registry.
+* [Custom Endpoints and Unlisted Models]({% link _reference/custom-endpoints.md %}) - work with models RubyLLM doesn't know about.
+* [Connection, Logging and Contexts]({% link _getting_started/configuration-connection.md %}) - timeouts, proxies, and per-tenant isolation.
+* [Configuration]({% link _getting_started/configuration.md %}#full-reference) - the complete option list.
+* [Model Registry]({% link _reference/models.md %}) - discover, select, and refresh the model registry.

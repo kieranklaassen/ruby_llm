@@ -56,13 +56,13 @@ RSpec.describe RubyLLM::Protocols::Responses::Batches do
         { custom_id: '1', model: 'gpt-5-mini', payload: { model: 'gpt-5-mini', input: 'hi' } }
       ]
 
-      expect { protocol.create_batch(requests) }.to raise_error(RubyLLM::Error, /one model/)
+      expect { protocol.create_batch(requests) }.to raise_error(ArgumentError, /one model/)
     end
   end
 
-  describe '#validate_batch_requests!' do
+  describe '#validate_batch_requests' do
     it 'rejects unsupported payload shapes' do
-      expect { protocol.send(:validate_batch_requests!, [{ payload: { messages: [] } }]) }
+      expect { protocol.send(:validate_batch_requests, [{ payload: { messages: [] } }]) }
         .to raise_error(RubyLLM::Error, /responses payloads/)
     end
   end

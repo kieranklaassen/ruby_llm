@@ -33,7 +33,8 @@ module RubyLLM
       def backend_api_base # :nodoc:
         uri = URI(api_base)
         unless uri.path.match?(%r{/model/proxy/\d+/v1/?\z})
-          raise Error, 'This GPUStack operation requires gpustack_api_base to end in /model/proxy/ROUTE_ID/v1'
+          raise ConfigurationError,
+                'This GPUStack operation requires gpustack_api_base to end in /model/proxy/ROUTE_ID/v1'
         end
 
         uri.path = uri.path.sub(%r{/v1/?\z}, '')

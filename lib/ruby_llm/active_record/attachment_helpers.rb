@@ -11,7 +11,7 @@ module RubyLLM
         unless message_record.respond_to?(:attachments)
           raise RubyLLM::ConfigurationError,
                 "#{message_record.class.name} cannot store attachments without Active Storage. " \
-                'Load it with require "active_storage/engine", then run bin/rails active_storage:install.'
+                "#{ActsAs::ACTIVE_STORAGE_SETUP}"
         end
 
         attachables = prepare_for_active_storage(attachments)
@@ -69,7 +69,7 @@ module RubyLLM
           }
         end
       rescue StandardError => e
-        RubyLLM.logger.warn "Failed to process attachment #{source}: #{e.message}"
+        RubyLLM.logger.warn "RubyLLM could not process attachment #{source}: #{e.message}"
         nil
       end
 

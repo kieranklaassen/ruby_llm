@@ -200,7 +200,7 @@ For persisted Rails chats, see [Separate User and LLM Transcripts]({% link _adva
 This page covers the core `Chat` interface. Each facet of a conversation has its own focused guide:
 
 * [Attachments]({% link _core_features/attachments.md %}) - attach images, video, audio, text files, and PDFs to a message.
-* [Streaming]({% link _core_features/streaming.md %}) - display responses in real time as they are generated.
+* [Stream Responses]({% link _core_features/streaming.md %}) - display responses in real time as they are generated.
 * [Structured Output]({% link _core_features/structured-output.md %}) - get responses that match an exact JSON schema.
 * [Extended Thinking]({% link _core_features/thinking.md %}) - give reasoning models room to deliberate and read their thinking.
 * [Citations]({% link _core_features/citations.md %}) - get verifiable answers backed by your documents and web sources.
@@ -212,7 +212,7 @@ This page covers the core `Chat` interface. Each facet of a conversation has its
 
 ## Next Steps
 
-* [Using Tools]({% link _core_features/tools.md %}) - enable the AI to call your Ruby code.
+* [Tools]({% link _core_features/tools.md %}) - enable the AI to call your Ruby code.
 * [Model Registry]({% link _reference/models.md %}) - choose the best model and handle custom endpoints.
 * [Rails Integration]({% link _advanced/rails.md %}) - use the same API on your Active Record models.
 * [Error Handling]({% link _advanced/error-handling.md %}) - retry requests and fall back to another model.

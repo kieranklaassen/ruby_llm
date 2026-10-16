@@ -28,7 +28,7 @@ module RubyLLM
             when 'completed'
               raise Error, 'ElevenLabs completed a generation without an output URL' unless body['content_url']
 
-              { status: :completed, raw: body }
+              { status: :succeeded, raw: body }
             when 'failed'
               { status: :failed, raw: body, error: body['error_message'] || body['failure_reason'] }
             else

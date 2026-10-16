@@ -57,8 +57,8 @@ module RubyLLM
     # The provider-assigned identifier of the moderation request.
     attr_reader :id
 
-    # The id of the model that performed the moderation, or +nil+ for an
-    # operation that does not select a model.
+    # The id of the model that performed the moderation, as a String, or
+    # +nil+ for an operation that does not select a model.
     attr_reader :model
 
     # The per-input verdicts, as an array of Result objects, one per
@@ -77,10 +77,17 @@ module RubyLLM
     end
 
     # Screens +input+ and optional image attachments and returns a Moderation with the
-    # provider's verdict. Uses the configured default moderation model when
-    # +model+ is not given. Pass +provider:+ and <tt>assume_model_exists: true</tt>
-    # to use a model that is not in the registry. An explicitly selected
-    # provider may instead use a configured resource without a model.
+    # provider's verdict. Most code calls this through RubyLLM.moderate.
+    #
+    # +model:+ selects the moderation model and defaults to the configured
+    # +default_moderation_model+. +provider:+ forces a specific provider, and
+    # +assume_model_exists:+ skips the registry lookup. An explicitly
+    # selected provider may instead use a configured resource without a
+    # model. +context:+ supplies a Context whose configuration replaces the
+    # global one. +with:+ passes one or more images to screen.
+    # +provider_options:+ takes options in the provider's request
+    # vocabulary and merges them into the request as-is. +metadata:+ is
+    # included in the instrumentation payload.
     # +owner:+ attributes the usage to a record, such as a user, and wins
     # over RubyLLM.with_usage_owner.
     #
@@ -90,15 +97,15 @@ module RubyLLM
     #
     def self.moderate(input = nil,
                       model: nil,
-                      with: nil,
                       provider: nil,
                       assume_model_exists: false,
                       context: nil,
+                      with: nil,
                       provider_options: {},
                       metadata: nil,
                       owner: nil)
       attachments = Attachment.wrap(with)
-      raise ArgumentError, 'must provide input text, image attachment, or both' if input.nil? && attachments.empty?
+      raise ArgumentError, 'Moderation needs text, an image attachment, or both' if input.nil? && attachments.empty?
 
       config = context&.config || RubyLLM.config
       model, provider_instance = Models.resolve(model, provider: provider, assume_model_exists: assume_model_exists,
@@ -136,8 +143,8 @@ module RubyLLM
       results.any?(&:flagged?)
     end
 
-    # Returns provider-reported usage across every attempt. Its fields are
-    # +nil+ when the provider did not report any.
+    # Returns usage aggregated across every provider attempt. Its fields
+    # are +nil+ when the provider did not report any.
     def tokens
       ruby_llm_usage_tokens
     end
@@ -145,6 +152,19 @@ module RubyLLM
     # Returns the moderation cost across every provider attempt.
     def cost
       ruby_llm_usage_cost
+    end
+
+    attr_writer :model_info # :nodoc:
+
+    # Returns the moderation's Model from its provider's registry, falling
+    # back to the requested model when the response ID is unknown.
+    # Returns +nil+ if the model is unknown.
+    def model_info
+      return unless model
+
+      @model_info ||= RubyLLM.models.find(model)
+    rescue ModelNotFoundError
+      nil
     end
 
     # Returns the unique names of the categories flagged across all results.
@@ -166,6 +186,8 @@ module RubyLLM
         merged.merge(scores) { |_category, left, right| [left, right].max }
       end
     end
+
+    private
 
     def inspect_attributes # :nodoc:
       { id: id, model: model, flagged: flagged? }

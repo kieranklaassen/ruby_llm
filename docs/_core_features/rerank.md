@@ -2,7 +2,7 @@
 layout: default
 title: Reranking
 nav_order: 4
-description: Order candidate documents by how well they answer a query, the second stage of a retrieval pipeline
+description: Order candidate documents by how well they answer a query, the second stage of a retrieval pipeline.
 ---
 
 # {{ page.title }}
@@ -139,10 +139,10 @@ end
 
 The vector query retrieves fifty candidates; the reranker selects five. This example uses the `neighbor` gem with a configured `embedding` vector column.
 
-See the [RAG guide]({% link _advanced/rag.md %}) for the retrieval-augmented generation pipeline this feeds.
+See [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) for the retrieval-augmented generation pipeline this feeds.
 
 ## Next Steps
 
 * [Embeddings]({% link _core_features/embeddings.md %}) - generate the vectors that produce your candidates.
-* [RAG]({% link _advanced/rag.md %}) - build retrieval-augmented generation on top of this pipeline.
+* [Retrieval-Augmented Generation (RAG)]({% link _advanced/rag.md %}) - build retrieval-augmented generation on top of this pipeline.
 * [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) - track what retrieval costs across every call.

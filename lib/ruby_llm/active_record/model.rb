@@ -8,6 +8,9 @@ module RubyLLM
     # point at it through +belongs_to :model+. The +listed+ scope returns the
     # models the provider still serves; +unlisted+ returns the ones kept only
     # because a chat references them.
+    #
+    # The column readers return the stored values. Call #to_llm for the
+    # RubyLLM::Model value object.
     class Model < Record
       self.table_name = 'ruby_llm_models'
 
@@ -25,7 +28,7 @@ module RubyLLM
 
           all.map(&:to_llm)
         rescue StandardError => e
-          RubyLLM.logger.debug { "Failed to load models from database: #{e.message}, falling back to JSON" }
+          RubyLLM.logger.debug { "RubyLLM could not load models from the database, falling back to JSON: #{e.message}" }
           []
         end
 
@@ -50,10 +53,6 @@ module RubyLLM
             upsert_all(rows.values, unique_by: registry_key) if rows.any?
             unlist(pluck(:id, :provider, :model_id).reject { |_id, *key| rows.key?(key) }.map(&:first))
           end
-        end
-
-        def from_llm(model_info) # :nodoc:
-          new(attributes_from_llm(model_info))
         end
 
         private
@@ -141,6 +140,48 @@ module RubyLLM
           unlisted_at: unlisted_at
         )
       end
+
+      ##
+      # :method: supports?
+      # :call-seq: supports?(capability)
+      #
+      # Delegates to RubyLLM::Model#supports?. See that method for arguments and return values.
+
+      ##
+      # :method: price
+      # :call-seq: price(kind)
+      #
+      # Delegates to RubyLLM::Model#price. See that method for arguments and return values.
+
+      ##
+      # :method: type
+      # :call-seq: type
+      #
+      # Delegates to RubyLLM::Model#type. See that method for arguments and return values.
+
+      ##
+      # :method: provider_class
+      # :call-seq: provider_class
+      #
+      # Delegates to RubyLLM::Model#provider_class. See that method for arguments and return values.
+
+      ##
+      # :method: label
+      # :call-seq: label
+      #
+      # Delegates to RubyLLM::Model#label. See that method for arguments and return values.
+
+      ##
+      # :method: cost_for
+      # :call-seq: cost_for(tokens, tier: :standard)
+      #
+      # Delegates to RubyLLM::Model#cost_for. See that method for arguments and return values.
+
+      ##
+      # :method: unlisted?
+      # :call-seq: unlisted?
+      #
+      # Delegates to RubyLLM::Model#unlisted?. See that method for arguments and return values.
 
       # Registry readers answered from the RubyLLM::Model value of the row.
       delegate :supports?, :price, :type, :provider_class, :label, :cost_for, :unlisted?, to: :to_llm

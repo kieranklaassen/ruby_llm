@@ -13,7 +13,7 @@ module RubyLLM
           'InvokeModel'
         end
 
-        def validate_bedrock_batch_requests!(requests)
+        def validate_bedrock_batch_requests(requests)
           requests.each do |request|
             values = request.fetch(:text)
             values = [values] unless values.is_a?(Array)
@@ -102,7 +102,7 @@ module RubyLLM
         end
 
         def embedding_batch_vectors(bodies)
-          vectors = bodies.map { |body| extract_embedding(body) }
+          vectors = bodies.map { |body| parse_embedding(body) }
           vectors if vectors.all? { |vector| vector.is_a?(Array) && !vector.empty? && vector.all?(Numeric) }
         end
       end

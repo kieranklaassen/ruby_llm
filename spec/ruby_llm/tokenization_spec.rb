@@ -35,6 +35,22 @@ RSpec.describe RubyLLM::Tokenization do
     expect(request).to have_been_requested.once
   end
 
+  it 'includes metadata: in its event, like the other one-shot operations' do
+    instrumenter = CaptureInstrumenter.new
+    context = RubyLLM.context do |config|
+      config.xai_api_key = 'isolated-key'
+      config.instrumenter = instrumenter
+    end
+    stub_request(:post, 'https://api.x.ai/v1/tokenize-text')
+      .to_return_json(body: { token_ids: [{ token_id: 42, string_token: 'Ruby' }] })
+
+    context.tokenize('Ruby', model: model_for(:xai, :provider_tools), provider: :xai, metadata: { feature: 'search' })
+
+    name, payload = instrumenter.events.find { |event, _| event == 'tokenization.ruby_llm' }
+    expect(name).to eq('tokenization.ruby_llm')
+    expect(payload[:metadata]).to eq(feature: 'search')
+  end
+
   it 'rejects non-text input before resolving a model or making a request' do
     expect { RubyLLM.tokenize(['Ruby']) }.to raise_error(ArgumentError, 'text must be a String')
   end
@@ -43,7 +59,7 @@ RSpec.describe RubyLLM::Tokenization do
     context = RubyLLM.context { |config| config.openai_api_key = 'test' }
 
     expect { context.tokenize('Ruby', model: model_for(:openai), provider: :openai) }
-      .to raise_error(RubyLLM::Error, /doesn't support text tokenization/)
+      .to raise_error(RubyLLM::Error, /does not support text tokenization/)
   end
 
   %i[xai cohere].each do |provider|

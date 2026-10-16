@@ -15,13 +15,13 @@ redirect_from:
 
 After reading this guide, you will know:
 
-*   How to install RubyLLM.
-*   How to configure the providers you want to use.
-*   How to chat, stream responses, and ask about files.
-*   How to define tools, agents, and structured output.
-*   How to generate images, video, and speech, and transcribe audio.
-*   How to extract document text, moderate content, and search with embeddings and reranking.
-*   How to track costs and save conversations in Rails.
+* How to install RubyLLM.
+* How to configure the providers you want to use.
+* How to chat, stream responses, and ask about files.
+* How to define tools, agents, and structured output.
+* How to generate images, video, and speech, and transcribe audio.
+* How to extract document text, moderate content, and search with embeddings and reranking.
+* How to track costs and save conversations in Rails.
 
 Each example shows one feature. Try the ones your application needs, then follow its guide for more options.
 
@@ -30,13 +30,13 @@ Each example shows one feature. Try the ones your application needs, then follow
 {% if site.docs_unreleased %}
 These guides cover unreleased changes on `main`. Install from GitHub to use them:
 
-```sh
+```bash
 bundle add ruby_llm --git https://github.com/crmne/ruby_llm --branch main
 ```
 {% else %}
 Add RubyLLM 2.1 with Bundler:
 
-```sh
+```bash
 bundle add ruby_llm --version 2.1.1
 ```
 {% endif %}
@@ -85,7 +85,7 @@ response = chat.ask "How do I create my first Rails app?"
 puts response.content
 ```
 
-See [Chatting with AI Models]({% link _core_features/chat.md %}) for choosing models and setting instructions.
+See [Chat]({% link _core_features/chat.md %}) for choosing models and setting instructions.
 
 ## Streaming a Response
 
@@ -97,7 +97,7 @@ chat.ask "Tell me a story about a Ruby programmer" do |chunk|
 end
 ```
 
-See the [Streaming Guide]({% link _core_features/streaming.md %}) for streaming into web pages and background jobs.
+See [Stream Responses]({% link _core_features/streaming.md %}) for streaming into web pages and background jobs.
 
 ## Asking About Files
 
@@ -145,7 +145,7 @@ response = RubyLLM.chat.with_tools(CurrentTime).ask "What day is it?"
 puts response.content
 ```
 
-RubyLLM runs the tool calls and returns their results to the model. See [Tools]({% link _core_features/tools.md %}) for parameters and [Tool Execution]({% link _core_features/tool-execution.md %}) for human approvals.
+RubyLLM runs the tool calls and returns their results to the model. See [Tools]({% link _core_features/tools.md %}) for parameters and [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) for human approvals.
 
 ## Defining an Agent
 
@@ -284,7 +284,7 @@ response.tokens.output
 response.cost.total
 ```
 
-See [Cost and Usage Tracking]({% link _core_features/cost-and-usage-tracking.md %}) for cache usage, retries, and the Rails usage ledger. Use [Batches]({% link _advanced/batches.md %}) for bulk work that can run asynchronously.
+See [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}) for cache usage, retries, and the Rails usage ledger. Use [Batches]({% link _advanced/batches.md %}) for bulk work that can run asynchronously.
 
 ## Using It in Rails
 
@@ -307,17 +307,17 @@ The API stays the same, and each message persists automatically. Pass Active Sto
 bin/rails generate ruby_llm:chat_ui
 ```
 
-Then visit `http://localhost:3000/chats` to start chatting. See the [Rails Integration Guide]({% link _advanced/rails.md %}) for full details.
+Then visit `http://localhost:3000/chats` to start chatting. See [Rails Integration]({% link _advanced/rails.md %}) for full details.
 
-## What's Next?
+## Next Steps
 
 Continue with the guide for the feature you want to build:
 
-*   [Chatting with AI Models]({% link _core_features/chat.md %})
-*   [Models]({% link _reference/available-models.md %}) for comparing capabilities and pricing
-*   [Agents]({% link _advanced/agents.md %}) and [Agentic Workflows]({% link _advanced/agentic-workflows.md %})
-*   [Batches]({% link _advanced/batches.md %}) and [Prompt Caching]({% link _core_features/prompt-caching.md %})
-*   [Rails Integration]({% link _advanced/rails.md %})
-*   [AI Coding Assistants]({% link _getting_started/ai-coding-assistants.md %})
-*   [Configuration]({% link _getting_started/configuration.md %})
-*   [Error Handling]({% link _advanced/error-handling.md %})
+* [Chat]({% link _core_features/chat.md %}) - choose models, set instructions, and continue conversations.
+* [Models]({% link _reference/available-models.md %}) - compare capabilities and pricing.
+* [Agents]({% link _advanced/agents.md %}) and [Agentic Workflows]({% link _advanced/agentic-workflows.md %}) - define reusable agents and compose them.
+* [Batches]({% link _advanced/batches.md %}) and [Prompt Caching]({% link _core_features/prompt-caching.md %}) - lower the cost of bulk and repeated work.
+* [Rails Integration]({% link _advanced/rails.md %}) - persist chats and stream responses in your application.
+* [AI Coding Assistants]({% link _getting_started/ai-coding-assistants.md %}) - help your coding assistant use the RubyLLM API.
+* [Configuration]({% link _getting_started/configuration.md %}) - set API keys, defaults, and connection options.
+* [Error Handling]({% link _advanced/error-handling.md %}) - rescue provider errors and fall back to other models.

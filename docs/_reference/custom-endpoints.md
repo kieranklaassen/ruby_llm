@@ -3,7 +3,7 @@ layout: default
 title: Custom Endpoints and Unlisted Models
 parent: "Model Registry"
 nav_order: 3
-description: Target OpenAI-compatible endpoints and use model IDs the registry doesn't list
+description: Target OpenAI-compatible endpoints and use model IDs the registry doesn't list.
 ---
 
 # {{ page.title }}
@@ -13,24 +13,24 @@ description: Target OpenAI-compatible endpoints and use model IDs the registry d
 
 After reading this guide, you will know:
 
-*   When you need to step outside the standard model registry.
-*   How to point `provider: :openai` requests at a custom URL with `openai_api_base`.
-*   How to use model IDs the registry doesn't list with `assume_model_exists`.
-*   What capability checks RubyLLM skips when you assume a model exists.
-*   What you stay responsible for when bypassing registry validation.
+* When you need to step outside the standard model registry.
+* How to point `provider: :openai` requests at a custom URL with `openai_api_base`.
+* How to use model IDs the registry doesn't list with `assume_model_exists`.
+* What capability checks RubyLLM skips when you assume a model exists.
+* What you stay responsible for when bypassing registry validation.
 
 Sometimes you need to interact with models or endpoints not covered by the standard registry, such as:
 
-*   API Proxies & Gateways (LiteLLM, Fastly AI Accelerator).
-*   Self-hosted or local models (LM Studio, vLLM).
-*   Brand-new model releases.
-*   Custom fine-tunes or deployments with unique names.
+* API proxies and gateways (LiteLLM, Fastly AI Accelerator).
+* Self-hosted or local models (LM Studio, vLLM).
+* Brand-new model releases.
+* Custom fine-tunes or deployments with unique names.
 
-Azure has a first-class provider: configure `azure_api_base` and use `provider: :azure` instead. See the [Provider Setup and Custom Endpoints Guide]({% link _getting_started/configuration-providers.md %}).
+Azure has its own provider: configure `azure_api_base` and use `provider: :azure` instead. See [Provider Setup and Custom Endpoints]({% link _getting_started/configuration-providers.md %}).
 
 RubyLLM offers two mechanisms for these cases.
 
-### Custom OpenAI API Base URL (`openai_api_base`)
+## Custom OpenAI API Base URL (`openai_api_base`)
 
 If you need to target an endpoint that uses the **OpenAI API format** but has a different URL, configure `openai_api_base` in `RubyLLM.configure`.
 
@@ -42,11 +42,11 @@ RubyLLM.configure do |config|
 end
 ```
 
-*   This setting **only** affects requests made with `provider: :openai`.
-*   It directs those requests to your specified URL instead of `https://api.openai.com/v1`.
-*   See the [Provider Setup and Custom Endpoints Guide]({% link _getting_started/configuration-providers.md %}) for the full `api_base` setup details.
+* This setting **only** affects requests made with `provider: :openai`.
+* It directs those requests to your specified URL instead of `https://api.openai.com/v1`.
+* See [Provider Setup and Custom Endpoints]({% link _getting_started/configuration-providers.md %}) for the full `api_base` setup details.
 
-### Assuming Model Existence (`assume_model_exists`)
+## Assuming Model Existence (`assume_model_exists`)
 
 To use a model identifier not listed in RubyLLM's registry, use the `assume_model_exists: true` flag. This tells RubyLLM to bypass its validation check.
 
@@ -86,18 +86,18 @@ image = RubyLLM.paint(
 )
 ```
 
-**Key Points when Assuming Existence:**
+### Key Points When Assuming Existence
 
-*   **`provider:` is Mandatory:** You must tell RubyLLM which API format to use (`ArgumentError` otherwise).
-*   **No Validation:** RubyLLM won't check the registry for the model ID.
-*   **Capability Assumptions:** The model is assumed to support `function_calling`, `streaming`, `vision`, and `structured_output`; checks outside that set return `false`. You are responsible for ensuring the model supports the features you use.
-*   **Your Responsibility:** Ensure the model ID is correct for the target endpoint.
-*   **Warning Log:** A warning is logged indicating validation was skipped.
+* **`provider:` is Mandatory:** You must tell RubyLLM which API format to use (`ArgumentError` otherwise).
+* **No Validation:** RubyLLM does not check the registry for the model ID.
+* **Capability Assumptions:** The model is assumed to support `function_calling`, `streaming`, `vision`, and `structured_output`; checks outside that set return `false`. You are responsible for ensuring the model supports the features you use.
+* **Your Responsibility:** Ensure the model ID is correct for the target endpoint.
+* **Warning Log:** A warning is logged indicating validation was skipped.
 
 Use these features when the standard registry doesn't cover your specific model or endpoint needs. For standard models, rely on the registry for validation and capability awareness.
 
 ## Next Steps
 
-*   [Chat]({% link _core_features/chat.md %}) - start a conversation once your custom endpoint or unlisted model is wired up.
-*   [Model Resolution]({% link _reference/model-resolution.md %}) - the exact procedure behind `assume_model_exists` and provider selection.
-*   [Model Registry]({% link _reference/models.md %}) - return to the registry for validated, capability-aware models.
+* [Chat]({% link _core_features/chat.md %}) - start a conversation once your custom endpoint or unlisted model is wired up.
+* [Model Resolution]({% link _reference/model-resolution.md %}) - the exact procedure behind `assume_model_exists` and provider selection.
+* [Model Registry]({% link _reference/models.md %}) - return to the registry for validated, capability-aware models.

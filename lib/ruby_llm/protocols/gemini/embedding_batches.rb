@@ -9,7 +9,7 @@ module RubyLLM
 
         def embedding_batch?(requests)
           kinds = requests.map { |request| embedding_batch_payload?(request.fetch(:payload)) }.uniq
-          raise Error, 'Gemini batches take chat or embedding requests, not both' if kinds.size > 1
+          raise ArgumentError, 'Gemini batches take chat or embedding requests, not both' if kinds.size > 1
 
           kinds.first
         end

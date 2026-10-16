@@ -6,17 +6,17 @@ module RubyLLM
     class Result
       include Support::Inspectable
 
-      # Returns the criterion name.
+      # The criterion name.
       attr_reader :name
-      # Returns a boolean, Probability, Score, or Choice without discarding its distribution.
+      # A boolean, Probability, Score, or Choice without discarding its distribution.
       attr_reader :value
-      # Returns the evaluator's explanation, when available.
+      # The evaluator's explanation, when available.
       attr_reader :reason
-      # Returns the exception when this criterion could not be evaluated.
+      # The exception when this criterion could not be evaluated.
       attr_reader :error
-      # Returns the actual evaluator model identifier, when available.
+      # The actual evaluator model identifier, when available.
       attr_reader :model
-      # Returns the evaluator conversation or native judgment, as frozen portable evidence.
+      # The evaluator conversation or native judgment, as frozen portable evidence.
       attr_reader :evidence
 
       def initialize(name:, value: nil, reason: nil, minimum: nil, error: nil, model: nil, evidence: nil) # :nodoc:
@@ -34,7 +34,7 @@ module RubyLLM
         freeze
       end
 
-      # Returns true when this criterion passed its acceptance policy.
+      # Returns +true+ when this criterion passed its acceptance policy.
       def passed?
         status == :passed
       end
@@ -51,7 +51,7 @@ module RubyLLM
         number >= @minimum unless number.nil?
       end
 
-      # Returns :passed, :failed, :measured, :unassessed, or :error.
+      # Returns +:passed+, +:failed+, +:measured+, +:unassessed+, or +:error+.
       def status
         return :error if error
         return :unassessed if value.nil?
@@ -66,6 +66,8 @@ module RubyLLM
           reason:, minimum: @minimum, model:, evidence:,
           error: error && { class: error.class.name, message: error.message } }
       end
+
+      private
 
       def inspect_attributes # :nodoc:
         { name:, status: }

@@ -22,14 +22,14 @@ After reading this guide, you will know:
 
 RubyLLM separates service configuration from API formats. A **provider** knows *where* to talk and *who* you are: its host, its authentication headers, the configuration it needs, and its model catalog. A **protocol** knows *how* to talk to a family of APIs: rendering request payloads, parsing responses, streaming chunks, and naming the endpoints involved.
 
-The same protocol can serve several providers, and one provider can offer several protocols. One wire format serves many hosts - the OpenAI Chat Completions dialect is reused by Ollama, Perplexity, and DeepSeek, each with its own host and auth. One host can serve many wire formats - Vertex AI is a single provider that speaks Gemini, Anthropic, Mistral, and Chat Completions, picking one per model.
+The same protocol can serve several providers, and one provider can offer several protocols. One wire format serves many hosts: the OpenAI Chat Completions dialect is reused by Ollama, Perplexity, and DeepSeek, each with its own host and auth. One host can serve many wire formats: Vertex AI is a single provider that speaks Gemini, Anthropic, Mistral, and Chat Completions, picking one per model.
 
 So before you write anything, decide which case you are in:
 
 * **The service speaks an API RubyLLM already knows** (almost always OpenAI Chat Completions). Write only a provider. This is the common case, and it is a few dozen lines.
 * **The service speaks a new wire format or a dialect that differs in payload or parsing.** Write a protocol (or a thin subclass of an existing one) and a provider that declares it.
 
-We will build a fictional provider, `Acme`, that exposes an OpenAI-compatible Chat Completions API at `https://api.acme.ai/v1`, then show how to override the wire format when a dialect diverges.
+This guide builds a fictional provider, `Acme`, that exposes an OpenAI-compatible Chat Completions API at `https://api.acme.ai/v1`, then shows how to override the wire format when a dialect diverges.
 
 ## Generate the Starting Point
 
@@ -89,15 +89,15 @@ module RubyLLM
 end
 ```
 
-That is the real shape of a RubyLLM provider - DeepSeek, Perplexity, and Mistral are all variations on it. Each piece earns its place:
+That is the real shape of a RubyLLM provider. DeepSeek, Perplexity, and Mistral are all variations on it. Each piece earns its place:
 
 * **`protocol :chat_completions, ChatCompletions`** registers a named protocol. The first protocol you declare becomes the provider's default. Here you subclass the built-in `Protocols::ChatCompletions` so you can later override wire-format seams; if the service is a perfect match you can register `Protocols::ChatCompletions` directly.
 * **`api_base`** is the host. RubyLLM hands it straight to Faraday, so a relative endpoint path like `chat/completions` is resolved against it. Reading `@config.acme_api_base` first lets users point at a proxy or self-hosted instance, with a default for the public API.
-* **`headers`** supplies authentication. The base returns `{}`, so this is optional - but nearly every remote service needs it. The hash is merged into every request.
+* **`headers`** supplies authentication. The base returns `{}`, so this is optional, but nearly every remote service needs it. The hash is merged into every request.
 * **`models_url`** names the model-listing endpoint. Change it when the provider does not expose models at `/models`.
 * **`configuration_options`** lists the config keys your provider contributes. **`configuration_requirements`** is the subset that must be present before the provider is usable.
 
-`@config` is a `RubyLLM::Configuration` instance, and `@config.acme_api_key` works only because you listed `acme_api_key` in `configuration_options` - registering the provider materializes those accessors. We will register it below.
+`@config` is a `RubyLLM::Configuration` instance, and `@config.acme_api_key` works only because you listed `acme_api_key` in `configuration_options`: registering the provider materializes those accessors. You register it below.
 
 ### Reusing a Wire Format Against a Different Host
 
@@ -130,20 +130,20 @@ Ollama mixes in a few small modules to adjust its dialect. That is the bridge to
 
 ## Writing a Protocol
 
-When a service's payloads, response shapes, or endpoints differ from anything RubyLLM ships, you write a protocol. A protocol is a subclass of `RubyLLM::Protocol`, but you rarely fill it in from scratch: the base class defines the orchestration - `complete` renders a payload then dispatches to `sync_response` or `stream_response` - and calls out to a set of seam methods that you supply.
+When a service's payloads, response shapes, or endpoints differ from anything RubyLLM ships, you write a protocol. A protocol is a subclass of `RubyLLM::Protocol`, but you rarely fill it in from scratch: the base class defines the orchestration (`complete` renders a payload then dispatches to `sync_response` or `stream_response`) and calls out to a set of seam methods that you supply.
 
 For the Chat Completions family, the seams you override most often are:
 
 | Seam | Responsibility |
-|------|----------------|
+| --- | --- |
 | `completion_url` | The (relative) endpoint path for completions |
 | `stream_url` | The streaming endpoint (defaults to `completion_url`) |
 | `render_payload` | Build the request body from messages, tools, temperature, etc. |
 | `parse_completion_body` | Turn a parsed response body into a `RubyLLM::Message` |
 | `build_chunk` | Turn one SSE event into a `RubyLLM::Chunk` |
-| `format_role` / `format_content` | Shape a message's role and content |
+| `render_role` / `render_content` | Shape a message's role and content |
 
-The smallest dialect changes shape only messages. DeepSeek, for example, overrides `format_role` and `format_content` to disable attachments its API rejects:
+The smallest dialect changes shape only messages. DeepSeek, for example, overrides `render_role` and `render_content` to disable attachments its API rejects:
 
 ```ruby
 # lib/ruby_llm/providers/deepseek/chat.rb (excerpt)
@@ -153,12 +153,12 @@ module RubyLLM
       module Chat
         module_function
 
-        def format_role(role)
+        def render_role(role)
           role.to_s
         end
 
-        def format_content(content, attachments = [])
-          Protocols::ChatCompletions::Media.format_content(
+        def render_content(content, attachments = [])
+          Protocols::ChatCompletions::Media.render_content(
             content,
             attachments,
             document_attachments: :none,
@@ -194,7 +194,7 @@ end
 
 For a genuinely new wire format (not a Chat Completions variant), subclass `RubyLLM::Protocol` directly and implement the seams the base operations call - `render_payload`, `completion_url`, `parse_completion_body`, and, for streaming, `stream_url` and `build_chunk`. Study `RubyLLM::Protocols::Anthropic` and `RubyLLM::Protocols::Gemini` as worked examples of non-OpenAI dialects.
 
-> A protocol instance is constructed against a live provider with `protocol_class.new(provider, model)`. Inside a protocol you have `provider`, `config`, `connection`, and `model` available - the protocol borrows the provider's Faraday connection, so you never build HTTP yourself.
+> A protocol instance is constructed against a live provider with `protocol_class.new(provider, model)`. Inside a protocol you have `provider`, `config`, `connection`, and `model` available. The protocol borrows the provider's Faraday connection, so you never build HTTP yourself.
 {: .note }
 
 ### Declaring Multiple Protocols
@@ -243,7 +243,7 @@ A provider does nothing until it is registered. Register Acme after its classes 
 RubyLLM::Provider.register :acme, RubyLLM::Providers::Acme
 ```
 
-That one call does three things: it sets `Acme.slug` to `"acme"` (which is how `@config.acme_api_key` and `@config.acme_protocol` resolve), adds the class to `RubyLLM::Provider.providers`, and defines a config accessor for every option in `configuration_options` plus the synthetic `acme_protocol`. After registering, your provider is a first-class citizen:
+That one call does three things: it sets `Acme.slug` to `"acme"` (which is how `@config.acme_api_key` and `@config.acme_protocol` resolve), adds the class to `RubyLLM::Provider.providers`, and defines a config accessor for every option in `configuration_options` plus the synthetic `acme_protocol`. After registering, your provider works like a built-in one:
 
 ```ruby
 RubyLLM.configure do |config|
@@ -263,7 +263,7 @@ Pass `assume_model_exists: true` for models that aren't in the registry, or have
 
 To ship your provider so others can add it to RubyLLM, package these files in a gem that depends on `ruby_llm`. Lay the files out under `lib/ruby_llm/providers/` mirroring the built-in providers:
 
-```
+```text
 ruby_llm-providers-acme/
 ├── models.json
 ├── lib/
@@ -273,7 +273,7 @@ ruby_llm-providers-acme/
 └── ruby_llm-providers-acme.gemspec
 ```
 
-RubyLLM's own autoloader (`Zeitwerk::Loader.for_gem`) is scoped to the RubyLLM gem and will not discover files in your gem. Make the provider file self-registering so requiring that one file loads the complete integration:
+RubyLLM's own autoloader (`Zeitwerk::Loader.for_gem`) is scoped to the RubyLLM gem and does not discover files in your gem. Make the provider file self-registering so requiring that one file loads the complete integration:
 
 ```ruby
 # lib/ruby_llm/providers/acme.rb
@@ -299,10 +299,10 @@ model = RubyLLM.models.by_provider(:acme).chat_models.first
 RubyLLM.chat(model: model.id).ask('Hi')
 ```
 
-> If your provider uses an acronym or mixed-case constant (like `OpenAI` or `XAI`), Zeitwerk needs an inflection rule to map the file name to the constant. With explicit `require_relative` calls as shown, you sidestep autoloading entirely and avoid the inflection setup.
+> If your provider uses an acronym or mixed-case constant (like `OpenAI` or `XAI`), Zeitwerk needs an inflection rule to map the file name to the constant. With an explicit `require` as shown, you sidestep autoloading entirely and avoid the inflection setup.
 {: .note }
 
-## What's Next?
+## Next Steps
 
 You can now teach RubyLLM to speak to any AI service, whether it reuses an existing wire format or needs a brand-new one. From here:
 

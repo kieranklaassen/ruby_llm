@@ -3,7 +3,7 @@ layout: default
 title: Connection, Logging and Contexts
 parent: Configuration
 nav_order: 2
-description: Timeouts, retries, proxies, connection reuse, logging, the model registry file, and isolated multi-tenant contexts.
+description: Tune timeouts, retries, proxies, connection reuse, logging, and the model registry file, and isolate tenants with contexts.
 ---
 
 # {{ page.title }}
@@ -46,7 +46,7 @@ RubyLLM falls back to its bundled snapshot until the configured file exists. The
 
 ## Connection Settings
 
-### Timeouts & Retries
+### Timeouts and Retries
 
 Fine-tune how RubyLLM handles network connections:
 
@@ -117,7 +117,7 @@ The default `:net_http` adapter opens a new connection for every request. `:net_
 
 Contexts share connections when their connection settings match. Credentials travel with each request, so tenants with their own API keys reuse the same connections. A context that changes an API base, `request_timeout`, a retry setting, `http_proxy`, or `faraday_adapter` gets connections of its own. Each forked process, such as a Puma worker, opens its own connections instead of sharing its parent's.
 
-## Logging & Debugging
+## Logging and Debugging
 
 ### Basic Logging
 
@@ -206,7 +206,7 @@ embedding = ctx.embed("Ruby is a joy to write")
 transcript = ctx.transcribe("interview.mp3")
 ```
 
-`paint`, `animate`, `animate_later`, `embed`, `embed_later`, `moderate`, `speak`, `transcribe`, `ocr`, `rerank`, `upload`, `download`, `cache`, and `mcp` all use the context's keys, endpoints, and connection settings. So do the downloads RubyLLM performs on your behalf: fetching a URL attachment for a chat, or reading `image.to_blob` and `video.to_blob` from a provider's hosted file, goes through the context's `http_proxy` and `request_timeout` rather than the global ones.
+`paint`, `animate`, `animate_later`, `embed`, `embed_later`, `moderate`, `judge`, `tokenize`, `count_tokens`, `research`, `research_later`, `speak`, `transcribe`, `ocr`, `rerank`, `upload`, `download`, `cache`, and `mcp` all use the context's keys, endpoints, and connection settings. So do the downloads RubyLLM performs on your behalf: fetching a URL attachment for a chat, or reading `image.to_blob` and `video.to_blob` from a provider's hosted file, goes through the context's `http_proxy` and `request_timeout` rather than the global ones.
 
 ### Multi-Tenant Applications
 
@@ -240,7 +240,7 @@ tenant_b_service = TenantService.new(tenant_b)
 
 ## Next Steps
 
-- [Configuration]({% link _getting_started/configuration.md %}#full-reference) - the complete option list in one block.
-- [Provider Setup and Custom Endpoints]({% link _getting_started/configuration-providers.md %}) - per-provider keys and OpenAI-compatible endpoints.
-- [Instrumentation and Observability]({% link _advanced/instrumentation.md %}) - hook RubyLLM into your metrics and tracing stack.
-- [Model Registry]({% link _reference/models.md %}) - discover, select, and refresh models.
+* [Configuration]({% link _getting_started/configuration.md %}#full-reference) - the complete option list in one block.
+* [Provider Setup and Custom Endpoints]({% link _getting_started/configuration-providers.md %}) - per-provider keys and OpenAI-compatible endpoints.
+* [Instrumentation and Observability]({% link _advanced/instrumentation.md %}) - hook RubyLLM into your metrics and tracing stack.
+* [Model Registry]({% link _reference/models.md %}) - discover, select, and refresh models.

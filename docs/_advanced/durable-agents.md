@@ -15,7 +15,7 @@ After reading this guide, you will know:
 
 * Why a persisted chat is resumable by construction, with no run state to serialize.
 * How to run each agent turn as its own background job.
-* How to survive deploys with ActiveJob Continuations.
+* How to survive deploys with Active Job Continuations.
 * How an approval-gated tool parks the loop across processes.
 * Why only one process runs a chat at a time, and how a crashed run resumes.
 * How to stop a running agent from anywhere.
@@ -50,9 +50,9 @@ end
 
 Each job makes one move and enqueues the next unless the conversation is complete or `waiting?`: paused until something outside it happens, such as an approval, an answer to an MCP input request, or an MCP task. Any worker can load the saved transcript.
 
-## Surviving Deploys with ActiveJob Continuations
+## Surviving Deploys with Active Job Continuations
 
-On Rails 8.1 and later, [ActiveJob Continuations](https://api.rubyonrails.org/classes/ActiveJob/Continuable.html) runs the whole loop in one job that survives restarts. Checkpoint after each move; when the queue adapter interrupts the job during a deploy, the job is requeued and the loop continues from the persisted messages:
+On Rails 8.1 and later, [Active Job Continuations](https://api.rubyonrails.org/classes/ActiveJob/Continuable.html) runs the whole loop in one job that survives restarts. Checkpoint after each move; when the queue adapter interrupts the job during a deploy, the job is requeued and the loop continues from the persisted messages:
 
 ```ruby
 class AgentRunJob < ApplicationJob
@@ -70,7 +70,7 @@ class AgentRunJob < ApplicationJob
 end
 ```
 
-ActiveJob's `step` and the chat's `step` are unrelated methods. The job step wraps the whole loop, and each checkpoint marks a point where the job may be interrupted. The step does not need a cursor, because the persisted messages already record how far the loop has progressed.
+Active Job's `step` and the chat's `step` are unrelated methods. The job step wraps the whole loop, and each checkpoint marks a point where the job may be interrupted. The step does not need a cursor, because the persisted messages already record how far the loop has progressed.
 
 ## Parking for a Human Decision
 
@@ -153,7 +153,7 @@ Claims keep two healthy processes from running the same tool call or asking the 
 
 ## Next Steps
 
-* [Agentic Workflows]({% link _advanced/agentic-workflows.md %}) - The loop verbs these jobs drive, and multi-agent patterns.
-* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - Approval, tool choice, and concurrency.
-* [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - The transcript persistence durability builds on.
-* [Batches]({% link _advanced/batches.md %}) - Deferred provider-side generation for many chats, with provider-specific pricing.
+* [Agentic Workflows]({% link _advanced/agentic-workflows.md %}) - the loop verbs these jobs drive, and multi-agent patterns.
+* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - approval, tool choice, and concurrency.
+* [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - the transcript persistence durability builds on.
+* [Batches]({% link _advanced/batches.md %}) - deferred provider-side generation for many chats, with provider-specific pricing.

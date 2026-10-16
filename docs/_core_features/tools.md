@@ -3,7 +3,7 @@ layout: default
 title: Tools
 nav_order: 2
 has_children: true
-description: Let AI call your Ruby code. Connect to databases, APIs, or any external system with function calling.
+description: Let AI call your Ruby code to reach databases, APIs, and any external system.
 redirect_from:
   - /guides/tools
 ---
@@ -85,21 +85,9 @@ If the model requests an unavailable tool, RubyLLM returns an error listing the 
 
 ## Declaring Parameters
 
-The simplest case needs nothing extra. When a tool has no `parameter` or `parameters` declaration, RubyLLM builds a JSON Schema from the `execute` keyword arguments:
+The simplest case needs nothing extra. When a tool has no `parameter` or `parameters` declaration, RubyLLM builds a JSON Schema from the `execute` keyword arguments. See [Signature Inference]({% link _core_features/tool-parameters.md %}#signature-inference) for what it infers.
 
-```ruby
-class Weather < RubyLLM::Tool
-  description "Gets current weather for a location"
-
-  def execute(latitude:, longitude:, units: "metric")
-    # ...
-  end
-end
-```
-
-Required keywords become required string parameters. Optional keywords become optional string parameters. A tool with `def execute` receives an empty object schema.
-
-Ruby method signatures do not expose reliable JSON Schema types or descriptions, so add explicit declarations when those details matter. For the `parameter` helper, the `parameters` DSL, and supplying JSON Schema manually, see [Tool Parameters]({% link _core_features/tool-parameters.md %}).
+Add explicit declarations when types or descriptions matter. For the `parameter` helper, the `parameters` DSL, and supplying JSON Schema manually, see [Tool Parameters]({% link _core_features/tool-parameters.md %}).
 
 ## Using Tools in Chat
 
@@ -159,8 +147,8 @@ A run that takes longer than its `max_run_time` counts as crashed, and another p
 
 Tools should handle errors based on whether they're recoverable:
 
-- **Recoverable errors** (invalid parameters, external API failures): Return `{ error: "description" }`
-- **Unrecoverable errors** (missing configuration, database down): Raise an exception
+* **Recoverable errors** (invalid parameters, external API failures): Return `{ error: "description" }`
+* **Unrecoverable errors** (missing configuration, database down): Raise an exception
 
 ```ruby
 def execute(location:)
@@ -172,16 +160,16 @@ rescue Faraday::ConnectionFailed
 end
 ```
 
-See the [Error Handling Guide]({% link _advanced/error-handling.md %}#handling-errors-within-tools) for more discussion.
+See [Error Handling]({% link _advanced/error-handling.md %}#handling-errors-within-tools) for more discussion.
 
 ## Security Considerations
 
 > Treat any arguments passed to your `execute` method as potentially untrusted user input, as the AI model generates them based on the conversation.
 {: .warning }
 
-*   **NEVER** use methods like `eval`, `system`, `send`, or direct SQL interpolation with raw arguments from the AI.
-*   **Validate and Sanitize:** Always validate parameter types, ranges, formats, and allowed values. Sanitize strings to prevent injection attacks if they are used in database queries or system commands (though ideally, avoid direct system commands).
-*   **Principle of Least Privilege:** Ensure the code within `execute` only has access to the resources it absolutely needs.
+* **NEVER** use methods like `eval`, `system`, `send`, or direct SQL interpolation with raw arguments from the AI.
+* **Validate and Sanitize:** Always validate parameter types, ranges, formats, and allowed values. Sanitize strings to prevent injection attacks if they are used in database queries or system commands (though ideally, avoid direct system commands).
+* **Principle of Least Privilege:** Ensure the code within `execute` only has access to the resources it absolutely needs.
 
 ## Model Context Protocol (MCP) Support
 
@@ -196,13 +184,13 @@ export RUBYLLM_DEBUG=true
 # Run your script
 ```
 
-See the [Error Handling Guide]({% link _advanced/error-handling.md %}#debugging) for more on debugging.
+See [Error Handling]({% link _advanced/error-handling.md %}#debugging) for more on debugging.
 
 ## Next Steps
 
-*   [Tool Parameters]({% link _core_features/tool-parameters.md %}) - Declare flat arguments, structured schemas, and provider-specific metadata.
-*   [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - Steer tool choice, call counts, approval, concurrency, and callbacks.
-*   [Tool Search]({% link _core_features/tool-search.md %}) - Keep large tool sets out of the model's context until it searches for them.
-*   [Code Execution]({% link _core_features/code-execution.md %}) - Let the model run Ruby, Python, JavaScript, and shell code in a sandbox.
-*   [Chatting with AI Models]({% link _core_features/chat.md %}) - The conversational core that tools plug into.
-*   [Error Handling]({% link _advanced/error-handling.md %}) - Recover from failures across the whole stack.
+* [Tool Parameters]({% link _core_features/tool-parameters.md %}) - declare flat arguments, structured schemas, and provider-specific metadata.
+* [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - steer tool choice, call counts, approval, concurrency, and callbacks.
+* [Tool Search]({% link _core_features/tool-search.md %}) - keep large tool sets out of the model's context until it searches for them.
+* [Code Execution]({% link _core_features/code-execution.md %}) - let the model run Ruby, Python, JavaScript, and shell code in a sandbox.
+* [Chat]({% link _core_features/chat.md %}) - the conversational core that tools plug into.
+* [Error Handling]({% link _advanced/error-handling.md %}) - recover from failures across the whole stack.

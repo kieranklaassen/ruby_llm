@@ -17,14 +17,14 @@ module RubyLLM
             }
           end
 
-          def validate_batch_requests!(requests)
+          def validate_batch_requests(requests)
             if @config.vertexai_location.to_s == 'global'
-              raise ConfigurationError, 'vertexai Anthropic batches require a regional vertexai_location'
+              raise ConfigurationError, 'Vertex AI Anthropic batches require a regional vertexai_location'
             end
 
             return if requests.all? { |request| anthropic_batch_payload?(request.fetch(:payload)) }
 
-            raise Error, 'vertexai Anthropic batch requests require Anthropic message payloads'
+            raise Error, 'Vertex AI Anthropic batch requests require Anthropic message payloads'
           end
 
           def anthropic_batch_payload?(payload)

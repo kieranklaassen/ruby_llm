@@ -24,7 +24,7 @@ This guide covers **2.1 to 2.2**. Coming from 2.0? Follow the [2.1 upgrade guide
 
 ## One Release at a Time
 
-Each release ships the upgrade steps for the changes since the previous release. When a release changes the Rails schema, `bin/rails generate ruby_llm:upgrade` generates the migrations that take your database from the previous release to the current one. The next release replaces that generator with its own.
+Each release ships the upgrade steps for the changes since the previous release. When a release changes the Rails schema, `bin/rails generate ruby_llm:upgrade` generates the migration that takes your database from the previous release to the current one. The next release replaces that generator with its own.
 
 To move across several releases, upgrade to each one in turn. Deploy it, run its upgrade, and resolve its deprecation warnings before you continue. Each release's upgrade guide stays in the repository at that release's tag.
 
@@ -46,7 +46,7 @@ Then update it in your development branch:
 bundle update ruby_llm
 ```
 
-Plain Ruby applications need no changes. Rails applications upgrade their schema and read the changes to persisted chats below.
+Rails applications upgrade their schema and read the changes to persisted chats below. The renamed readers and values further down apply to plain Ruby applications too.
 
 ## Upgrade the Rails Schema
 
@@ -65,11 +65,7 @@ The generator also removes the broadcasting code and the `has_many_attached :att
 
 Run the migration before deploying 2.2.
 
-If you already ran an unreleased 2.2 migration that created `provider_id` on `ruby_llm_tool_calls`, rename that column in a new migration before updating:
-
-```ruby
-rename_column :ruby_llm_tool_calls, :provider_id, :provider_call_id
-```
+If you already ran an unreleased 2.2 migration that created `provider_id` on `ruby_llm_tool_calls`, the upgrade migration renames that column to `provider_call_id`.
 
 ## Tool Call IDs Belong to RubyLLM
 
@@ -93,7 +89,7 @@ end
 
 With it on, and turbo-rails and Action Cable loaded, `acts_as_message` broadcasts a chat's messages to the chat record's stream, `turbo_stream_from @chat`. It appends an empty assistant reply when it is created, replaces a message when it is saved, removes it when it is destroyed, and refreshes the chat's page after every change and at the end of each run. Streamed chunks know their record, so a job streams with `chat.complete(&:broadcast)`. See [Streaming with Hotwire/Turbo]({% link _advanced/rails-streaming.md %}).
 
-Broadcasting renders each message with its partial, chosen by `to_partial_path`, so an application that turns it on needs `messages/_user`, `messages/_assistant`, `messages/_tool`, and `messages/_tool_calls`. A model's `broadcasts:` option overrides the configuration.
+Broadcasting renders each message with its partial, chosen by `to_partial_path`, so an application that turns it on needs `messages/_user`, `messages/_assistant`, `messages/_system`, `messages/_tool`, and `messages/_tool_calls`. A model's `broadcasts:` option overrides the configuration.
 
 ## Messages Declare Their Attachments
 
@@ -139,6 +135,15 @@ end
 
 In 2.1, `message.raw` and `error.response` still carried the request headers, including the API key, and `error.response` also carried the request body, the whole serialized conversation. In 2.2 they keep neither, so logging or reporting them no longer leaks keys or prompts. To see what a chat sends, use `render` or a `before_request` hook, described in [Advanced Request Control]({% link _core_features/chat-request-control.md %}#request-hooks).
 
+## Provider Gems Drop the Bang From Raising Validators
+
+Applications need no change. A provider gem or a custom protocol that overrides one of these methods renames its override, because RubyLLM no longer calls the old name. A bang marks the dangerous half of a pair, and these validators have no plain twin:
+
+* `ensure_configured!` is now `ensure_configured`.
+* `validate_paint_inputs!` is now `validate_paint_inputs`.
+* `validate_animate_inputs!` is now `validate_animate_inputs`.
+* `validate_batch_requests!` is now `validate_batch_requests`.
+
 ## Rename Chat Columns Named After New Methods
 
 `acts_as_chat` records gain `code_execution`, `skills`, `with_code_execution`, and `with_skills` in 2.2. A column of your own with one of those names is hidden behind RubyLLM's method, so reading it returns RubyLLM's setting, usually `nil`, instead of your value. Rename such a column before you upgrade, for example a `code_execution` toggle to `runs_code`:
@@ -146,6 +151,246 @@ In 2.1, `message.raw` and `error.response` still carried the request headers, in
 ```ruby
 rename_column :chats, :code_execution, :runs_code
 ```
+
+`acts_as_message` records gain `tool_call_id`, the id of the tool call a tool result answers, as on a plain `Message`. Rename a `tool_call_id` column of your own on the messages table the same way.
+
+## Provider Gems Rename Their Protocol Overrides
+
+Applications need no change. A provider gem or a custom protocol that overrides protocol methods renames its overrides, because RubyLLM no longer calls the old names. In 2.2 every method that builds part of a request starts with `render_`, every method that reads part of a response starts with `parse_`, and the two capability predicates drop `supports_`:
+
+```ruby
+# 2.1
+def format_role(role)
+  role.to_s
+end
+
+def extract_thinking_text(message_data)
+  message_data["reasoning"]
+end
+
+def supports_provider_file_references?
+  false
+end
+
+# 2.2
+def render_role(role)
+  role.to_s
+end
+
+def parse_thinking_text(message_data)
+  message_data["reasoning"]
+end
+
+def provider_file_references?
+  false
+end
+```
+
+* `format_*` is now `render_*`, for example `render_messages`, `render_content`, and `render_tool_calls`.
+* `extract_*` is now `parse_*`, for example `parse_usage`, `parse_content_delta`, and `parse_thinking_signature`.
+* `supports_embedding_media?` is now `embedding_media?`, and `supports_provider_file_references?` is now `provider_file_references?`.
+
+Calls to the shared modules change the same way, so `Protocols::ChatCompletions::Media.format_content` becomes `Protocols::ChatCompletions::Media.render_content`.
+
+A few methods keep their names: `extract_citations` in Chat Completions, and `extract_tool_calls` in the Anthropic, Cohere, and Converse streams. `format_cache_option_keys` is gone from every protocol; call `RubyLLM::Support::Utils.option_list` in its place.
+
+## Research Jobs Report Their Provider as a String
+
+`ResearchJob#provider` returns the provider slug as a String, like `UploadedFile#provider` and every other provider reader. Compare it to a String, or convert it where you need a Symbol:
+
+```ruby
+# 2.1
+job.provider # => :vertexai
+
+# 2.2
+job.provider # => "vertexai"
+```
+
+`RubyLLM::ResearchJob.find` still accepts a Symbol or a String for `provider:`, so a stored slug keeps working.
+
+## Transcription Chunk Types Are Symbols
+
+`TranscriptionChunk#type` is `:delta`, `:partial`, `:segment`, or `:done` on every provider. It no longer returns OpenAI's event names, and the `DELTA`, `PARTIAL`, `SEGMENT`, and `DONE` constants are gone:
+
+```ruby
+# 2.1
+chunk.type == RubyLLM::TranscriptionChunk::DONE
+chunk.type == "transcript.text.delta"
+
+# 2.2
+chunk.done?
+chunk.type == :delta
+```
+
+The `delta?`, `partial?`, `segment?`, and `done?` predicates work as before. An event RubyLLM does not normalize has a `nil` type; read the provider's own name from `chunk.raw`.
+
+## Finished Jobs Report `:succeeded`
+
+`VideoJob` and `ResearchJob` name success the way `Batch` and the usage ledger do. Their status is `:succeeded` where it was `:completed`, and `succeeded?` replaces `completed?`:
+
+```ruby
+# 2.1
+job.video.save("clip.mp4") if job.completed?
+job.status # => :completed
+
+# 2.2
+job.video.save("clip.mp4") if job.succeeded?
+job.status # => :succeeded
+```
+
+`done?`, `pending?`, and `failed?` are unchanged, and so are `incomplete?` and `cancelled?` on a research job. RubyLLM stores neither job, so there is nothing to migrate. If your application saves `job.status` in its own column, update the rows that hold `completed`.
+
+A provider gem that implements `parse_video_job_status` returns `status: :succeeded` for a finished video.
+
+## Uploaded Files and Caches Keep the Provider Response in `raw`
+
+`UploadedFile` and `CachedContent` now expose the provider's response as `raw`, the name every other result uses. `metadata` still works and logs a deprecation warning. It is removed in 3.0:
+
+```ruby
+# 2.1
+file.metadata["downloadUri"]
+cache.metadata["usageMetadata"]
+
+# 2.2
+file.raw["downloadUri"]
+cache.raw["usageMetadata"]
+```
+
+The `metadata:` keyword on operations such as `RubyLLM.embed` is unrelated. It still carries your instrumentation payload.
+
+## Ask an Uploaded File With `downloadable?`
+
+`UploadedFile#downloadable?` replaces `downloadable`, so the predicate reads like `expired?` beside it. `downloadable` still works and logs a deprecation warning. It is removed in 3.0:
+
+```ruby
+# 2.1
+RubyLLM.download(file.id, provider: file.provider) if file.downloadable
+
+# 2.2
+RubyLLM.download(file.id, provider: file.provider) if file.downloadable?
+```
+
+## Rerank Results and OCR Pages Are Immutable
+
+`Rerank::Result` and `OCR::Page` are value objects now, not Structs. Their readers, keyword construction, and `to_h` are unchanged. Setters and the Struct collection methods, such as `[]`, `to_a`, and `each`, are gone:
+
+```ruby
+# 2.1
+result = rerank.results.first
+result.score = 1.0
+result[:document]
+page.to_a
+
+# 2.2
+result = rerank.results.first.with(score: 1.0)
+result.document
+page.to_h.values
+```
+
+`OCR::Page.new` requires `index:` and `markdown:`, and `Rerank::Result.new` requires all three of its values. Both print one short line in the console, and so does `SearchResults`.
+
+## Caches Have an `id`
+
+`CachedContent#id` replaces `name`, so a cache is identified the way an uploaded file, a batch, and a job are. It is the value `with_caching(id:)` and `CachedContent.find` already take. `name` still works and logs a deprecation warning. It is removed in 3.0:
+
+```ruby
+# 2.1
+Document.update!(cache_name: cache.name)
+
+# 2.2
+Document.update!(cache_name: cache.id)
+```
+
+A provider gem that builds a `CachedContent` passes `id:` where it passed `name:`.
+
+## A Chat With Thinking Disabled Reads `false`
+
+`Chat#thinking` returns `false` after `with_thinking(false)`, the way `caching`, `compaction`, and `code_execution` do. It returned the control RubyLLM sends to the model. The `enabled:` key is gone from the options it returns for a model that only switches thinking on:
+
+```ruby
+# 2.1
+chat.with_thinking(false).thinking # => { enabled: false }
+chat.with_thinking.thinking        # => { enabled: true }
+
+# 2.2
+chat.with_thinking(false).thinking # => false
+chat.with_thinking.thinking        # => {}
+```
+
+The reader still returns `nil` when thinking was never configured, and the `effort`, `budget`, and `display` it resolved otherwise. Requests are unchanged.
+
+## Rescue `ArgumentError` for a Mixed Batch
+
+A batch that mixes models, endpoints, or chats and embedding requests where the provider takes one kind now raises `ArgumentError` on every provider, like a batch that mixes providers. In 2.1, OpenAI, Gemini, Mistral, Vertex AI, and the model check shared by most providers raised `RubyLLM::Error`. The messages share one wording too:
+
+```ruby
+# 2.1
+begin
+  RubyLLM.batch(chats)
+rescue RubyLLM::Error => e
+  e.message # => "openai batch requests must use one model per submission"
+end
+
+# 2.2
+begin
+  RubyLLM.batch(chats)
+rescue ArgumentError => e
+  e.message # => "OpenAI batches take one model per submission"
+end
+```
+
+`RubyLLM::Error` stays the class for what the provider reports, including a provider that has no batch API.
+
+## Rescue `ArgumentError` for Too Many Video References
+
+`RubyLLM.animate` with more reference files than the provider takes now raises `ArgumentError` on Gemini, xAI, and OpenRouter, like `extend:` with more than one video. In 2.1 it raised `RubyLLM::Error`. The messages are unchanged:
+
+```ruby
+# 2.1
+rescue RubyLLM::Error => e
+  e.message # => "Veo takes a single reference image"
+
+# 2.2
+rescue ArgumentError => e
+  e.message # => "Veo takes a single reference image"
+```
+
+## Rescue `ConfigurationError` for a Wrong Setting
+
+An operation that needs a different configuration value now raises `RubyLLM::ConfigurationError`, the class a missing API key raises:
+
+* Vertex AI transcription and hosted research with a `vertexai_location` other than `"global"` raised `ArgumentError`.
+* A GPUStack operation that needs `gpustack_api_base` to end in `/model/proxy/ROUTE_ID/v1` raised `RubyLLM::Error`.
+
+```ruby
+# 2.1
+rescue ArgumentError => e
+  e.message # => 'Vertex AI hosted research requires vertexai_location = "global"'
+
+# 2.2
+rescue RubyLLM::ConfigurationError => e
+  e.message # => 'Vertex AI hosted research requires vertexai_location = "global"'
+```
+
+An agent class without `chat_model` raises it as well, from `find`, `create`, `create!`, and `sync_instructions`, where 2.1 raised `ArgumentError`.
+
+`ConfigurationError` inherits from `StandardError`, so `rescue RubyLLM::Error` no longer catches the GPUStack case.
+
+## Rescue `LoadError` for a Missing Optional Gem
+
+A missing optional gem now raises `LoadError` wherever RubyLLM needs one. In 2.1, `googleauth` for Vertex AI, `aws-eventstream` for Bedrock streaming, `aws-sdk-s3` for Bedrock file uploads, and `google-cloud-storage` for Vertex AI file uploads raised `RubyLLM::Error`, while `async`, `websocket-driver`, `avro`, `minitest`, and `opentelemetry-api` already raised `LoadError`:
+
+```ruby
+# 2.1
+rescue RubyLLM::Error => e
+  e.message # => 'The googleauth gem ~> 1.15 is required for Vertex AI. Please add it to your Gemfile: gem "googleauth"'
+
+# 2.2
+rescue LoadError => e
+  e.message # => "Vertex AI requires the googleauth gem ~> 1.15. Add it to your Gemfile."
+```
+
+`LoadError` is not a `StandardError`, so a bare `rescue` does not catch it. Add the gem to your Gemfile and the error goes away.
 
 ## Deploy Without Mixing Versions
 

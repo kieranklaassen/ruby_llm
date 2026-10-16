@@ -13,7 +13,7 @@ module RubyLLM
           private_constant :TERMINAL_STATUSES, :Response
 
           def create_batch(requests)
-            model = single_batch_model!(requests, 'mistral')
+            model = single_batch_model(requests, 'Mistral')
             response = @connection.post('batch/jobs', {
                                           endpoint: mistral_batch_endpoint(requests),
                                           model: model,
@@ -69,7 +69,7 @@ module RubyLLM
             end.uniq
             return endpoints.first if endpoints.one?
 
-            raise Error, 'Mistral batches cannot mix chat and embedding requests'
+            raise ArgumentError, 'Mistral batches take chat or embedding requests, not both'
           end
 
           def parse_batch_response(data)

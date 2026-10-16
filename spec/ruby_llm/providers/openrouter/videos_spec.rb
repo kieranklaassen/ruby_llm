@@ -43,6 +43,15 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Videos do
     end
   end
 
+  describe '#validate_animate_inputs' do
+    it 'rejects more than two frame images as a caller mistake' do
+      images = RubyLLM::Attachment.wrap(%w[first middle last].map { |name| "https://example.com/#{name}.jpg" })
+
+      expect { protocol.send(:validate_animate_inputs, with: images) }
+        .to raise_error(ArgumentError, 'OpenRouter video generation takes at most first and last frame images')
+    end
+  end
+
   describe '#parse_video_request' do
     it 'reads the requested duration and resolution, or the size in pixels' do
       payload = protocol.render_video_payload('a wave', model: 'x-ai/grok-imagine-video',
@@ -91,7 +100,7 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Videos do
       }
       response = instance_double(Faraday::Response, body: body)
 
-      expect(protocol.parse_video_job_status(response, job: job)).to eq(status: :completed, raw: body,
+      expect(protocol.parse_video_job_status(response, job: job)).to eq(status: :succeeded, raw: body,
                                                                         reported_cost: 0.05)
     end
 
@@ -122,7 +131,7 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Videos do
   describe '#download_video' do
     it 'downloads the job content with the API connection' do
       job = RubyLLM::VideoJob.new(id: 'abc123', protocol: protocol, model: 'x-ai/grok-imagine-video',
-                                  status: :completed, raw: { 'status' => 'completed' })
+                                  status: :succeeded, raw: { 'status' => 'completed' })
       response = instance_double(Faraday::Response, body: 'mp4 bytes', headers: { 'content-type' => 'video/mp4' })
       allow(provider.connection).to receive(:get).with('videos/abc123/content?index=0').and_return(response)
 

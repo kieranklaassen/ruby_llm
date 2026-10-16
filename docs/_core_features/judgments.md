@@ -2,7 +2,7 @@
 layout: default
 title: Judgments
 nav_order: 5
-description: Ask typed questions about your application data and receive probabilities, choices, and scores
+description: Ask typed questions about your application data and receive probabilities, choices, and scores.
 ---
 
 # {{ page.title }}
@@ -245,7 +245,7 @@ When you pass an isolated `context:`, its default replaces the global default. T
 
 Ollama runs decision models such as Cloudflare's Clef on your own hardware, so the data you judge never leaves it. Pull a model:
 
-```sh
+```bash
 ollama pull clef-flash
 ```
 
@@ -273,8 +273,8 @@ judgment.tokens.output
 judgment.cost.total
 ```
 
-Unknown costs remain `nil`. The provider's catalog does not necessarily include pricing. See [Cost and Usage Tracking]({% link _core_features/cost-and-usage-tracking.md %}).
+Unknown costs remain `nil`. The provider's catalog does not necessarily include pricing. See [Tokens and Costs]({% link _core_features/cost-and-usage-tracking.md %}).
 
 Pass `model:`, `provider:`, `context:`, `provider_options:`, or instrumentation `metadata:` to `judge`. You can also declare `provider_options` on a Judge class as a Hash, proc, or block. Reserved input, question, and model fields must use the public arguments. `RubyLLM.context` exposes the same `judge` entry point for isolated credentials and settings.
 
-Judgments use the shared timeouts, retries, and error classes. They emit `judgment.ruby_llm` and per-attempt `usage.ruby_llm` events. See [Instrumentation]({% link _advanced/instrumentation.md %}). Call judges from ordinary Rails services or jobs; no chat record is required.
+Judgments use the shared timeouts, retries, and error classes. They emit `judgment.ruby_llm` and per-attempt `usage.ruby_llm` events. See [Instrumentation and Observability]({% link _advanced/instrumentation.md %}). Call judges from ordinary Rails services or jobs; no chat record is required.

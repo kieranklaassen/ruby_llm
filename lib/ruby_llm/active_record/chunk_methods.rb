@@ -23,12 +23,12 @@ module RubyLLM
       # Gives +chunk+ the record +message+ it streams into. Returns +chunk+.
       def self.attach(chunk, message) # :nodoc:
         chunk.extend(ChunkMethods)
-        chunk.message = message
+        chunk.instance_variable_set(:@message, message)
         chunk
       end
 
       # Returns the persisted message record this chunk streams into.
-      attr_accessor :message
+      attr_reader :message
 
       # Appends this chunk to its message on the chat's page. See
       # MessageBroadcasting#broadcast_chunk. Raises

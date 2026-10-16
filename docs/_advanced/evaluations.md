@@ -3,7 +3,7 @@ layout: default
 title: Evaluations
 nav_order: 14
 has_children: true
-description: Measure how well your agents answer, with reusable datasets, model grading, and Ruby assertions
+description: Measure how well your agents answer, with reusable datasets, model grading, and Ruby assertions.
 ---
 
 # {{ page.title }}
@@ -52,7 +52,7 @@ cases:
 
 Run it:
 
-```sh
+```bash
 bin/rails "ruby_llm:eval[SupportEvaluation]"
 ```
 
@@ -96,11 +96,11 @@ Three values take part in every case:
 
 RubyLLM finds the dataset by class name. `SupportEvaluation` uses `app/evals/support_evaluation.yml`, and `Support::AnswerEvaluation` uses `app/evals/support/answer_evaluation.yml`. Rails resolves `app/evals` from the application root and autoloads the classes in it. Plain Ruby resolves it from the working directory.
 
-## Continue the Guide
+## Next Steps
 
-* [Evaluation Datasets]({% link _advanced/evaluation-datasets.md %}): file formats, structured inputs, and cases from your database.
-* [Evaluating Conversations and Tools]({% link _advanced/evaluation-conversations.md %}): several turns, saved transcripts, and tool calls.
-* [Evaluators]({% link _advanced/evaluation-evaluators.md %}): your own criteria, models, Agents, and Judges.
-* [Running Evaluations]({% link _advanced/evaluation-running.md %}): assertions, RSpec, Minitest, Rake, tokens, and costs.
-* [Evaluation Progress and Monitoring]({% link _advanced/evaluation-progress.md %}): progress in your UI, notifications, and traces.
-* [Evaluation Examples]({% link _advanced/evaluation-examples.md %}): complete evaluations to adapt.
+* [Evaluation Datasets]({% link _advanced/evaluation-datasets.md %}) - file formats, structured inputs, and cases from your database.
+* [Evaluating Conversations and Tools]({% link _advanced/evaluation-conversations.md %}) - several turns, saved transcripts, and tool calls.
+* [Evaluators]({% link _advanced/evaluation-evaluators.md %}) - your own criteria, models, Agents, and Judges.
+* [Running Evaluations]({% link _advanced/evaluation-running.md %}) - assertions, RSpec, Minitest, Rake, tokens, and costs.
+* [Evaluation Progress and Monitoring]({% link _advanced/evaluation-progress.md %}) - progress in your UI, notifications, and traces.
+* [Evaluation Examples]({% link _advanced/evaluation-examples.md %}) - complete evaluations to adapt.

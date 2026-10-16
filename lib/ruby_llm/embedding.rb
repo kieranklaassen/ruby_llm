@@ -56,15 +56,19 @@ module RubyLLM
 
     attr_writer :model_info # :nodoc:
 
-    def model_info # :nodoc:
+    # Returns the embedding's Model from its provider's registry, falling
+    # back to the requested model when the response ID is unknown.
+    # Returns +nil+ if the model is unknown.
+    def model_info
       @model_info ||= RubyLLM.models.find(model)
     rescue ModelNotFoundError
       nil
     end
 
-    # Generates embeddings for +text+ and returns an Embedding. +text+
-    # may be a single string or, on supported models, an array of strings.
-    # An array produces one vector per string in a single API call.
+    # Generates embeddings for +text+ and returns an Embedding. Most code
+    # calls this through RubyLLM.embed. +text+ may be a single string or,
+    # on supported models, an array of strings. An array produces one
+    # vector per string in a single API call.
     #
     #   RubyLLM.embed "Ruby is a programmer's best friend"
     #   RubyLLM.embed ["Ruby", "Python", "JavaScript"]
@@ -80,12 +84,11 @@ module RubyLLM
     #                 model: "gemini-embedding-2",
     #                 with: "logo.png"
     #
-    # +model:+ selects the embedding model and defaults to the
-    # configured +default_embedding_model+. +provider:+ forces a specific
-    # provider, and <tt>assume_model_exists: true</tt> skips the model
-    # registry check. +context:+ supplies a Context whose configuration
-    # is used instead of the global one. +dimensions:+ requests a
-    # specific vector size on models that support it. +task_type:+ names
+    # +model:+ selects the embedding model and defaults to the configured
+    # +default_embedding_model+. +provider:+ forces a specific provider, and
+    # +assume_model_exists:+ skips the registry lookup. +context:+ supplies
+    # a Context whose configuration replaces the global one. +dimensions:+
+    # requests a specific vector size on models that support it. +task_type:+ names
     # the embedding task in the provider's own vocabulary: Vertex AI and
     # Gemini take values such as <tt>"RETRIEVAL_QUERY"</tt> or
     # <tt>"RETRIEVAL_DOCUMENT"</tt>, while Bedrock Cohere takes an input
@@ -97,8 +100,7 @@ module RubyLLM
     # gemini-embedding-2; providers without multimodal embeddings raise
     # UnsupportedAttachmentError. +provider_options:+ takes options
     # in the provider's request vocabulary and merges them into the
-    # request as-is. +metadata:+ is not sent to the provider; it is
-    # attached to the emitted +embedding.ruby_llm+ instrumentation event.
+    # request as-is. +metadata:+ is included in the instrumentation payload.
     # +owner:+ attributes the usage to a record, such as a user, and wins
     # over RubyLLM.with_usage_owner.
     def self.embed(text,
@@ -158,6 +160,8 @@ module RubyLLM
     private_class_method def self.embedding_count(vectors) # :nodoc:
       vectors.first.is_a?(Array) ? vectors.size : 1
     end
+
+    private
 
     def inspect_attributes # :nodoc:
       if vectors&.first.is_a?(Array)

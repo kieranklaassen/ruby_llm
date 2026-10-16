@@ -15,10 +15,6 @@ module RubyLLM
   class UploadedFile
     include Support::Inspectable
 
-    def inspect_attributes # :nodoc:
-      { id: id, provider: provider, filename: filename, byte_size: byte_size }
-    end
-
     # The provider-assigned file identifier, such as <tt>"file_..."</tt>.
     attr_reader :id
 
@@ -52,11 +48,19 @@ module RubyLLM
     # <tt>gs://</tt> or <tt>s3://</tt> location for storage-backed providers.
     attr_reader :uri
 
-    # Whether the provider allows downloading the file's content.
-    attr_reader :downloadable
-
     # The raw provider response data for the file, as a Hash.
-    attr_reader :metadata
+    attr_reader :raw
+
+    def metadata # :nodoc:
+      RubyLLM.deprecator.deprecate('UploadedFile#metadata', replacement: 'UploadedFile#raw', removal: '3.0')
+      raw
+    end
+
+    def downloadable # :nodoc:
+      RubyLLM.deprecator.deprecate('UploadedFile#downloadable', replacement: 'UploadedFile#downloadable?',
+                                                                removal: '3.0')
+      @downloadable
+    end
 
     def initialize(id:, **attributes) # :nodoc:
       @id = id
@@ -70,7 +74,7 @@ module RubyLLM
       @purpose = attributes[:purpose]
       @uri = attributes[:uri]
       @downloadable = attributes[:downloadable]
-      @metadata = attributes[:metadata] || {}
+      @raw = attributes[:raw] || {}
     end
 
     EXPIRY_MARGIN = 60 # :nodoc:
@@ -80,6 +84,12 @@ module RubyLLM
     # safely serve a request. Files without a reported expiry never expire.
     def expired?
       !expires_at.nil? && expires_at <= Time.now + EXPIRY_MARGIN
+    end
+
+    # Returns whether the provider allows downloading the file's content,
+    # or +nil+ when the provider does not report it.
+    def downloadable?
+      @downloadable
     end
 
     # Uploads +file+ to the provider's Files API and returns an UploadedFile.
@@ -123,7 +133,7 @@ module RubyLLM
     #
     #   RubyLLM.download(file.id, provider: :openai).save("report.pdf")
     #
-    # Not every provider allows downloads; see #downloadable. Cohere
+    # Not every provider allows downloads; see #downloadable?. Cohere
     # downloads original uploaded bytes when preserved; generated datasets
     # return JSONL and require the optional +avro+ gem.
     def self.download(id, provider: nil, context: nil)
@@ -140,5 +150,11 @@ module RubyLLM
       end
     end
     private_class_method :provider_for
+
+    private
+
+    def inspect_attributes # :nodoc:
+      { id: id, provider: provider, filename: filename, byte_size: byte_size }
+    end
   end
 end

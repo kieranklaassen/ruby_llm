@@ -101,7 +101,7 @@ module RubyLLM
       def raise_unknown_alias(name, aliases, owner)
         known = aliases.keys.map { |key| ":#{key}" }.join(', ')
         raise UnsupportedServerToolError,
-              "#{owner} has no server tool alias :#{name}. Known aliases: #{known}. " \
+              "#{owner} has no server tool alias :#{name}. Valid aliases: #{known}. " \
               'New or unlisted tools work by passing the provider\'s tool definition as a Hash.'
       end
     end

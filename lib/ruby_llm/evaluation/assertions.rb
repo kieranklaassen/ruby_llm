@@ -28,7 +28,7 @@ module RubyLLM
       end
 
       def initialize
-        raise LoadError, "Evaluation assertions require the 'minitest' gem. Add it to your Gemfile." unless
+        raise LoadError, 'Evaluation assertions require the minitest gem. Add it to your Gemfile.' unless
           self.class.available?
 
         extend ::Minitest::Assertions

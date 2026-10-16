@@ -53,11 +53,11 @@ RSpec.describe RubyLLM::Chat do
       FileUtils.mkdir_p(File.join(other, 'ticket-codes'))
       File.write(File.join(other, 'ticket-codes/SKILL.md'), "---\nname: ticket-codes\ndescription: Copy.\n---\n")
 
-      expect { chat.with_skills(nil) }.to raise_error(ArgumentError, /cannot be nil/)
-      expect { chat.with_skills(true, :csv_report) }.to raise_error(ArgumentError, /take no skill names/)
+      expect { chat.with_skills(nil) }.to raise_error(ArgumentError, /\Awith_skills cannot take nil/)
+      expect { chat.with_skills(true, :csv_report) }.to raise_error(ArgumentError, /\Awith_skills.*no skill names/)
       expect { chat.with_skills(:ticket_codes, File.join(other, 'ticket-codes')) }
         .to raise_error(ArgumentError, /Two skills are named ticket-codes/)
-      expect { chat.with_skills(42) }.to raise_error(ArgumentError, /Symbols, paths/)
+      expect { chat.with_skills(42) }.to raise_error(ArgumentError, /\ASkills are Symbols, paths/)
     ensure
       FileUtils.rm_rf(other)
     end

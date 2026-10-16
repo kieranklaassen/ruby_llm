@@ -20,7 +20,7 @@ hero:
   <div class="home-section-inner">
     <div class="home-hero-install home-code-grid home-code-grid--bare" markdown="1">
 
-```sh
+```bash
 {% if site.docs_unreleased %}bundle add ruby_llm --git https://github.com/crmne/ruby_llm --branch main{% else %}bundle add ruby_llm --version 2.1.1{% endif %}
 ```
 {: .home-code-card }
@@ -86,7 +86,7 @@ chat.ask "Hello!"
       </div>
       <div class="home-step-code home-code-grid home-code-grid--bare" markdown="1">
 
-```sh
+```bash
 gem install ruby_llm --pre
 ruby_llm provider-gem Acme \
   --api-base https://api.acme.example/v1
@@ -252,7 +252,7 @@ cases:
 ```
 {: .home-code-card data-title="app/evals/support_evaluation.yml" }
 
-```sh
+```bash
 bin/rails "ruby_llm:eval[SupportEvaluation]"
 ```
 {: .home-code-card }
@@ -297,7 +297,7 @@ end
 
 current_account.ruby_llm_usages.sum(:total_cost)
 ```
-{: .home-code-card data-title="Usage and costs by customer" data-href="{% link _core_features/cost-and-usage-tracking.md %}#one-shot-operations" data-doc-title="Cost and Usage Tracking" }
+{: .home-code-card data-title="Usage and costs by customer" data-href="{% link _core_features/cost-and-usage-tracking.md %}#one-shot-operations" data-doc-title="Tokens and Costs" }
 
 ```ruby
 OpenTelemetry::SDK.configure
@@ -331,7 +331,7 @@ embeddings = RubyLLM.embed(documents)
 ranked = RubyLLM.rerank("Ruby language", documents,
                         model: "{{ site.models.rerank_cohere }}")
 ```
-{: .home-code-card data-title="Embed and rank your documents" data-href="{% link _advanced/rag.md %}" data-doc-title="RAG" }
+{: .home-code-card data-title="Embed and rank your documents" data-href="{% link _advanced/rag.md %}" data-doc-title="Retrieval-Augmented Generation (RAG)" }
 
 ```ruby
 response = RubyLLM.chat
@@ -344,7 +344,7 @@ response.citations
 
 ```ruby
 class Urgency < RubyLLM::Judge
-  model "jev-latest"
+  model "{{ site.models.judgment }}"
   probability :urgent, "Needs action today?"
 end
 
@@ -379,13 +379,13 @@ puts document.markdown
 transcript = RubyLLM.transcribe "meeting.wav"
 RubyLLM.speak(transcript.text).save "transcript.mp3"
 ```
-{: .home-code-card data-title="Transcribe audio and generate speech" data-href="{% link _core_features/text-to-speech.md %}" data-doc-title="Text to speech" }
+{: .home-code-card data-title="Transcribe audio and generate speech" data-href="{% link _core_features/text-to-speech.md %}" data-doc-title="Text to Speech" }
 
 ```ruby
 RubyLLM.paint "a watercolor sunset over mountains"
 RubyLLM.animate "a paper boat in a rainy gutter"
 ```
-{: .home-code-card data-title="Generate images and video" data-href="{% link _core_features/video-generation.md %}" data-doc-title="Video generation" }
+{: .home-code-card data-title="Generate images and video" data-href="{% link _core_features/video-generation.md %}" data-doc-title="Video Generation" }
 
 ```ruby
 RubyLLM.moderate(comment.body).flagged?
@@ -447,7 +447,7 @@ chat = Chat.create! model: "{{ site.models.anthropic_opus }}"
 chat.ask "What's in this file?", with: "report.pdf"
 chat.messages.last.content
 ```
-{: .home-code-card data-title="Save chats with Active Record" data-href="{% link _advanced/rails-persistence.md %}#two-application-models" data-doc-title="Rails persistence" }
+{: .home-code-card data-title="Save chats with Active Record" data-href="{% link _advanced/rails-persistence.md %}#two-application-models" data-doc-title="Persistence with acts_as" }
 
 ```text
 app/
@@ -461,13 +461,13 @@ app/
 ├── evals/      support_evaluation.rb
 └── judges/     urgency_judge.rb
 ```
-{: .home-code-card data-title="A place for everything in app/" data-href="{% link _advanced/rails-generators.md %}#conventional-directory-structure" data-doc-title="Conventional directory structure" }
+{: .home-code-card data-title="A place for everything in app/" data-href="{% link _advanced/rails-generators.md %}#conventional-directory-structure" data-doc-title="Conventional Directory Structure" }
 
   </div>
 
   <div class="home-code-cta">
     <p><a href="{% link _advanced/rails-generators.md %}#generators">Generators</a> create each piece where Rails expects it.
-      Store files with <a href="{% link _advanced/rails-generators.md %}#setting-up-activestorage">Active Storage</a>
+      Store files with <a href="{% link _advanced/rails-generators.md %}#setting-up-active-storage">Active Storage</a>
       and write your prompts in <a href="{% link _advanced/agents.md %}#prompt-management-and-conventions">ERB templates</a>.
       Use <a href="{% link _advanced/rails-streaming.md %}#full-streaming-implementation">Turbo Streams</a> to show replies
       and <a href="{% link _advanced/durable-agents.md %}">Active Job</a> to run agents in the background,
@@ -639,7 +639,7 @@ SupportAgent.find(chat_id).ask "Where's my refund?"
 
     <div class="home-skill-install home-code-grid home-code-grid--bare" markdown="1">
 
-```sh
+```bash
 npx skills add "$(bundle show ruby_llm)" --skill rubyllm
 ```
 {: .home-code-card }

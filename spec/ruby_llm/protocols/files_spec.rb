@@ -136,7 +136,7 @@ RSpec.describe RubyLLM::Protocols::Files do
         filename: 'document.pdf',
         byte_size: 1024,
         mime_type: 'application/pdf',
-        downloadable: false
+        downloadable?: false
       )
     end
   end
@@ -171,7 +171,7 @@ RSpec.describe RubyLLM::Protocols::Files do
         mime_type: 'application/pdf',
         byte_size: 1024,
         created_at: Time.iso8601('2025-01-01T00:00:00Z'),
-        downloadable: false
+        downloadable?: false
       )
     end
   end
@@ -247,21 +247,21 @@ RSpec.describe RubyLLM::Protocols::Files do
         Struct.new(:headers, :body).new({}, {})
       end
 
-      expect { protocol.upload(fixture_path) }.to raise_error(RubyLLM::Error, 'gemini did not return an upload URL')
+      expect { protocol.upload(fixture_path) }.to raise_error(RubyLLM::Error, 'Gemini did not return an upload URL')
     end
 
     it 'refuses to download a file with no download URI' do
       allow(protocol).to receive(:find).and_return(
-        RubyLLM::UploadedFile.new(id: 'files/abc', provider: 'gemini', metadata: {})
+        RubyLLM::UploadedFile.new(id: 'files/abc', provider: 'gemini', raw: {})
       )
 
-      expect { protocol.download('files/abc') }.to raise_error(RubyLLM::Error, 'gemini file has no download URI')
+      expect { protocol.download('files/abc') }.to raise_error(RubyLLM::Error, 'Gemini file has no download URI')
     end
 
     it 'downloads JSON files without parsing their contents' do
       allow(protocol).to receive(:find).and_return(
         RubyLLM::UploadedFile.new(
-          id: 'files/abc', provider: 'gemini', metadata: { 'downloadUri' => 'https://files.example/abc' }
+          id: 'files/abc', provider: 'gemini', raw: { 'downloadUri' => 'https://files.example/abc' }
         )
       )
       body = "{\"content\":\"Hello\"}\n"
@@ -317,7 +317,7 @@ RSpec.describe RubyLLM::Protocols::Files do
     it 'lazy-loads the optional gem' do
       allow(protocol).to receive(:require).with('aws-sdk-s3').and_raise(LoadError)
 
-      expect { protocol.send(:s3_client) }.to raise_error(RubyLLM::Error, /aws-sdk-s3/)
+      expect { protocol.send(:s3_client) }.to raise_error(LoadError, /aws-sdk-s3/)
     end
 
     it 'passes credential providers to aws-sdk-s3' do
@@ -368,7 +368,7 @@ RSpec.describe RubyLLM::Protocols::Files do
     it 'lazy-loads the optional gem' do
       allow(protocol).to receive(:require).with('google/cloud/storage').and_raise(LoadError)
 
-      expect { protocol.send(:storage) }.to raise_error(RubyLLM::Error, /google-cloud-storage/)
+      expect { protocol.send(:storage) }.to raise_error(LoadError, /google-cloud-storage/)
     end
   end
 
@@ -402,7 +402,7 @@ RSpec.describe RubyLLM::Protocols::Files do
 
     it 'refuses to list files for providers without listing' do
       expect { protocol.list_uris('gs://bucket') }.to raise_error(
-        RubyLLM::Error, "openai doesn't support file listing"
+        RubyLLM::Error, 'OpenAI does not support file listing'
       )
     end
 

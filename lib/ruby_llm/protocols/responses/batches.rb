@@ -13,10 +13,10 @@ module RubyLLM
           '/v1/responses'
         end
 
-        def validate_batch_requests!(requests)
+        def validate_batch_requests(requests)
           return if requests.all? { |request| responses_payload?(request.fetch(:payload)) }
 
-          raise Error, "#{@provider.slug} batch requests require responses payloads"
+          raise Error, "#{@provider.name} batch requests require responses payloads"
         end
 
         def responses_payload?(payload)

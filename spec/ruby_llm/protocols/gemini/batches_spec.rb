@@ -74,7 +74,7 @@ RSpec.describe RubyLLM::Protocols::Gemini::Batches do
       ]
 
       expect { protocol.create_batch(requests) }
-        .to raise_error(RubyLLM::Error, /one model/)
+        .to raise_error(ArgumentError, /one model/)
     end
   end
 

@@ -8,7 +8,7 @@ module RubyLLM
         module Requests
           private
 
-          def validate_embedding_request!(request)
+          def validate_embedding_request(request)
             text = request.fetch(:text)
             values = text.is_a?(Array) ? text : [text]
             unless values.any? && values.all?(String)
@@ -16,15 +16,15 @@ module RubyLLM
             end
 
             payload = request.fetch(:payload)
-            validate_embedding_payload_keys!(payload)
+            validate_embedding_payload_keys(payload)
             inputs = embedding_batch_inputs(payload)
-            validate_gemini_embedding_options!(payload, inputs) if GEMINI_MODELS.include?(request.fetch(:model))
+            validate_gemini_embedding_options(payload, inputs) if GEMINI_MODELS.include?(request.fetch(:model))
             return if inputs.size == values.size
 
             raise ArgumentError, 'Vertex AI embedding batch payload does not match the number of texts'
           end
 
-          def validate_embedding_payload_keys!(payload)
+          def validate_embedding_payload_keys(payload)
             supported = if payload.key?(:instances)
                           %i[instances parameters]
                         elsif payload.key?(:requests)
@@ -35,10 +35,11 @@ module RubyLLM
             unknown = payload.keys - supported
             return if unknown.empty?
 
-            raise ArgumentError, "Unsupported Vertex AI embedding batch options: #{unknown.join(', ')}"
+            raise ArgumentError, "Vertex AI embedding batches accept #{Support::Utils.option_list(supported)}, " \
+                                 "got #{Support::Utils.option_list(unknown)}"
           end
 
-          def validate_gemini_embedding_options!(payload, inputs)
+          def validate_gemini_embedding_options(payload, inputs)
             parameters = payload.fetch(:parameters, {}).keys - [:outputDimensionality]
             supported = %i[content task_type taskType title outputDimensionality model]
             unsupported = inputs.flat_map(&:keys).uniq - supported

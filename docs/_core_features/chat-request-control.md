@@ -3,7 +3,7 @@ layout: default
 title: Advanced Request Control
 parent: "Chat"
 nav_order: 8
-description: Reach provider-specific features with custom parameters, wire protocols, request hooks, and HTTP headers
+description: Reach provider-specific features with custom parameters, wire protocols, request hooks, and HTTP headers.
 ---
 
 # {{ page.title }}
@@ -43,7 +43,7 @@ chat.with_caching
 chat.with_caching(false)
 ```
 
-The same feature-switch pattern applies to `with_citations` and `with_compaction`. These switches reject `nil`. `with_tools(nil)` clears the tool list; other tool settings are covered in [Controlling Tool Execution]({% link _core_features/tool-execution.md %}).
+The same feature-switch pattern applies to [`with_citations`]({% link _core_features/citations.md %}), [`with_compaction`](#compacting-long-conversations), and [`with_code_execution`]({% link _core_features/code-execution.md %}). [`with_skills`]({% link _core_features/skills.md %}) is a switch too, and takes skill names where the others take options. These switches reject `nil`. `with_tools(nil)` clears the tool list; other tool settings are covered in [Controlling Tool Execution]({% link _core_features/tool-execution.md %}).
 
 ## Identifying End Users
 
@@ -151,15 +151,15 @@ RubyLLM normally selects the protocol for your model and operation. Choose one e
 Override it per chat with the `protocol:` model option, or app-wide with configuration:
 
 ```ruby
-chat = RubyLLM.chat(model: 'gpt-6.1-sol', protocol: :chat_completions)
-chat = RubyLLM.chat(model: 'gpt-6.1-sol').with_model('gpt-6.1-sol', protocol: :chat_completions)
+chat = RubyLLM.chat(model: '{{ site.models.default_chat }}', protocol: :chat_completions)
+chat = RubyLLM.chat(model: '{{ site.models.default_chat }}').with_model('{{ site.models.default_chat }}', protocol: :chat_completions)
 
 RubyLLM.configure do |config|
   config.openai_protocol = :chat_completions
 end
 ```
 
-The `protocol:` option sits alongside `provider:` in model selection: a model is identified by its name, its provider, and its protocol. Unknown protocol names raise when the request is rendered or sent, listing the protocols the provider supports. A bare `with_model` returns the chat to the provider's default protocol, just as it re-resolves the provider.
+The `protocol:` option sits alongside `provider:` in model selection: a model is identified by its name, its provider, and its protocol. Unknown protocol names raise when the request is rendered or sent, listing the protocols the provider supports. A bare `with_model` returns the chat to the provider's default protocol, just as it re-resolves the provider. `chat.protocol` returns the override, or `nil` when the provider picks.
 
 ### Perplexity Presets
 
@@ -206,7 +206,7 @@ chat.ask('Analyze this request using the provider-native block above.')
 
 Hooks mutate the payload in place; return values are ignored (use `payload.replace(new_payload)` to swap it wholesale). Use hooks sparingly: they operate on the provider's wire format, so it is your responsibility to match what the provider expects, and switching providers means revisiting the hook. Nothing a hook adds is persisted; it is applied fresh on each request. For prompt reuse, prefer [Prompt Caching]({% link _core_features/prompt-caching.md %}).
 
-`Chat#render` returns the request the chat would send, with hooks applied, which makes hook output easy to inspect and test.
+To check a hook's output, see [Inspecting the Payload](#inspecting-the-payload).
 
 The same idea applies to tool definitions:
 

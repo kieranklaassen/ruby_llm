@@ -23,7 +23,7 @@ module RubyLLM
 
         def download(file_id)
           file = wait_for_validation(file_id)
-          parts = dataset_parts(file.metadata)
+          parts = dataset_parts(file.raw)
           originals = parts.filter_map { |part| part['original_url'] }.uniq
           if parts.any? && parts.all? { |part| part['original_url'] }
             return originals.map do |url|
@@ -36,7 +36,7 @@ module RubyLLM
 
         def records(file)
           load_avro
-          dataset_parts(file.metadata).flat_map do |part|
+          dataset_parts(file.raw).flat_map do |part|
             reader = nil
             content = StringIO.new(download_part(part.fetch('url')))
             reader = Avro::DataFile::Reader.new(content, Avro::IO::DatumReader.new)
@@ -52,7 +52,7 @@ module RubyLLM
             file = find(id)
             return file if file.status == 'validated'
             if file.status == 'failed'
-              raise Error, "Cohere dataset #{id} failed validation: #{file.metadata['validation_error']}"
+              raise Error, "Cohere dataset #{id} failed validation: #{file.raw['validation_error']}"
             end
             if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
               raise Error, "Cohere dataset validation timed out: #{id}"
@@ -94,7 +94,7 @@ module RubyLLM
         def load_avro
           require 'avro'
         rescue LoadError
-          raise LoadError, 'Add gem "avro" to your Gemfile to read Cohere batch results and processed datasets'
+          raise LoadError, 'Cohere batch results and processed datasets require the avro gem. Add it to your Gemfile.'
         end
       end
     end

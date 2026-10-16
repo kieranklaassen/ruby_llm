@@ -10,22 +10,22 @@ class <%= create_migration_class_name('ruby_llm_records') %> < ActiveRecord::Mig
       t.integer :max_output_tokens
       t.date :knowledge_cutoff
       t.datetime :unlisted_at
-<% if postgresql? %>
+<% if postgresql? -%>
       t.jsonb :modalities, default: {}
       t.jsonb :capabilities, default: []
       t.jsonb :pricing, default: {}
       t.jsonb :metadata, default: {}
-<% elsif mysql? %>
+<% elsif mysql? -%>
       t.json :modalities
       t.json :capabilities
       t.json :pricing
       t.json :metadata
-<% else %>
+<% else -%>
       t.json :modalities, default: {}
       t.json :capabilities, default: []
       t.json :pricing, default: {}
       t.json :metadata, default: {}
-<% end %>
+<% end -%>
       t.timestamps
 
       t.index [ :provider, :model_id ], unique: true
@@ -47,19 +47,19 @@ class <%= create_migration_class_name('ruby_llm_records') %> < ActiveRecord::Mig
       t.string :approval
       t.boolean :remote, default: false, null: false
       t.datetime :claimed_until
-<% if postgresql? %>
+<% if postgresql? -%>
       t.jsonb :arguments, default: {}
       t.jsonb :mcp_state
       t.jsonb :mcp_result
-<% elsif mysql? %>
+<% elsif mysql? -%>
       t.json :arguments
       t.json :mcp_state
       t.json :mcp_result
-<% else %>
+<% else -%>
       t.json :arguments, default: {}
       t.json :mcp_state
       t.json :mcp_result
-<% end %>
+<% end -%>
       t.timestamps
 
       t.index [ :message_type, :message_id ]
@@ -90,11 +90,11 @@ class <%= create_migration_class_name('ruby_llm_records') %> < ActiveRecord::Mig
       t.integer :cache_read_tokens
       t.integer :cache_write_tokens
       t.integer :thinking_tokens
-<% if postgresql? %>
+<% if postgresql? -%>
       t.jsonb :server_tool_use
-<% else %>
+<% else -%>
       t.json :server_tool_use
-<% end %>
+<% end -%>
       t.decimal :input_cost, precision: 16, scale: 10
       t.decimal :output_cost, precision: 16, scale: 10
       t.decimal :cache_read_cost, precision: 16, scale: 10
@@ -119,19 +119,19 @@ class <%= create_migration_class_name('ruby_llm_records') %> < ActiveRecord::Mig
       t.boolean :completed, null: false, default: false
       t.string :chat_type
       t.string :batch_protocol
-<% if postgresql? %>
+<% if postgresql? -%>
       t.jsonb :chat_ids, default: []
       t.jsonb :request_counts
       t.jsonb :reported_cost
-<% elsif mysql? %>
+<% elsif mysql? -%>
       t.json :chat_ids
       t.json :request_counts
       t.json :reported_cost
-<% else %>
+<% else -%>
       t.json :chat_ids, default: []
       t.json :request_counts
       t.json :reported_cost
-<% end %>
+<% end -%>
       t.timestamps
 
       t.index [ :provider, :provider_batch_id ], unique: true

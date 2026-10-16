@@ -169,7 +169,7 @@ module RubyLLM
       def load_driver
         require 'websocket/driver'
       rescue LoadError
-        raise LoadError, 'WebSocket streaming requires websocket-driver. Add gem "websocket-driver" to your Gemfile.'
+        raise LoadError, 'WebSocket streaming requires the websocket-driver gem. Add it to your Gemfile.'
       end
 
       def secure_socket(deadline)

@@ -34,6 +34,8 @@ module RubyLLM
       new(text: text, signature: signature)
     end
 
+    private
+
     def inspect_attributes # :nodoc:
       { text: text, signature: signature ? '[REDACTED]' : nil }
     end
@@ -132,6 +134,10 @@ module RubyLLM
 
       def disabled?
         enabled == false || effort == :none
+      end
+
+      def disable?
+        @intent == :disable
       end
 
       def resolve(model)

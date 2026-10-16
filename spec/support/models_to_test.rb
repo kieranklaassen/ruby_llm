@@ -3,25 +3,10 @@
 SKIP_LOCAL_PROVIDER_TESTS = ENV['SKIP_LOCAL_PROVIDER_TESTS'].to_s.match?(/\A(1|true|yes)\z/i)
 LOCAL_PROVIDER_SLUGS = %i[ollama gpustack].freeze
 
-# Providers with no recorded cassettes yet. Their rows join the live matrix
-# only when a key is present to record against, so the suite stays green
-# without one.
-UNRECORDED_PROVIDER_KEYS = {}.freeze
-
 def filter_local_providers(models)
-  models = models.reject { |model| LOCAL_PROVIDER_SLUGS.include?(model[:provider]) } if SKIP_LOCAL_PROVIDER_TESTS
-  filter_unrecorded_providers(models)
-end
+  return models unless SKIP_LOCAL_PROVIDER_TESTS
 
-def filter_unrecorded_providers(models)
-  models.select { |model| provider_recorded?(model[:provider]) }
-end
-
-# Whether a provider's live examples can run: either cassettes exist for it, or
-# a key is configured to record them with.
-def provider_recorded?(provider)
-  key = UNRECORDED_PROVIDER_KEYS[provider]
-  key.nil? || !ENV[key].to_s.empty?
+  models.reject { |model| LOCAL_PROVIDER_SLUGS.include?(model[:provider]) }
 end
 
 def each_model(models)
@@ -73,7 +58,7 @@ structured_output_models = [
   { provider: :openrouter, model: 'claude-haiku-4-5' },
   { provider: :vertexai, model: 'gemini-3-flash-preview' },
   { provider: :xai, model: 'grok-4-1-fast-non-reasoning' }
-]
+].freeze
 STRUCTURED_OUTPUT_MODELS = filter_local_providers(structured_output_models).freeze
 
 thinking_models = [
@@ -174,7 +159,7 @@ embedding_models = [
   { provider: :openrouter, model: 'openai/text-embedding-3-small' },
   { provider: :vertexai, model: 'text-embedding-004' }
 ].freeze
-EMBEDDING_MODELS = filter_unrecorded_providers(embedding_models).freeze
+EMBEDDING_MODELS = embedding_models
 
 # Vertex AI TTS models (gemini-2.5-*-tts) 404 on the global and us-central1
 # endpoints, so speech is exercised through the Gemini API instead.
@@ -189,7 +174,7 @@ speech_models = [
   { provider: :openrouter, model: 'hexgrad/kokoro-82m', voice: 'af_bella' },
   { provider: :xai, model: 'grok-tts' }
 ].freeze
-SPEECH_MODELS = filter_unrecorded_providers(speech_models).freeze
+SPEECH_MODELS = speech_models
 
 transcription_models = [
   { provider: :cohere, model: 'cohere-transcribe-03-2026' },
@@ -202,7 +187,7 @@ transcription_models = [
   { provider: :vertexai, model: 'gemini-2.5-flash' },
   { provider: :xai, model: 'grok-stt' }
 ].freeze
-TRANSCRIPTION_MODELS = filter_unrecorded_providers(transcription_models).freeze
+TRANSCRIPTION_MODELS = transcription_models
 
 VIDEO_GENERATION_MODELS = [
   { provider: :gemini, model: 'veo-3.1-lite-generate-preview',

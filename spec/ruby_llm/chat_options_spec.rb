@@ -7,10 +7,18 @@ RSpec.describe RubyLLM::Chat do
 
   include_context 'with configured RubyLLM'
 
+  describe '#initialize' do
+    it 'requires a provider when assuming the model exists' do
+      expect { described_class.new(model: 'my-custom-model', assume_model_exists: true) }.to raise_error(
+        ArgumentError, 'Provider must be specified if assume_model_exists is true'
+      )
+    end
+  end
+
   describe '#with_tool_options' do
     it 'rejects an option it does not know' do
       expect { chat.with_tool_options(retries: 3) }.to raise_error(
-        ArgumentError, /Unknown tool option: retries\. Valid options are: choice, calls, concurrency/
+        ArgumentError, 'with_tool_options accepts :choice, :calls, :concurrency, got :retries'
       )
     end
 
@@ -69,7 +77,7 @@ RSpec.describe RubyLLM::Chat do
 
     it 'rejects a tool the chat does not carry' do
       expect { chat.with_tool_options(choice: :missing) }.to raise_error(
-        RubyLLM::InvalidToolChoiceError, /Invalid tool choice: missing/
+        RubyLLM::InvalidToolChoiceError, /Unknown tool choice: :missing/
       )
     end
 
@@ -80,7 +88,7 @@ RSpec.describe RubyLLM::Chat do
       chat.with_tools(lookup_tool)
 
       expect { chat.with_tool_options(choice: Support::LookupTool) }.to raise_error(
-        RubyLLM::InvalidToolChoiceError, /Invalid tool choice: Support::LookupTool/
+        RubyLLM::InvalidToolChoiceError, /Unknown tool choice: Support::LookupTool/
       )
     end
   end
@@ -189,6 +197,39 @@ RSpec.describe RubyLLM::Chat do
         expect { chat.public_send(setter, nil) }.to raise_error(ArgumentError)
       end
     end
+
+    it 'takes true with options on every switch that has options' do
+      expect(chat.with_thinking(true, effort: :high).thinking).to eq(effort: :high)
+      expect(chat.with_caching(true, ttl: '1h').caching).to eq(ttl: '1h')
+      expect(chat.with_compaction(true, at: 50_000).compaction).to eq(at: 50_000)
+    end
+
+    it 'takes an options Hash on caching and compaction without changing it' do
+      caching = { 'ttl' => '1h' }
+      compaction = { 'at' => 50_000 }
+
+      expect(chat.with_caching(caching).caching).to eq(ttl: '1h')
+      expect(chat.with_compaction(compaction).compaction).to eq(at: 50_000)
+      expect([caching, compaction]).to eq([{ 'ttl' => '1h' }, { 'at' => 50_000 }])
+    end
+
+    it 'rejects options with false on every switch that has options' do
+      expect { chat.with_thinking(false, effort: :high) }
+        .to raise_error(ArgumentError, 'with_thinking(false) does not accept options')
+      expect { chat.with_caching(false, ttl: '1h') }
+        .to raise_error(ArgumentError, 'with_caching(false) does not accept options')
+      expect { chat.with_compaction(false, at: 50_000) }
+        .to raise_error(ArgumentError, 'with_compaction(false) does not accept options')
+    end
+
+    it 'names the accepted values the same way on every switch' do
+      expect { chat.with_thinking(:on) }
+        .to raise_error(ArgumentError, 'with_thinking accepts true, false, or thinking options')
+      expect { chat.with_caching(:on) }
+        .to raise_error(ArgumentError, 'with_caching accepts true, false, or caching options')
+      expect { chat.with_compaction(:on) }
+        .to raise_error(ArgumentError, 'with_compaction accepts true, false, or compaction options')
+    end
   end
 
   describe '#thinking' do
@@ -200,6 +241,12 @@ RSpec.describe RubyLLM::Chat do
       chat.with_thinking(effort: :high, budget: 2_000)
 
       expect(chat.thinking).to eq(effort: :high, budget: 2_000)
+    end
+
+    it 'returns false when disabled, like the other feature switches' do
+      chat.with_model(model_for(:anthropic)).with_thinking(false).with_caching(false).with_compaction(false)
+
+      expect([chat.thinking, chat.caching, chat.compaction]).to eq([false, false, false])
     end
   end
 
@@ -215,20 +262,20 @@ RSpec.describe RubyLLM::Chat do
     it 'raises on the next completion attempt' do
       chat.cancel
 
-      expect { chat.send(:raise_if_cancelled!) }.to raise_error(RubyLLM::CancelledError)
+      expect { chat.send(:raise_if_cancelled) }.to raise_error(RubyLLM::CancelledError)
       expect(chat).not_to be_cancelled
     end
 
     it 'consults an external cancellation checker' do
       chat.cancellation_checker = -> { :cancelled }
 
-      expect { chat.send(:raise_if_cancelled!) }.to raise_error(RubyLLM::CancelledError)
+      expect { chat.send(:raise_if_cancelled) }.to raise_error(RubyLLM::CancelledError)
     end
 
     it 'continues when nothing has been cancelled' do
       chat.cancellation_checker = -> {}
 
-      expect { chat.send(:raise_if_cancelled!) }.not_to raise_error
+      expect { chat.send(:raise_if_cancelled) }.not_to raise_error
     end
   end
 
@@ -256,7 +303,7 @@ RSpec.describe RubyLLM::Chat do
       stub_const('WeatherTool2', other)
 
       expect { chat.with_tool_options(choice: WeatherTool2) }.to raise_error(
-        RubyLLM::InvalidToolChoiceError, /Invalid tool choice/
+        RubyLLM::InvalidToolChoiceError, /Unknown tool choice/
       )
     end
   end

@@ -6,7 +6,7 @@ module RubyLLM
       # Single-turn hosted Deep Research through Vertex AI Interactions.
       class Research < Interactions
         STATUSES = {
-          'queued' => :pending, 'in_progress' => :pending, 'completed' => :completed,
+          'queued' => :pending, 'in_progress' => :pending, 'completed' => :succeeded,
           'incomplete' => :incomplete, 'budget_exceeded' => :incomplete,
           'failed' => :failed, 'cancelled' => :cancelled
         }.freeze
@@ -50,7 +50,7 @@ module RubyLLM
 
         def research_url(id = nil)
           unless @config.vertexai_location == 'global'
-            raise ArgumentError, 'Vertex AI hosted research requires vertexai_location = "global"'
+            raise ConfigurationError, 'Vertex AI hosted research requires vertexai_location = "global"'
           end
 
           path = "#{@provider.location_path}/interactions"
@@ -123,7 +123,7 @@ module RubyLLM
           data = response.body
           validate_research_response(data, response)
           status = STATUSES.fetch(data['status'])
-          message = parse_research_message(data, response) if %i[completed incomplete].include?(status)
+          message = parse_research_message(data, response) if %i[succeeded incomplete].include?(status)
           {
             status:, raw: data, message:,
             error: parse_research_error(data), tokens: parse_research_tokens(data)

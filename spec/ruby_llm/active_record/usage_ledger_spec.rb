@@ -121,12 +121,12 @@ RSpec.describe RubyLLM::ActiveRecord::Usage do
     provider = instance_double(RubyLLM::Providers::Gemini, slug: 'gemini')
     video_protocol = instance_double(RubyLLM::Protocols::Gemini, config: RubyLLM.config, provider:)
     research_protocol = instance_double(RubyLLM::Protocols::VertexAI::Research, config: RubyLLM.config)
-    allow(video_protocol).to receive(:refresh_video_job).and_return({ status: :completed })
+    allow(video_protocol).to receive(:refresh_video_job).and_return({ status: :succeeded })
     allow(research_protocol).to receive(:refresh_research_job)
-      .and_return(status: :completed, tokens: RubyLLM::Tokens.new(input: 1200, output: 300, reported_cost: 0.42))
+      .and_return(status: :succeeded, tokens: RubyLLM::Tokens.new(input: 1200, output: 300, reported_cost: 0.42))
     video, research = RubyLLM.with_usage_owner(owner) do
       [RubyLLM::VideoJob.new(id: 'operations/op-1', protocol: video_protocol, model: 'veo-3.1-fast-generate-preview'),
-       RubyLLM::ResearchJob.new(id: 'job-1', provider: :vertexai, agent: 'agent-id', protocol: research_protocol,
+       RubyLLM::ResearchJob.new(id: 'job-1', provider: 'vertexai', agent: 'agent-id', protocol: research_protocol,
                                 status: :pending)]
     end
 

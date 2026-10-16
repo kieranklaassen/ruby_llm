@@ -18,7 +18,7 @@ module RubyLLM
           finished = choice['finish_reason'] || data['choices'].empty?
 
           RubyLLM::TranscriptionChunk.new(
-            type: finished ? RubyLLM::TranscriptionChunk::DONE : RubyLLM::TranscriptionChunk::DELTA,
+            type: finished ? :done : :delta,
             delta: choice.dig('delta', 'content'),
             raw: data
           )

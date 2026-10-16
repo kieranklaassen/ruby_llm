@@ -2,7 +2,7 @@
 layout: default
 title: Document OCR
 nav_order: 9
-description: Extract text, tables, and images from PDFs and scans as clean markdown
+description: Extract text, tables, and images from PDFs and scans as clean markdown.
 ---
 
 # {{ page.title }}
@@ -12,9 +12,9 @@ description: Extract text, tables, and images from PDFs and scans as clean markd
 
 After reading this guide, you will know:
 
-*   How to extract the text of a PDF or image as markdown.
-*   How to work with individual pages, tables, and embedded images.
-*   How to process specific pages and tune the output with provider options.
+* How to extract the text of a PDF or image as markdown.
+* How to work with individual pages, tables, and embedded images.
+* How to process specific pages and tune the output with provider options.
 
 ## Basic OCR
 
@@ -46,11 +46,11 @@ end
 
 Each page carries:
 
-*   `index`: the zero-based page number.
-*   `markdown`: the extracted text as markdown.
-*   `images`: the images found on the page, with coordinates.
-*   `tables`: the tables found on the page, when the provider extracts them separately.
-*   `raw`: the provider's unmodified page hash, including any fields beyond these.
+* `index`: the zero-based page number.
+* `markdown`: the extracted text as markdown.
+* `images`: the images found on the page, with coordinates.
+* `tables`: the tables found on the page, when the provider extracts them separately.
+* `raw`: the provider's unmodified page hash, including any fields beyond these.
 
 `ocr.raw` holds the full provider response when you need fields beyond the normalized page readers.
 
@@ -127,6 +127,6 @@ A provider without OCR support raises `RubyLLM::Error`. Rejected files or option
 
 ## Next Steps
 
-*   [File Attachments]({% link _core_features/attachments.md %}): Send documents to chat models instead.
-*   [Structured Output]({% link _core_features/structured-output.md %}) - extract fields from document text.
-*   [Embeddings]({% link _core_features/embeddings.md %}) - make extracted documents searchable.
+* [Attachments]({% link _core_features/attachments.md %}) - send documents to chat models instead.
+* [Structured Output]({% link _core_features/structured-output.md %}) - extract fields from document text.
+* [Embeddings]({% link _core_features/embeddings.md %}) - make extracted documents searchable.

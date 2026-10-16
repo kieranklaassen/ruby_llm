@@ -2,7 +2,7 @@
 layout: default
 title: API Reference
 nav_order: 0
-description: RDoc documentation for every public RubyLLM class and method
+description: Read the RDoc documentation for every public RubyLLM class and method.
 ---
 
 # {{ page.title }}

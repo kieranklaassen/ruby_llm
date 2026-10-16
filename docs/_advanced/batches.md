@@ -12,12 +12,12 @@ description: Process chats and embeddings in batches, then collect their results
 
 After reading this guide, you will know:
 
-* How to stage questions with `ask_later`
-* How to submit chats as a batch with `RubyLLM.batch`
-* How to check on a batch and collect its messages, from any process
-* How to handle tool calls in batched conversations
-* How to batch embeddings with `embed_later`
-* How to persist batch results with Active Record
+* How to stage questions with `ask_later`.
+* How to submit chats as a batch with `RubyLLM.batch`.
+* How to check on a batch and collect its messages, from any process.
+* How to handle tool calls in batched conversations.
+* How to batch embeddings with `embed_later`.
+* How to persist batch results with Active Record.
 
 ## What Are Batches?
 
@@ -52,7 +52,7 @@ batch.status # => :pending
 
 The chats keep their instructions, history, tools, schemas, and other request settings, subject to the [provider's batch restrictions](#provider-restrictions). Custom headers set with `with_headers` do not apply to batch requests.
 
-Use one provider per batch. Anthropic and xAI allow different models in the same batch; other integrations require one model per submission.
+Use one provider per batch. Anthropic and xAI allow different models in the same batch; other integrations require one model per submission. A batch that mixes providers, or models where the provider takes one, raises `ArgumentError`.
 
 ## Collecting the Answers
 
@@ -65,7 +65,7 @@ batch.complete? # => true
 
 `Batch.find` needs `provider:` when RubyLLM has not persisted the batch. Pass `context: ctx` to use an isolated [configuration context]({% link _getting_started/configuration-connection.md %}).
 
-`complete?` reads the batch's last known state without contacting the provider. In a long-running process, poll with `refresh`, which re-fetches the state from the provider and returns the batch:
+`complete?` reads the batch's last known state without contacting the provider. `done?` reads the same, and `pending?` is its opposite, as on video and research jobs. In a long-running process, poll with `refresh`, which re-fetches the state from the provider and returns the batch:
 
 ```ruby
 sleep 60 until batch.refresh.complete?
@@ -146,7 +146,7 @@ end
 batch = RubyLLM.batch(requests)
 ```
 
-`embed_later` accepts `model:`, `provider:`, and `dimensions:`, with the same defaults as `embed`. Choose a model that supports batches and use the same model and provider throughout the submission.
+`embed_later` accepts `model:`, `provider:`, `assume_model_exists:`, `context:`, and `dimensions:`, with the same defaults as `embed`. Choose a model that supports batches and use the same model and provider throughout the submission.
 
 Poll with `refresh` as usual. Once processing ends, `results` returns the embeddings in submission order and fills in each request's `result`:
 
@@ -203,7 +203,7 @@ The same tool workflow works on these records: run pending tools, then batch the
 The batch workflow above is shared. These differences affect which requests you can submit:
 
 | Provider | Restriction |
-|----------|-------------|
+| --- | --- |
 | Azure | Requires a batch-capable deployment. Azure embedding batches are not currently available through RubyLLM. |
 | Bedrock | Chat batches do not support tools or structured output. Region and batch-size limits depend on the model. |
 | Cohere | Chat batches do not support structured output, forced tool choice, or retrieval documents. |
@@ -214,6 +214,6 @@ See [batch setup]({% link _getting_started/configuration-providers.md %}#batch-p
 
 ## Next Steps
 
-* [Chatting with AI Models]({% link _core_features/chat.md %})
-* [Using Tools]({% link _core_features/tools.md %})
-* [Rails Integration]({% link _advanced/rails.md %})
+* [Chat]({% link _core_features/chat.md %}) - the conversations you stage with `ask_later`.
+* [Tools]({% link _core_features/tools.md %}) - define the tools batched conversations call.
+* [Rails Integration]({% link _advanced/rails.md %}) - persist chats and batch results with Active Record.

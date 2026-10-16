@@ -104,18 +104,18 @@ module RubyLLM
     #
     #   RubyLLM::Attachment.new("lecture.mp4", processing: :agentic)
     #
-    # +config:+ is the Configuration a URL source is downloaded with, and
-    # defaults to the global one.
+    # +context:+ supplies a Context whose configuration a URL source is
+    # downloaded with, in place of the global one.
     #
     # Paths and URLs must be trusted and authorized by the application.
     # They can be read or fetched during construction to detect the MIME type.
     # Validate upload parameters before passing them here: an unchecked String
     # can access local files or internal network endpoints.
-    def initialize(source, filename: nil, resolution: nil, processing: nil, config: nil)
+    def initialize(source, filename: nil, resolution: nil, processing: nil, context: nil, config: nil)
       check_option(:resolution, resolution, RESOLUTIONS)
       check_option(:processing, processing, PROCESSING_MODES)
 
-      @config = config
+      @config = context&.config || config
       @resolution = resolution
       @processing = processing
       @source = source
@@ -278,7 +278,7 @@ module RubyLLM
     def check_option(name, value, allowed)
       return if value.nil? || allowed.include?(value)
 
-      raise ArgumentError, "#{name} must be one of #{allowed.join(', ')}, got #{value.inspect}"
+      raise ArgumentError, "Unknown #{name}: #{value.inspect}. Valid values: #{allowed.join(', ')}."
     end
 
     def data_uri

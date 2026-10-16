@@ -30,11 +30,11 @@ module RubyLLM
           Attachment.wrap(with, config: @config).map do |attachment|
             raise UnsupportedAttachmentError, attachment.mime_type unless attachment.image?
 
-            Protocols::ChatCompletions::Media.format_image(attachment)
+            Protocols::ChatCompletions::Media.render_image(attachment)
           end
         end
 
-        def validate_paint_inputs!(with:, mask:) # rubocop:disable Lint/UnusedMethodArgument
+        def validate_paint_inputs(with:, mask:) # rubocop:disable Lint/UnusedMethodArgument
           raise UnsupportedAttachmentError, 'image mask' unless mask.nil?
         end
 

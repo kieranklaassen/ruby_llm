@@ -707,7 +707,7 @@ RSpec.describe RubyLLM::ActiveRecord::ChatMethods do
     it 'classifies every method defined on Chat' do
       integration_methods = %i[
         approval_checker= cancellation_checker= fallback_errors input_checker= input_recorder=
-        prepare_message raise_if_pending_tool_calls! remembered_checker= running_checker= tool_call_claimer=
+        prepare_message raise_if_pending_tool_calls remembered_checker= running_checker= tool_call_claimer=
         tool_call_releaser= tool_prefs
         usage_entries usage_entries= usage_recorder=
       ]
@@ -728,7 +728,7 @@ RSpec.describe RubyLLM::ActiveRecord::ChatMethods do
 
       expect { chat.complete }.to raise_error(RubyLLM::ServerError)
       expect(Message.find_by(id: blank.id)).to be_nil
-      expect(RubyLLM.logger).to have_received(:warn).with(/API call failed/)
+      expect(RubyLLM.logger).to have_received(:warn).with(/RubyLLM could not complete message \d+: API call failed/)
     end
 
     it 'destroys the blank assistant message when the chat is cancelled' do
@@ -740,7 +740,7 @@ RSpec.describe RubyLLM::ActiveRecord::ChatMethods do
 
       expect { chat.complete }.to raise_error(RubyLLM::CancelledError)
       expect(Message.find_by(id: blank.id)).to be_nil
-      expect(RubyLLM.logger).to have_received(:warn).with(/chat cancelled/)
+      expect(RubyLLM.logger).to have_received(:warn).with(/RubyLLM could not complete message \d+: chat cancelled/)
     end
   end
 

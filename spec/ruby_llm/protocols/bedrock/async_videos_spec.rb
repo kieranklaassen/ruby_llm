@@ -160,7 +160,7 @@ RSpec.describe RubyLLM::Protocols::Bedrock::AsyncVideos do
     end
 
     def completed_job(prefix)
-      RubyLLM::VideoJob.new(id: job_id, protocol:, model:, status: :completed,
+      RubyLLM::VideoJob.new(id: job_id, protocol:, model:, status: :succeeded,
                             raw: { 'outputDataConfig' => { 's3OutputDataConfig' => { 's3Uri' => prefix } } })
     end
   end
@@ -214,13 +214,13 @@ RSpec.describe RubyLLM::Protocols::Bedrock::AsyncVideos do
 
   it 'rejects unsupported models, attachments, and extensions before HTTP' do
     expect { context.animate_later('A boat', model: model_for(:bedrock), provider: :bedrock) }
-      .to raise_error(RubyLLM::Error, /video generation is not supported/)
+      .to raise_error(RubyLLM::Error, /does not support video generation/)
     expect { context.animate_later('A boat', model:, provider: :bedrock, with: [image, image, image]) }
       .to raise_error(ArgumentError, /at most two reference images/)
     expect { context.animate_later('A boat', model:, provider: :bedrock, with: 'https://media.test/boat.mp4') }
       .to raise_error(RubyLLM::UnsupportedAttachmentError)
     expect { context.animate_later('Continue', model:, provider: :bedrock, extend: 'https://media.test/boat.mp4') }
-      .to raise_error(RubyLLM::Error, /doesn't support video extension/)
+      .to raise_error(RubyLLM::Error, /does not support video extension/)
     file = RubyLLM::UploadedFile.new(id: 's3://bucket/boat.png', mime_type: 'image/png')
     expect { context.animate_later('A boat', model:, provider: :bedrock, with: file) }
       .to raise_error(ArgumentError, /not uploaded file ids/)
@@ -228,14 +228,14 @@ RSpec.describe RubyLLM::Protocols::Bedrock::AsyncVideos do
   end
 
   it 'refuses to guess an output object when metadata or the single MP4 is absent' do
-    missing = RubyLLM::VideoJob.new(id: job_id, protocol:, model:, status: :completed, raw: {})
+    missing = RubyLLM::VideoJob.new(id: job_id, protocol:, model:, status: :succeeded, raw: {})
     allow(provider).to receive(:list_file_uris)
     expect { missing.video }.to raise_error(RubyLLM::Error, /no output S3 URI/)
     expect(provider).not_to have_received(:list_file_uris)
   end
 
   it 'refuses multiple output videos instead of downloading an arbitrary object' do
-    job = RubyLLM::VideoJob.new(id: job_id, protocol:, model:, status: :completed,
+    job = RubyLLM::VideoJob.new(id: job_id, protocol:, model:, status: :succeeded,
                                 raw: JSON.parse(JSON.generate(state('Completed'))))
     allow(provider).to receive(:list_file_uris).and_return([],
                                                            ['s3://test-bucket/videos/a.mp4',

@@ -3,7 +3,7 @@ layout: default
 title: Citations
 parent: "Chat"
 nav_order: 5
-description: Get verifiable answers with normalized citations pointing at documents and web sources, on every provider that supports them
+description: Get verifiable answers with normalized citations pointing at documents and web sources, on every provider that supports them.
 redirect_from:
   - /guides/citations
 ---
@@ -15,15 +15,15 @@ redirect_from:
 
 After reading this guide, you will know:
 
-* How to enable document citations with `with_citations`
-* How to make tool results citable with `RubyLLM::SearchResults`
-* How to read normalized citations from responses and streams
-* Which citation fields your application can use
-* How to persist citations with ActiveRecord
+* How to enable document citations with `with_citations`.
+* How to make tool results citable with `RubyLLM::SearchResults`.
+* How to read normalized citations from responses and streams.
+* Which citation fields your application can use.
+* How to persist citations with Active Record.
 
-## What are Citations?
+## What Are Citations?
 
-Citations link spans of a model's answer back to the source material that supports them - a document you attached, or a web page found through search or grounding. They let readers inspect the source behind a claim. A citation points to evidence; your application or reader still needs to assess whether it supports the answer.
+Citations link spans of a model's answer back to the source material that supports them: a document you attached, or a web page found through search or grounding. They let readers inspect the source behind a claim. A citation points to evidence; your application or reader still needs to assess whether it supports the answer.
 
 Read citations as `RubyLLM::Citation` objects on `response.citations`. Available fields depend on the source and model.
 
@@ -61,8 +61,8 @@ response.citations.first.start_page # => 5
 response.citations.first.end_page   # => 5
 ```
 
-{: .note }
 Document citations are supported by Anthropic, Cohere, and Claude models through Bedrock Converse. Anthropic cannot combine document citations with `with_schema`. Citations from search arrive automatically, without this setting.
+{: .note }
 
 ## Citing Tool Results (RAG)
 
@@ -131,7 +131,7 @@ File-search citations may identify a file without quoting a passage or marking a
 Each citation exposes a normalized set of fields. Fields a provider doesn't report are `nil`.
 
 | Field | Description |
-| :--- | :--- |
+| --- | --- |
 | `url` | Source URL or provider collection URI |
 | `title` | Document or page title |
 | `cited_text` | The quoted snippet from the source |
@@ -181,7 +181,7 @@ response.citations # all citations, deduplicated
 
 Some citations arrive only when the response finishes. Read the final message for the complete list and response positions.
 
-## ActiveRecord Integration
+## Active Record Integration
 
 When using `acts_as_chat` and `acts_as_message`, citations are persisted to the message table as JSON:
 
@@ -200,6 +200,6 @@ Apps upgrading from 1.16 get the column from the [2.0 upgrade](https://github.co
 
 ## Next Steps
 
-* [Chatting with AI Models]({% link _core_features/chat.md %})
-* [Streaming Responses]({% link _core_features/streaming.md %})
-* [Rails Integration]({% link _advanced/rails.md %})
+* [Chat]({% link _core_features/chat.md %}) - the conversation interface citations attach to.
+* [Stream Responses]({% link _core_features/streaming.md %}) - read citations as chunks arrive.
+* [Rails Integration]({% link _advanced/rails.md %}) - persist citations with your messages.

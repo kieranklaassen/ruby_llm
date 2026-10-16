@@ -48,7 +48,7 @@ module RubyLLM
         def parse_video_job_status(response, job:) # rubocop:disable Lint/UnusedMethodArgument
           body = response.body
           state = case body['status']
-                  when 'done' then { status: :completed }
+                  when 'done' then { status: :succeeded }
                   when 'failed', 'expired' then { status: :failed, error: body['error'] || body['status'] }
                   else { status: :pending }
                   end
@@ -69,8 +69,8 @@ module RubyLLM
 
         private
 
-        def validate_animate_inputs!(with:)
-          raise Error, 'xAI video generation takes a single reference image or video' if with.size > 1
+        def validate_animate_inputs(with:)
+          raise ArgumentError, 'xAI video generation takes a single reference image or video' if with.size > 1
 
           with.each do |attachment|
             next if attachment.provider_file? || attachment.url?

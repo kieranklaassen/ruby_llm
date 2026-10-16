@@ -3,7 +3,7 @@ layout: default
 title: Provider Tools
 parent: "Tools"
 nav_order: 4
-description: Search the web, run code, and connect remote MCP tools through the same chat API
+description: Search the web, run code, and connect remote MCP tools through the same chat API.
 redirect_from:
   - /server-tools
   - /server-tools/
@@ -94,7 +94,7 @@ Options such as domain filters, connector IDs, and search-store IDs depend on th
 A raw Hash lets you use a tool without a RubyLLM alias or select a particular tool version:
 
 ```ruby
-chat.with_provider_tools({ type: "tool_search_tool_regex_20251119", name: "tool_search" })
+chat.with_provider_tools({ type: "tool_search_tool_regex_20251119", name: "tool_search_tool_regex" })
 ```
 
 The selected protocol must support that tool's request and results. Passing a raw definition does not enable another endpoint.
@@ -190,7 +190,7 @@ Some services use an existing connector or require additional settings:
 | Bedrock Mantle | Use `connector_id:` with an accessible Lambda or AgentCore Gateway ARN; Gateway requires `require_approval: "never"` |
 | OpenRouter Responses | Explicit `require_approval: "never"`; approval requests are unavailable |
 
-Vertex AI connects remote MCP through a hosted Deep Research agent. Use the [Hosted Research API]({% link _advanced/hosted-research.md %}) for its single-turn report and job lifecycle.
+Vertex AI connects remote MCP through a hosted Deep Research agent. Use [Hosted Research]({% link _advanced/hosted-research.md %}) for its single-turn report and job lifecycle.
 
 ### Self-Hosted Tool Servers
 

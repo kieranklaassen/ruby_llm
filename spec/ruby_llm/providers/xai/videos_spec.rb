@@ -50,6 +50,15 @@ RSpec.describe RubyLLM::Providers::XAI::Videos do
     end
   end
 
+  describe '#validate_animate_inputs' do
+    it 'rejects more than one reference as a caller mistake' do
+      images = RubyLLM::Attachment.wrap([image_path, image_path])
+
+      expect { protocol.send(:validate_animate_inputs, with: images) }
+        .to raise_error(ArgumentError, 'xAI video generation takes a single reference image or video')
+    end
+  end
+
   describe '#parse_video_job' do
     it 'keeps the requested duration and resolution on the job' do
       context = RubyLLM.context { |config| config.xai_api_key = 'test' }
@@ -57,7 +66,7 @@ RSpec.describe RubyLLM::Providers::XAI::Videos do
         .to_return(status: 200, body: { request_id: 'request-1' }.to_json,
                    headers: { 'Content-Type' => 'application/json' })
 
-      job = context.animate_later('a calm ocean wave', model: 'grok-imagine-video', provider: :xai,
+      job = context.animate_later('a calm ocean wave', model:, provider: :xai,
                                                        provider_options: { 'duration' => 5, resolution: '720p' })
 
       expect(job).to have_attributes(id: 'request-1', duration: 5, resolution: '720p')
@@ -108,7 +117,7 @@ RSpec.describe RubyLLM::Providers::XAI::Videos do
 
     it 'rejects conflicting sources and invalid extension inputs before sending requests' do
       expect { protocol.animate_later('Continue', model:, with: image_path, extend: video) }
-        .to raise_error(ArgumentError, /cannot be combined/)
+        .to raise_error(ArgumentError, /with: or extend:, not both/)
       expect { protocol.animate_later('Continue', model:, extend: [video, video]) }
         .to raise_error(ArgumentError, /exactly one video/)
       expect { protocol.animate_later('Continue', model:, extend: image_path) }
@@ -128,7 +137,7 @@ RSpec.describe RubyLLM::Providers::XAI::Videos do
       job = context.animate_later(prompt, model:, provider: :xai, **options)
 
       expect(job.id).not_to be_empty
-      expect(job.wait(timeout: 180)).to be_completed
+      expect(job.wait(timeout: 180)).to be_succeeded
       expect(job.video.mime_type).to eq('video/mp4')
       expect(job.video.to_blob.bytesize).to be > 1000
       expect(job.video.raw['status']).to eq('done')
@@ -157,10 +166,10 @@ RSpec.describe RubyLLM::Providers::XAI::Videos do
       response = instance_double(Faraday::Response, body: body)
 
       state = protocol.parse_video_job_status(response, job: job)
-      expect(state).to include(status: :completed, raw: body)
+      expect(state).to include(status: :succeeded, raw: body)
 
       video = protocol.download_video(
-        RubyLLM::VideoJob.new(id: '4482fadb', protocol: protocol, status: :completed, raw: body)
+        RubyLLM::VideoJob.new(id: '4482fadb', protocol: protocol, status: :succeeded, raw: body)
       )
       expect(video.url).to eq('https://vidgen.x.ai/xai-vidgen-bucket/xai-video-4482fadb.mp4')
       expect(video.duration).to eq(1)

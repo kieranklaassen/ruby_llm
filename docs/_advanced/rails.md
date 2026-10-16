@@ -49,15 +49,14 @@ bin/rails db:migrate
 bin/rails ruby_llm:load_models
 ```
 
-Generated primary and foreign keys follow your application's `config.generators` setting for
-`active_record.primary_key_type`, including `:uuid`. The default is `:bigint`.
+Generated primary and foreign keys follow your application's `config.generators` setting for `active_record.primary_key_type`, including `:uuid`. The default is `:bigint`.
 
-Configure a provider in the generated initializer:
+The generator writes an initializer that reads your OpenAI key from the environment, then from your credentials. Configure your provider there:
 
 ```ruby
 # config/initializers/ruby_llm.rb
 RubyLLM.configure do |config|
-  config.openai_api_key = ENV.fetch('OPENAI_API_KEY')
+  config.openai_api_key = ENV.fetch("OPENAI_API_KEY", Rails.application.credentials.dig(:openai_api_key))
 end
 ```
 
@@ -149,7 +148,7 @@ A process that dies mid-request removes nothing: its placeholder stays blank, an
 
 Allow assistant messages to have empty content. Streaming begins before text arrives, and tool calls can be valid responses without text. A blanket `validates :content, presence: true` on `Message` prevents these flows.
 
-## Going further
+## Next Steps
 
 * [Persistence with acts_as]({% link _advanced/rails-persistence.md %}) - records, associations, tools, usage, and custom model names.
 * [Streaming with Hotwire/Turbo]({% link _advanced/rails-streaming.md %}) - broadcasts, cancellation, and message ordering.
