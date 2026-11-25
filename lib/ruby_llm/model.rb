@@ -6,7 +6,7 @@ module RubyLLM
   # from the registry through RubyLLM.models and from Chat#model.
   #
   #   model = RubyLLM.models.find('gpt-6.1-sol')
-  #   model.name              # => "GPT-5.6"
+  #   model.name              # => "GPT-6.1 Sol"
   #   model.provider          # => "openai"
   #   model.context_window    # => 1050000
   #   model.supports?(:vision) # => true
@@ -17,13 +17,13 @@ module RubyLLM
     # The provider's identifier for the model, e.g. <tt>"gpt-6.1-sol"</tt>.
     attr_reader :id
 
-    # The human-readable model name, e.g. <tt>"GPT-5.6"</tt>.
+    # The human-readable model name, e.g. <tt>"GPT-6.1 Sol"</tt>.
     attr_reader :name
 
     # The provider slug as a String, e.g. <tt>"openai"</tt>.
     attr_reader :provider
 
-    # The model family as a String, e.g. <tt>"gpt"</tt>, or +nil+.
+    # The model family as a String, e.g. <tt>"gpt-sol"</tt>, or +nil+.
     attr_reader :family
 
     # The model's release timestamp as a UTC Time, or +nil+.
@@ -138,7 +138,7 @@ module RubyLLM
     end
 
     # Returns the provider display name and model name combined,
-    # e.g. <tt>"OpenAI - GPT-5.6"</tt>.
+    # e.g. <tt>"OpenAI - GPT-6.1 Sol"</tt>.
     def label
       provider_name = provider_class&.display_name || provider
       "#{provider_name} - #{name}"
@@ -166,8 +166,8 @@ module RubyLLM
     # tokens, or +nil+ if the registry has no such price. Valid kinds are
     # +:input+, +:output+, +:cache_read+, and +:cache_write+.
     #
-    #   model.price(:input)   # => 2.5
-    #   model.price(:output)  # => 10.0
+    #   model.price(:input)   # => 2
+    #   model.price(:output)  # => 10
     #
     def price(kind)
       column = PRICES.fetch(kind) do

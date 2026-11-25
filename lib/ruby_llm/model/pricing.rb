@@ -9,8 +9,8 @@ module RubyLLM
     # units of the category. Instances come from Model#pricing.
     #
     #   model = RubyLLM.models.find "claude-sonnet-5"
-    #   model.pricing.text_tokens.input   # => 3
-    #   model.pricing.text_tokens.output  # => 15
+    #   model.pricing.text_tokens.input   # => 2
+    #   model.pricing.text_tokens.output  # => 10
     #
     class Pricing
       # The pricing categories a model may define.

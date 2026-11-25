@@ -11,8 +11,8 @@ module RubyLLM
     #
     #   model    = RubyLLM.models.find "claude-sonnet-5"
     #   category = model.pricing.text_tokens
-    #   category.input  # => 3
-    #   category.output # => 15
+    #   category.input  # => 2
+    #   category.output # => 10
     #
     class PricingCategory
       # The billing tiers a category may define.

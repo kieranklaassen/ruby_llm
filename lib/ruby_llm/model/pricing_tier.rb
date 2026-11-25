@@ -12,8 +12,8 @@ module RubyLLM
     #
     #   model = RubyLLM.models.find "claude-sonnet-5"
     #   tier  = model.pricing.text_tokens.standard
-    #   tier.input_per_million  # => 3
-    #   tier.output_per_million # => 15
+    #   tier.input_per_million  # => 2
+    #   tier.output_per_million # => 10
     #
     class PricingTier
       # The names of the price readers a tier responds to.
