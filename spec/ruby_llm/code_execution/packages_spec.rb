@@ -313,6 +313,19 @@ RSpec.describe RubyLLM::CodeExecution::Packages do
       end
     end
 
+    it 'reads a package.json with accents in any locale' do
+      external = Encoding.default_external
+      Dir.mktmpdir do |project|
+        FileUtils.mkdir_p(File.join(project, 'node_modules'))
+        File.write(File.join(project, 'package.json'), '{"author":"Zoé","dependencies":{"docx":"^9.0.0"}}')
+        Encoding.default_external = Encoding::US_ASCII
+
+        expect(packages(node_modules: File.join(project, 'node_modules'), node:).npm_names).to eq(%w[docx])
+      end
+    ensure
+      Encoding.default_external = external
+    end
+
     it 'raises without node on the PATH' do
       missing = instance_double(RubyLLM::CodeExecution::NodeInstallation, prefix: nil, bin_dir: nil, version: nil,
                                                                           readable: [])

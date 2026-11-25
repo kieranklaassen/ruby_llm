@@ -61,7 +61,7 @@ module RubyLLM
         manifest = File.join(File.dirname(@node_modules), 'package.json')
         return [] unless File.file?(manifest)
 
-        JSON.parse(File.read(manifest)).fetch('dependencies', {}).keys.sort
+        JSON.parse(File.read(manifest, encoding: Encoding::UTF_8)).fetch('dependencies', {}).keys.sort
       rescue JSON::ParserError
         []
       end
