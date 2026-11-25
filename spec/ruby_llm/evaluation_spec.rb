@@ -89,6 +89,16 @@ RSpec.describe RubyLLM::Evaluation do
     expect(report.pass_rate).to eq(0.0)
   end
 
+  it 'reads no evidence in teardown after a task error' do
+    seen = nil
+    evaluation.define_method(:perform) { |_input| raise 'task failed' }
+    evaluation.define_method(:teardown) { seen = [output, messages, tool_calls] }
+
+    evaluation.run(dataset: cases)
+
+    expect(seen).to eq([nil, [], []])
+  end
+
   it 'records cleanup errors without discarding the trial' do
     evaluation.define_method(:teardown) { raise 'cleanup failed' }
     report = evaluation.run(dataset: cases)

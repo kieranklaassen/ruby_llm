@@ -212,17 +212,17 @@ module RubyLLM
 
     # Returns the primary answer or value extracted from result.
     def output
-      @evidence.output
+      @evidence&.output
     end
 
     # Returns retained messages from a Chat, Agent, or Message result.
     def messages
-      @evidence.messages
+      @evidence ? @evidence.messages : []
     end
 
     # Returns tool calls recorded in the returned conversation or message.
     def tool_calls
-      @evidence.tool_calls
+      @evidence ? @evidence.tool_calls : []
     end
 
     # :method: assert
