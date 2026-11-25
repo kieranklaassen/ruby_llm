@@ -49,6 +49,15 @@ RSpec.describe RubyLLM::CodeExecution::RubyInstallation do
     allow(installation).to receive(:bundled_gems).and_return(%w[csv])
   end
 
+  context 'with brackets in its path' do
+    let(:prefix) { File.join(root, 'ruby[1]') }
+
+    it 'hides the application gems' do
+      expect(installation.denied).to include(File.join(gem_dir, 'gems', 'rspec-core-3.13.0'))
+      expect(installation).to be_ruby_gem('json')
+    end
+  end
+
   it 'mounts the Ruby installation' do
     expect(installation.readable).to eq([prefix])
   end

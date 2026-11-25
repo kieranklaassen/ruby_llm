@@ -187,6 +187,18 @@ RSpec.describe RubyLLM::CodeExecution::Packages do
       end
     end
 
+    it 'names gems and Python packages under a path with brackets' do
+      Dir.mktmpdir do |root|
+        home = File.join(root, 'app[1]')
+        FileUtils.mkdir_p(File.join(home, 'specifications'))
+        FileUtils.mkdir_p(File.join(home, 'lib', 'python3.14', 'site-packages', 'pandas-3.0.0.dist-info'))
+        File.write(File.join(home, 'specifications', 'prawn-2.5.0.gemspec'), '')
+
+        expect(packages(gem_home: home).gem_names).to eq(%w[prawn])
+        expect(packages(virtualenv: home).python_names).to eq(%w[pandas])
+      end
+    end
+
     it 'leaves the application gems off the gem path without a cache directory' do
       Dir.mktmpdir do |home|
         gems = described_class.new(sandbox:, cache_dir: nil, gem_home: home)

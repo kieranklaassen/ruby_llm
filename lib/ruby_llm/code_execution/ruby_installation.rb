@@ -97,8 +97,8 @@ module RubyLLM
       end
 
       def installed_stubs
-        Dir.glob(File.join(@gem_dir, 'specifications', '*.gemspec')).map do |path|
-          Gem::StubSpecification.gemspec_stub(path, @gem_dir, File.join(@gem_dir, 'gems'))
+        Dir.glob('specifications/*.gemspec', base: @gem_dir).map do |path|
+          Gem::StubSpecification.gemspec_stub(File.join(@gem_dir, path), @gem_dir, File.join(@gem_dir, 'gems'))
         end
       end
 
@@ -138,7 +138,8 @@ module RubyLLM
       end
 
       def default_gems
-        @default_gems ||= Dir.glob(File.join(@gem_dir, 'specifications', 'default', '*.gemspec')).map do |path|
+        @default_gems ||= Dir.glob('specifications/default/*.gemspec', base: @gem_dir).map do |path|
+          path = File.join(@gem_dir, path)
           Gem::StubSpecification.default_gemspec_stub(path, @gem_dir, File.join(@gem_dir, 'gems')).name
         end
       end

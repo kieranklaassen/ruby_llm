@@ -44,14 +44,14 @@ module RubyLLM
       def gem_names
         return gems if gems.any? || @gem_home.nil?
 
-        Dir.glob(File.join(@gem_home, 'specifications', '*.gemspec'))
+        Dir.glob('specifications/*.gemspec', base: @gem_home)
            .map { |path| File.basename(path, '.gemspec').sub(/-\d[\w.]*(?:-[a-z][^.]*)?\z/, '') }.uniq.sort
       end
 
       def python_names
         return python if python.any? || @virtualenv.nil?
 
-        Dir.glob(File.join(@virtualenv, 'lib', 'python*', 'site-packages', '*.dist-info'))
+        Dir.glob('lib/python*/site-packages/*.dist-info', base: @virtualenv)
            .map { |path| File.basename(path, '.dist-info').sub(/-[^-]+\z/, '') }.uniq.sort
       end
 
