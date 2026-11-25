@@ -200,6 +200,15 @@ RSpec.describe RubyLLM::Message do
   end
 
   describe '.new from #to_h attributes' do
+    it 'rebuilds a message without content' do
+      message = described_class.new(role: :user, content: nil)
+
+      rebuilt = described_class.new(message.to_h)
+
+      expect(rebuilt.role).to eq(:user)
+      expect(rebuilt.content).to be_nil
+    end
+
     it 'restores earlier provider ID keys while serializing the current names' do
       message = described_class.new(
         role: :assistant, content: '',
