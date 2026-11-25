@@ -339,7 +339,7 @@ module RubyLLM
     end
 
     def io_byte_size
-      return unless io_like?
+      return if !io_like? || pipe?
 
       return @source.size if @source.respond_to?(:size)
 
@@ -399,15 +399,19 @@ module RubyLLM
       content_type = active_storage? ? active_storage_content_type : nil
       return @mime_type = content_type unless content_type.to_s.empty?
 
-      @mime_type = RubyLLM::Files::MimeType.for(url? ? nil : @source, name: @filename)
+      @mime_type = RubyLLM::Files::MimeType.for(sniffable_source, name: @filename)
       @mime_type = content_mime_type if @mime_type == 'application/octet-stream'
       @mime_type = 'audio/wav' if @mime_type == 'audio/x-wav'
     end
 
     # An IO's bytes were examined already, so it isn't read in full for a
     # second look.
+    def sniffable_source
+      @source unless url? || pipe?
+    end
+
     def content_mime_type
-      io_like? ? @mime_type : RubyLLM::Files::MimeType.for(content)
+      io_like? && !pipe? ? @mime_type : RubyLLM::Files::MimeType.for(content)
     end
 
     def fetch_content
@@ -419,7 +423,7 @@ module RubyLLM
     end
 
     def load_content_from_io
-      @source.rewind if @source.respond_to? :rewind
+      @source.rewind if @source.respond_to?(:rewind) && !pipe?
       @content = @source.read
     end
 
@@ -451,10 +455,14 @@ module RubyLLM
       end
     end
 
+    def pipe?
+      @source.is_a?(IO) && @source.stat.pipe?
+    end
+
     def extract_filename_from_io
       if defined?(ActionDispatch::Http::UploadedFile) && @source.is_a?(ActionDispatch::Http::UploadedFile)
         @source.original_filename.to_s
-      elsif @source.respond_to?(:path)
+      elsif @source.respond_to?(:path) && @source.path
         File.basename(@source.path).to_s
       else
         'attachment'

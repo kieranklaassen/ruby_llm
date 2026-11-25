@@ -83,6 +83,32 @@ RSpec.describe RubyLLM::Attachment do
     end
   end
 
+  it 'reads a pipe' do
+    reader, writer = IO.pipe
+    writer << 'piped notes'
+    writer.close
+    attachment = described_class.new(reader, filename: 'notes.txt')
+
+    expect(attachment.mime_type).to eq('text/plain')
+    expect(attachment.byte_size).to eq(11)
+    expect(attachment.content).to eq('piped notes')
+  ensure
+    reader.close
+  end
+
+  it 'names and types a pipe without a filename' do
+    reader, writer = IO.pipe(binmode: true)
+    writer << '%PDF-1.4'
+    writer.close
+    attachment = described_class.new(reader)
+
+    expect(attachment.filename).to eq('attachment')
+    expect(attachment.mime_type).to eq('application/pdf')
+    expect(attachment.content).to eq('%PDF-1.4')
+  ensure
+    reader.close
+  end
+
   it 'classifies rich document files semantically' do
     attachment = described_class.new(StringIO.new('docx bytes'), filename: 'proposal.docx')
 
