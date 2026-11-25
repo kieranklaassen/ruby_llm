@@ -93,7 +93,7 @@ module RubyLLM
 
       def env(home, tmp = home)
         base_env(home, tmp).merge(
-          'PATH' => path,
+          'PATH' => search_path(virtualenv, gem_home),
           'GEM_HOME' => gem_home,
           'GEM_PATH' => gem_home && [gem_home, ruby_gems].join(File::PATH_SEPARATOR),
           'VIRTUAL_ENV' => virtualenv
@@ -124,7 +124,7 @@ module RubyLLM
 
       def base_env(home, tmp = home)
         {
-          'PATH' => [RbConfig::CONFIG['bindir'], @node&.bin_dir, *SYSTEM_PATH].compact.join(File::PATH_SEPARATOR),
+          'PATH' => search_path,
           'HOME' => home,
           'XDG_CACHE_HOME' => File.join(home, '.cache'),
           'TMPDIR' => tmp,
@@ -146,8 +146,8 @@ module RubyLLM
 
       private
 
-      def path
-        [virtualenv && File.join(virtualenv, 'bin'), gem_home && File.join(gem_home, 'bin'),
+      def search_path(*environments)
+        [*environments.compact.map { |directory| File.join(directory, 'bin') },
          RbConfig::CONFIG['bindir'], @node&.bin_dir, *SYSTEM_PATH].compact.join(File::PATH_SEPARATOR)
       end
 
